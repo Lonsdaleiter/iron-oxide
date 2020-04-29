@@ -56,7 +56,7 @@ pub unsafe fn MTLCopyAllDevices() -> Vec<MTLDevice> {
     #[cfg(target_os = "macos")]
     {
         let devices = externs::MTLCopyAllDevices();
-        let length: u64 = msg_send![devices, count];
+        let length: NSUInteger = msg_send![devices, count];
         (0..length)
             .map(|index| {
                 let obj: ObjectPointer = msg_send![devices, objectAtIndex: index];

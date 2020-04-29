@@ -1,10 +1,8 @@
 use crate::import_macros::*;
 use crate::{handle, Object, ObjectPointer};
-use block::{ConcreteBlock, Block, RcBlock};
 
 mod externs {
     use crate::ObjectPointer;
-    use block::{RcBlock, Block, ConcreteBlock};
 
     #[link(name = "Metal", kind = "framework")]
     extern "C" {
@@ -17,15 +15,11 @@ mod externs {
         // ) -> *mut ();
         // pub fn MTLRemoveDeviceObserver(observer: ObjectPointer);
     }
+    #[link(name = "CoreGraphics", kind = "framework")]
+    extern "C" {
+        pub fn CGDirectDisplayCopyCurrentMetalDevice(display_id: u32) -> ObjectPointer;
+    }
 }
-
-// pub unsafe fn test() {
-//     externs::MTLCopyAllDevicesWithObserver(
-//         std::ptr::null_mut(),
-//         ()
-//         // *std::mem::transmute::<RcBlock<_>, *mut Block<*mut (), *mut ()>>(ConcreteBlock::new(|_a, _b|{}).copy())
-//     );
-// }
 
 #[allow(non_snake_case)]
 /// Creates a MTLDevice representing your system's default GPU. Analogous to [this](https://developer.apple.com/documentation/metal/1433401-mtlcreatesystemdefaultdevice?language=objc).
@@ -37,6 +31,7 @@ mod externs {
 /// - macOS < 10.11
 /// - Catalyst < 13.0
 /// - tvOS < 9.0
+/// - you run any other OS
 pub unsafe fn MTLCreateSystemDefaultDevice() -> MTLDevice {
     MTLDevice::from_ptr({
         let obj = externs::MTLCreateSystemDefaultDevice();
@@ -56,6 +51,7 @@ pub unsafe fn MTLCreateSystemDefaultDevice() -> MTLDevice {
 /// - macOS < 10.11
 /// - Catalyst < 13.0
 /// - tvOS < 9.0
+/// - you run any other OS
 pub unsafe fn MTLCopyAllDevices() -> Vec<MTLDevice> {
     #[cfg(target_os = "macos")]
     {
@@ -74,8 +70,28 @@ pub unsafe fn MTLCopyAllDevices() -> Vec<MTLDevice> {
     }
 }
 
+#[allow(non_snake_case)]
+/// Creates the MTLDevice driving the display of the given id. Analogous to [this](https://developer.apple.com/documentation/coregraphics/1493900-cgdirectdisplaycopycurrentmetald?language=objc).
+///
+/// # Safety
+///
+/// Do *not* call this function if:
+/// - macOS < 10.11
+/// - Catalyst < 13.0
+/// - you run any other OS
+pub unsafe fn CGDirectDisplayCopyCurrentMetalDevice(monitor_id: u32) -> MTLDevice {
+    MTLDevice::from_ptr({
+        let obj = externs::CGDirectDisplayCopyCurrentMetalDevice(monitor_id);
+        msg_send![obj, retain]
+    })
+}
+
+/// Represents a physical device, or GPU.
+///
+/// Docs [here](https://developer.apple.com/documentation/metal/mtldevice?language=objc).
 pub struct MTLDevice(ObjectPointer);
 handle!(MTLDevice);
+
 impl Object for MTLDevice {
     unsafe fn from_ptr(ptr: ObjectPointer) -> Self {
         MTLDevice(ptr)
@@ -96,5 +112,6 @@ pub trait DeviceCreated {
     /// - macOS < 10.11
     /// - Catalyst < 13.0
     /// - tvOS < 9.0
+    /// - you run any other OS
     unsafe fn get_device(&self) -> MTLDevice;
 }

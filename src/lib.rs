@@ -27,6 +27,8 @@ pub trait Object {
     fn get_ptr(&self) -> ObjectPointer;
 }
 
+pub type NSUInteger = u64;
+
 #[macro_export]
 macro_rules! handle {
     ($name:ident) => {

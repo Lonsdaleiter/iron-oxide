@@ -27,7 +27,10 @@ pub trait Object {
     fn get_ptr(&self) -> ObjectPointer;
 }
 
+#[cfg(any(target_os = "macos", target_os = "ios"))]
 pub type NSUInteger = u64;
+#[cfg(not(any(target_os = "macos", target_os = "ios")))]
+pub type NSUInteger = u32;
 
 #[macro_export]
 macro_rules! handle {

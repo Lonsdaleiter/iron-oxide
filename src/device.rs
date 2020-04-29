@@ -1,5 +1,5 @@
 use crate::import_macros::*;
-use crate::{handle, Object, ObjectPointer};
+use crate::{handle, Object, ObjectPointer, NSUInteger};
 
 mod externs {
     use crate::ObjectPointer;
@@ -91,6 +91,26 @@ pub unsafe fn CGDirectDisplayCopyCurrentMetalDevice(monitor_id: u32) -> MTLDevic
 /// Docs [here](https://developer.apple.com/documentation/metal/mtldevice?language=objc).
 pub struct MTLDevice(ObjectPointer);
 handle!(MTLDevice);
+
+impl MTLDevice {
+    /// Returns the [name](https://developer.apple.com/documentation/metal/mtldevice/1433359-name?language=objc) of the device.
+    ///
+    /// # Safety
+    ///
+    /// Do *not* call this function if:
+    /// - iOS < 8.0
+    /// - macOS < 10.11
+    /// - Catalyst < 13.0
+    /// - tvOS < 9.0
+    /// - you run any other OS
+    pub unsafe fn get_name(&self) -> &str {
+        let string = ObjectPointer(msg_send![self.get_ptr(), name]);
+        let bytes: *const u8 = msg_send![string, UTF8String];
+        let len: NSUInteger = msg_send![string, length];
+        let bytes = std::slice::from_raw_parts(bytes, len as usize);
+        std::str::from_utf8(bytes).unwrap()
+    }
+}
 
 impl Object for MTLDevice {
     unsafe fn from_ptr(ptr: ObjectPointer) -> Self {

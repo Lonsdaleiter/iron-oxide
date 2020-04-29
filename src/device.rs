@@ -1,5 +1,5 @@
 use crate::import_macros::*;
-use crate::{handle, Object, ObjectPointer, NSUInteger};
+use crate::{handle, NSUInteger, Object, ObjectPointer};
 
 mod externs {
     use crate::ObjectPointer;
@@ -8,12 +8,12 @@ mod externs {
     extern "C" {
         pub fn MTLCreateSystemDefaultDevice() -> ObjectPointer;
         pub fn MTLCopyAllDevices() -> ObjectPointer;
-        // TODO find a way to pass blocks into these guys that won't segfault
-        // pub fn MTLCopyAllDevicesWithObserver(
-        //     observer: *mut (),
-        //     handler: Block<(*mut (), *mut ()), ()>,
-        // ) -> *mut ();
-        // pub fn MTLRemoveDeviceObserver(observer: ObjectPointer);
+    // TODO find a way to pass blocks into these guys that won't segfault
+    // pub fn MTLCopyAllDevicesWithObserver(
+    //     observer: *mut (),
+    //     handler: Block<(*mut (), *mut ()), ()>,
+    // ) -> *mut ();
+    // pub fn MTLRemoveDeviceObserver(observer: ObjectPointer);
     }
     #[link(name = "CoreGraphics", kind = "framework")]
     extern "C" {

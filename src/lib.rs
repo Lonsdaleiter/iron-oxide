@@ -1,5 +1,9 @@
 //! `iron-oxide` provides unsafe [Metal](https://developer.apple.com/documentation/metal?language=objc)
 //! bindings for Rust.
+//!
+//! Not all of Metal's functionality is added. The pointer underlying a MTL(something) can
+//! be accessed with `get_ptr`, and messages can be sent to it with `objc`'s `msg_send!`, if
+//! necessary functionality isn't yet implemented. This is very unsafe.
 
 use objc::Message;
 use std::ops::Deref;
@@ -18,9 +22,16 @@ mod import_macros {
     pub use objc::{class, msg_send, sel, sel_impl};
 }
 
+/// Represents either an error, a `T`, or a warning and a `T`.
+///
+/// When there is a Metal function or method which takes a pointer to an error,
+/// the bound Rust function or method will return an `Error`.
 pub enum Error<'a, T> {
+    /// The operation succeeded.
     None(T),
+    /// The operation succeeded but a warning was produced.
     Warn(T, &'a str),
+    /// The operation failed.
     Error(&'a str),
 }
 

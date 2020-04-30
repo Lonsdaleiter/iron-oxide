@@ -69,6 +69,7 @@ unsafe fn execute() {
         .new_library_with_data(include_bytes!("quad.metallib"))
         .unwrap();
     println!("{:?}", library.get_function_names());
+    let vertex = library.new_function_with_name("vertex_shader");
 }
 
 fn main() {

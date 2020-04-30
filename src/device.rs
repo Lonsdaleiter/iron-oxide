@@ -206,7 +206,7 @@ impl MTLDevice {
         if !err.is_null() {
             let info = ObjectPointer(msg_send![err, localizedDescription]);
             let bytes: *const u8 = msg_send![info, UTF8String];
-            let len: u64 = msg_send![info, length];
+            let len: NSUInteger = msg_send![info, length];
             let bytes = std::slice::from_raw_parts(bytes, len as usize);
             let st = std::str::from_utf8(bytes).unwrap();
 

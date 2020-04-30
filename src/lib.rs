@@ -1,4 +1,5 @@
-//! `iron-oxide` provides unsafe [Metal](https://developer.apple.com/documentation/metal?language=objc) bindings for Rust.
+//! `iron-oxide` provides unsafe [Metal](https://developer.apple.com/documentation/metal?language=objc)
+//! bindings for Rust.
 
 use objc::Message;
 use std::ops::Deref;
@@ -68,8 +69,7 @@ pub trait Object: Clone + Drop {
     ///
     /// # Requirements
     ///
-    /// Must be a valid pointer to an Objective C object. If it is not, the `handle!` implementation
-    /// will cause a crash on drop or clone.
+    /// *Must* be a valid pointer to an Objective C object.
     fn get_ptr(&self) -> ObjectPointer;
 }
 

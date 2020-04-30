@@ -1,5 +1,5 @@
 use crate::import_macros::*;
-use crate::{handle, NSUInteger, Object, ObjectPointer};
+use crate::{handle, NSUInteger, Object, ObjectPointer, MTLSize};
 
 mod externs {
     use crate::ObjectPointer;
@@ -69,7 +69,7 @@ pub struct MTLDevice(ObjectPointer);
 handle!(MTLDevice);
 
 impl MTLDevice {
-    /// Returns the [name](https://developer.apple.com/documentation/metal/mtldevice/1433359-name?language=objc) of the device.
+    /// Returns the [name](https://developer.apple.com/documentation/metal/mtldevice/1433359-name?language=objc) property of the device.
     pub unsafe fn get_name(&self) -> &str {
         let string = ObjectPointer(msg_send![self.get_ptr(), name]);
         let bytes: *const u8 = msg_send![string, UTF8String];
@@ -82,6 +82,36 @@ impl MTLDevice {
     /// This property reflects whether the GPU is attached to a particular display.
     pub unsafe fn is_headless(&self) -> bool {
         msg_send![self.get_ptr(), isHeadless]
+    }
+    /// Returns the [lowPower](https://developer.apple.com/documentation/metal/mtldevice/1433409-lowpower?language=objc) property of the device.
+    ///
+    /// If the GPU is integrated, this returns true. If it is discrete, it returns false.
+    pub unsafe fn is_low_power(&self) -> bool {
+        msg_send![self.get_ptr(), isLowPower]
+    }
+    /// Returns the [removable](https://developer.apple.com/documentation/metal/mtldevice/2889851-removable?language=objc) property of the device.
+    pub unsafe fn is_removable(&self) -> bool {
+        msg_send![self.get_ptr(), isRemovable]
+    }
+    /// Returns the [registryID](https://developer.apple.com/documentation/metal/mtldevice/2915737-registryid?language=objc) property of the device.
+    pub unsafe fn get_registry_id(&self) -> u64 {
+        msg_send![self.get_ptr(), registryID]
+    }
+    /// Returns the [recommendedMaxWorkingSetSize](https://developer.apple.com/documentation/metal/mtldevice/2369280-recommendedmaxworkingsetsize?language=objc) property of the device.
+    pub unsafe fn get_recommended_max_working_set_size(&self) -> u64 {
+        msg_send![self.get_ptr(), recommendedMaxWorkingSetSize]
+    }
+    /// Returns the [currentAllocatedSize](https://developer.apple.com/documentation/metal/mtldevice/2915745-currentallocatedsize?language=objc) property of the device.
+    pub unsafe fn get_current_allocated_size(&self) -> NSUInteger {
+        msg_send![self.get_ptr(), currentAllocatedSize]
+    }
+    /// Returns the [maxThreadgroupMemoryLength](https://developer.apple.com/documentation/metal/mtldevice/2877429-maxthreadgroupmemorylength?language=objc) property of the device.
+    pub unsafe fn get_max_threadgroup_memory_length(&self) -> NSUInteger {
+        msg_send![self.get_ptr(), maxThreadgroupMemoryLength]
+    }
+    /// Returns the [maxThreadsPerThreadgroup](https://developer.apple.com/documentation/metal/mtldevice/1433393-maxthreadsperthreadgroup?language=objc) property of the device.
+    pub unsafe fn get_max_threads_per_threadgroup(&self) -> MTLSize {
+        msg_send![self.get_ptr(), maxThreadsPerThreadgroup]
     }
 }
 
@@ -97,14 +127,5 @@ impl Object for MTLDevice {
 
 pub trait DeviceCreated {
     /// Returns a reference to the device which created this object.
-    ///
-    /// # Safety
-    ///
-    /// Do *not* call this function if:
-    /// - iOS < 8.0
-    /// - macOS < 10.11
-    /// - Catalyst < 13.0
-    /// - tvOS < 9.0
-    /// - you run any other OS
     unsafe fn get_device(&self) -> MTLDevice;
 }

@@ -1,12 +1,12 @@
 //! `iron-oxide` provides unsafe [Metal](https://developer.apple.com/documentation/metal?language=objc) bindings for Rust.
-//!
-//! PLACEHOLDER
 
 use objc::Message;
 use std::ops::Deref;
 
 mod device;
+mod util;
 pub use device::*;
+pub use util::*;
 
 mod import_macros {
     pub use objc::{class, msg_send, sel, sel_impl};

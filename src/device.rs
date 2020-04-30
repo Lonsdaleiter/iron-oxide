@@ -23,15 +23,6 @@ mod externs {
 
 #[allow(non_snake_case)]
 /// Creates a MTLDevice representing your system's default GPU. Analogous to [this](https://developer.apple.com/documentation/metal/1433401-mtlcreatesystemdefaultdevice?language=objc).
-///
-/// # Safety
-///
-/// Do *not* call this function if:
-/// - iOS < 8.0
-/// - macOS < 10.11
-/// - Catalyst < 13.0
-/// - tvOS < 9.0
-/// - you run any other OS
 pub unsafe fn MTLCreateSystemDefaultDevice() -> MTLDevice {
     MTLDevice::from_ptr({
         let obj = externs::MTLCreateSystemDefaultDevice();
@@ -42,16 +33,7 @@ pub unsafe fn MTLCreateSystemDefaultDevice() -> MTLDevice {
 #[allow(non_snake_case)]
 /// Creates a vector of MTLDevices representing all of your system's GPUs. Analogous to [this](https://developer.apple.com/documentation/metal/1433367-mtlcopyalldevices?language=objc).
 ///
-/// Note that the original function is not supported on iOS or tvOS. This function is.
-///
-/// # Safety
-///
-/// Do *not* call this function if:
-/// - iOS < 8.0
-/// - macOS < 10.11
-/// - Catalyst < 13.0
-/// - tvOS < 9.0
-/// - you run any other OS
+/// Note that the original function is not supported on iOS or tvOS, but this function is.
 pub unsafe fn MTLCopyAllDevices() -> Vec<MTLDevice> {
     #[cfg(target_os = "macos")]
     {
@@ -72,13 +54,6 @@ pub unsafe fn MTLCopyAllDevices() -> Vec<MTLDevice> {
 
 #[allow(non_snake_case)]
 /// Creates the MTLDevice driving the display of the given id. Analogous to [this](https://developer.apple.com/documentation/coregraphics/1493900-cgdirectdisplaycopycurrentmetald?language=objc).
-///
-/// # Safety
-///
-/// Do *not* call this function if:
-/// - macOS < 10.11
-/// - Catalyst < 13.0
-/// - you run any other OS
 pub unsafe fn CGDirectDisplayCopyCurrentMetalDevice(monitor_id: u32) -> MTLDevice {
     MTLDevice::from_ptr({
         let obj = externs::CGDirectDisplayCopyCurrentMetalDevice(monitor_id);
@@ -88,27 +63,25 @@ pub unsafe fn CGDirectDisplayCopyCurrentMetalDevice(monitor_id: u32) -> MTLDevic
 
 /// Represents a physical device, or GPU.
 ///
-/// Docs [here](https://developer.apple.com/documentation/metal/mtldevice?language=objc).
+/// Will send to its pointer only the messages specified in the MTLDevice protocol
+/// linked [here](https://developer.apple.com/documentation/metal/mtldevice?language=objc).
 pub struct MTLDevice(ObjectPointer);
 handle!(MTLDevice);
 
 impl MTLDevice {
     /// Returns the [name](https://developer.apple.com/documentation/metal/mtldevice/1433359-name?language=objc) of the device.
-    ///
-    /// # Safety
-    ///
-    /// Do *not* call this function if:
-    /// - iOS < 8.0
-    /// - macOS < 10.11
-    /// - Catalyst < 13.0
-    /// - tvOS < 9.0
-    /// - you run any other OS
     pub unsafe fn get_name(&self) -> &str {
         let string = ObjectPointer(msg_send![self.get_ptr(), name]);
         let bytes: *const u8 = msg_send![string, UTF8String];
         let len: NSUInteger = msg_send![string, length];
         let bytes = std::slice::from_raw_parts(bytes, len as usize);
         std::str::from_utf8(bytes).unwrap()
+    }
+    /// Returns the [headless](https://developer.apple.com/documentation/metal/mtldevice/1433377-headless?language=objc) property of the device.
+    ///
+    /// This property reflects whether the GPU is attached to a particular display.
+    pub unsafe fn is_headless(&self) -> bool {
+        msg_send![self.get_ptr(), isHeadless]
     }
 }
 

@@ -1,3 +1,7 @@
+//! `iron-oxide` provides unsafe [Metal](https://developer.apple.com/documentation/metal?language=objc) bindings for Rust.
+//!
+//! PLACEHOLDER
+
 use objc::Message;
 use std::ops::Deref;
 
@@ -20,19 +24,43 @@ impl Deref for ObjectPointer {
 }
 unsafe impl Message for ObjectPointer {}
 
-pub trait Object {
-    #[doc(hidden)]
-    unsafe fn from_ptr(ptr: ObjectPointer) -> Self;
+/// Represents an Objective C object.
+///
+/// # Requirements
+///
+/// There *must* be for an implementation of Object an implementation of Clone and Drop using
+/// the [handle!] macro. See [handle!] for more information about what these implementations do.
+pub trait Object: Clone + Drop {
+    /// Constructs an object from the provided pointer.
+    ///
+    /// # Safety
+    ///
+    /// The pointer provided *must* be a valid pointer to an Objective C object which can
+    /// accept the messages which the used implementation of Object will send.
+    unsafe fn from_ptr(ptr: ObjectPointer) -> Self where Self: Sized;
     /// Returns the underlying pointer.
+    ///
+    /// # Requirements
+    ///
+    /// Must be a valid pointer to an Objective C object. If it is not, the [handle!] implementation
+    /// will cause a crash on drop or clone.
     fn get_ptr(&self) -> ObjectPointer;
 }
 
-#[cfg(any(target_os = "macos", target_os = "ios", target_os = "tvos"))]
+/// Aliased exclusively so that, should the watchOS target be added to Rust, NSUInteger can handle
+/// watchOS' 32-bit architecture.
 pub type NSUInteger = u64;
-#[cfg(target_os = "watchos")]
-pub type NSUInteger = u32;
 
 #[macro_export]
+/// Provides an implementation of `Clone` and `Drop` for a struct implementing `Object`.
+///
+/// The `Clone` implementation creates a new of the struct with the same pointer and an
+/// increments the object's reference count. The `Drop` implementation decrements the object's
+/// reference count.
+///
+/// These implementations together serve to make the struct on which this is called be a reference
+/// to the underlying object. When the last struct with a reference to this object is dropped,
+/// the object is garbage collected.
 macro_rules! handle {
     ($name:ident) => {
         impl Clone for $name {

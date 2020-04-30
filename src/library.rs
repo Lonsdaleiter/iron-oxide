@@ -69,6 +69,10 @@ impl DeviceCreated for MTLLibrary {
     }
 }
 
+/// A single shader function.
+///
+/// Will send to its pointer only the messages specified in the MTLFunction protocol
+/// linked [here](https://developer.apple.com/documentation/metal/mtlfunction?language=objc).
 pub struct MTLFunction(ObjectPointer);
 handle!(MTLFunction);
 
@@ -80,5 +84,11 @@ impl Object for MTLFunction {
 
     fn get_ptr(&self) -> ObjectPointer {
         self.0
+    }
+}
+
+impl DeviceCreated for MTLFunction {
+    unsafe fn get_device(&self) -> MTLDevice {
+        MTLDevice(msg_send![self.get_ptr(), device])
     }
 }

@@ -1,5 +1,5 @@
 use crate::import_macros::*;
-use crate::{DeviceCreated, MTLDevice, Object, ObjectPointer, handle};
+use crate::{handle, DeviceCreated, MTLDevice, Object, ObjectPointer};
 
 /// A queue which organizes command buffers to be executed by a GPU.
 ///

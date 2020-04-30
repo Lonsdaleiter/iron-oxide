@@ -10,8 +10,8 @@ mod util;
 pub use commandqueue::*;
 pub use device::*;
 pub use library::*;
-pub use util::*;
 use log::Level;
+pub use util::*;
 
 mod import_macros {
     pub use objc::{class, msg_send, sel, sel_impl};
@@ -30,7 +30,7 @@ impl<'a, T> Error<'a, T> {
             Error::Warn(obj, msg) => {
                 log::log!(Level::Warn, "{}", msg);
                 obj
-            },
+            }
             Error::Error(msg) => panic!("{}", msg),
         }
     }

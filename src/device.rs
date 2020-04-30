@@ -1,5 +1,8 @@
 use crate::import_macros::*;
-use crate::{handle, MTLCommandQueue, MTLSamplePosition, MTLSize, NSUInteger, Object, ObjectPointer, Error, MTLLibrary};
+use crate::{
+    handle, Error, MTLCommandQueue, MTLLibrary, MTLSamplePosition, MTLSize, NSUInteger, Object,
+    ObjectPointer,
+};
 use std::os::raw::c_void;
 
 mod externs {
@@ -58,7 +61,7 @@ pub unsafe fn MTLCopyAllDevices() -> Vec<MTLDevice> {
         let length: NSUInteger = msg_send![devices, count];
         (0..length)
             .map(|index| {
-                let obj: ObjectPointer = msg_send![devices, objectAtIndex: index];
+                let obj = ObjectPointer(msg_send![devices, objectAtIndex: index]);
                 MTLDevice::from_ptr(msg_send![obj, retain])
             })
             .collect()

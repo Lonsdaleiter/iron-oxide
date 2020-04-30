@@ -1,7 +1,8 @@
 use crate::import_macros::*;
 use crate::{handle, DeviceCreated, MTLDevice, NSUInteger, Object, ObjectPointer};
 
-/// A collection of shader functions.
+/// A collection of MSL shader functions.
+///
 /// Will send to its pointer only the messages specified in the MTLLibrary protocol
 /// linked [here](https://developer.apple.com/documentation/metal/mtllibrary?language=objc).
 pub struct MTLLibrary(ObjectPointer);
@@ -69,12 +70,40 @@ impl DeviceCreated for MTLLibrary {
     }
 }
 
-/// A single shader function.
+#[repr(u64)]
+/// The type of an MSL shader function.
+pub enum MTLFunctionType {
+    /// A vertex function for use in an `MTLRenderPipelineState`.
+    Vertex = 1,
+    /// A fragment function for use in an `MTLRenderPipelineState`.
+    Fragment = 2,
+    /// A kernel function for use in an `MTLComputePipelineState`.
+    Kernel = 3,
+}
+
+/// A single MSL shader function.
 ///
 /// Will send to its pointer only the messages specified in the MTLFunction protocol
 /// linked [here](https://developer.apple.com/documentation/metal/mtlfunction?language=objc).
 pub struct MTLFunction(ObjectPointer);
 handle!(MTLFunction);
+
+impl MTLFunction {
+    /// Returns the function's associated MTLFunctionType via
+    /// [this method](https://developer.apple.com/documentation/metal/mtlfunction/1516042-functiontype?language=objc).
+    pub unsafe fn get_function_type(&self) -> MTLFunctionType {
+        msg_send![self.get_ptr(), functionType]
+    }
+    /// Returns the [name](https://developer.apple.com/documentation/metal/mtlfunction/1515424-name?language=objc)
+    /// property of the function.
+    pub unsafe fn get_name(&self) -> &str {
+        let string = ObjectPointer(msg_send![self.get_ptr(), name]);
+        let bytes: *const u8 = msg_send![string, UTF8String];
+        let len: NSUInteger = msg_send![string, length];
+        let bytes = std::slice::from_raw_parts(bytes, len as usize);
+        std::str::from_utf8(bytes).unwrap()
+    }
+}
 
 impl Object for MTLFunction {
     unsafe fn from_ptr(ptr: ObjectPointer) -> Self where
@@ -89,6 +118,6 @@ impl Object for MTLFunction {
 
 impl DeviceCreated for MTLFunction {
     unsafe fn get_device(&self) -> MTLDevice {
-        MTLDevice(msg_send![self.get_ptr(), device])
+        MTLDevice::from_ptr(msg_send![self.get_ptr(), device])
     }
 }

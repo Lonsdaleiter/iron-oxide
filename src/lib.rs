@@ -37,7 +37,9 @@ pub trait Object: Clone + Drop {
     ///
     /// The pointer provided *must* be a valid pointer to an Objective C object which can
     /// accept the messages which the used implementation of Object will send.
-    unsafe fn from_ptr(ptr: ObjectPointer) -> Self where Self: Sized;
+    unsafe fn from_ptr(ptr: ObjectPointer) -> Self
+    where
+        Self: Sized;
     /// Returns the underlying pointer.
     ///
     /// # Requirements

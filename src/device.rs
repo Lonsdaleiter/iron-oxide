@@ -1,5 +1,5 @@
 use crate::import_macros::*;
-use crate::{handle, NSUInteger, Object, ObjectPointer, MTLSize};
+use crate::{handle, MTLSamplePosition, MTLSize, NSUInteger, Object, ObjectPointer};
 
 mod externs {
     use crate::ObjectPointer;
@@ -112,6 +112,17 @@ impl MTLDevice {
     /// Returns the [maxThreadsPerThreadgroup](https://developer.apple.com/documentation/metal/mtldevice/1433393-maxthreadsperthreadgroup?language=objc) property of the device.
     pub unsafe fn get_max_threads_per_threadgroup(&self) -> MTLSize {
         msg_send![self.get_ptr(), maxThreadsPerThreadgroup]
+    }
+    /// Returns the [programmableSamplePositionsSupported](https://developer.apple.com/documentation/metal/mtldevice/2866117-programmablesamplepositionssuppo?language=objc) property of the device.
+    pub unsafe fn programmable_sample_positions_supported(&self) -> bool {
+        msg_send![self.get_ptr(), areProgrammableSamplePositionsSupported]
+    }
+    /// Calls the [getDefaultSamplePositions](https://developer.apple.com/documentation/metal/mtldevice/2866120-getdefaultsamplepositions?language=objc) method but instead
+    /// of taking a mutable pointer to an `MTLSamplePosition`, it returns an `MTLSamplePosition`.
+    pub unsafe fn get_default_sample_positions(&self, count: NSUInteger) -> MTLSamplePosition {
+        let mut pos = MTLSamplePosition { x: 0.0, y: 0.0 };
+        let _: () = msg_send![self.get_ptr(), getDefaultSamplePositions: &mut pos count: count];
+        pos
     }
 }
 

@@ -1,23 +1,40 @@
 use crate::import_macros::*;
-use crate::{handle, MTLSamplePosition, MTLSize, NSUInteger, Object, ObjectPointer, MTLCommandQueue};
+use crate::{handle, MTLCommandQueue, MTLSamplePosition, MTLSize, NSUInteger, Object, ObjectPointer, Error, MTLLibrary};
+use std::os::raw::c_void;
 
 mod externs {
     use crate::ObjectPointer;
+    use std::os::raw::c_void;
 
     #[link(name = "Metal", kind = "framework")]
     extern "C" {
         pub fn MTLCreateSystemDefaultDevice() -> ObjectPointer;
         pub fn MTLCopyAllDevices() -> ObjectPointer;
-    // TODO find a way to pass blocks into these guys that won't segfault
-    // pub fn MTLCopyAllDevicesWithObserver(
-    //     observer: *mut (),
-    //     handler: Block<(*mut (), *mut ()), ()>,
-    // ) -> *mut ();
-    // pub fn MTLRemoveDeviceObserver(observer: ObjectPointer);
     }
     #[link(name = "CoreGraphics", kind = "framework")]
     extern "C" {
         pub fn CGDirectDisplayCopyCurrentMetalDevice(display_id: u32) -> ObjectPointer;
+    }
+
+    #[cfg_attr(
+        any(target_os = "macos", target_os = "ios"),
+        link(name = "System", kind = "dylib")
+    )]
+    #[cfg_attr(
+        not(any(target_os = "macos", target_os = "ios")),
+        link(name = "dispatch", kind = "dylib")
+    )]
+    #[allow(improper_ctypes)]
+    extern "C" {
+        pub static _dispatch_main_q: *mut objc::runtime::Object;
+
+        pub fn dispatch_data_create(
+            buffer: *const c_void,
+            size: usize,
+            queue: *mut objc::runtime::Object,
+            destructor: *const c_void,
+        ) -> *mut objc::runtime::Object;
+        pub fn dispatch_release(object: *mut objc::runtime::Object);
     }
 }
 
@@ -151,6 +168,53 @@ impl MTLDevice {
             let k = ObjectPointer(msg_send![self.get_ptr(), newCommandQueue]);
             msg_send![k, retain]
         })
+    }
+    /// Creates a new [MTLCommandQueue](https://developer.apple.com/documentation/metal/mtlcommandqueue?language=objc)
+    /// via [this method](https://developer.apple.com/documentation/metal/mtldevice/1433433-newcommandqueuewithmaxcommandbuf?language=objc).
+    pub unsafe fn new_command_queue_with_max_command_buffer_count(
+        &self,
+        count: NSUInteger,
+    ) -> MTLCommandQueue {
+        MTLCommandQueue::from_ptr({
+            let k = ObjectPointer(msg_send![
+                self.get_ptr(),
+                newCommandQueueWithMaxCommandBufferCount: count
+            ]);
+            msg_send![k, retain]
+        })
+    }
+    /// Creates a new [MTLLibrary](https://developer.apple.com/documentation/metal/mtllibrary?language=objc)
+    /// via [this method](https://developer.apple.com/documentation/metal/mtldevice/1433391-newlibrarywithdata?language=objc).
+    pub unsafe fn new_library_with_data(&self, data: &[u8]) -> Error<MTLLibrary> {
+        use externs::*;
+
+        let mut err: *mut objc::runtime::Object = std::ptr::null_mut();
+
+        let dispatch_data = dispatch_data_create(
+            data.as_ptr() as *const c_void,
+            data.len() as usize,
+            &_dispatch_main_q as *const _ as *mut objc::runtime::Object,
+            std::ptr::null(),
+        );
+
+        let lib = ObjectPointer(msg_send![self.0, newLibraryWithData:dispatch_data error:&mut err]);
+        dispatch_release(dispatch_data);
+
+        if !err.is_null() {
+            let info = ObjectPointer(msg_send![err, localizedDescription]);
+            let bytes: *const u8 = msg_send![info, UTF8String];
+            let len: u64 = msg_send![info, length];
+            let bytes = std::slice::from_raw_parts(bytes, len as usize);
+            let st = std::str::from_utf8(bytes).unwrap();
+
+            if lib.0.is_null() {
+                Error::Error(st)
+            } else {
+                Error::Warn(MTLLibrary::from_ptr(lib), st)
+            }
+        } else {
+            Error::None(MTLLibrary::from_ptr(lib))
+        }
     }
 }
 

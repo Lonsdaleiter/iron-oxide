@@ -5,13 +5,35 @@ use std::ops::Deref;
 
 mod commandqueue;
 mod device;
+mod library;
 mod util;
 pub use commandqueue::*;
 pub use device::*;
+pub use library::*;
 pub use util::*;
+use log::Level;
 
 mod import_macros {
     pub use objc::{class, msg_send, sel, sel_impl};
+}
+
+pub enum Error<'a, T> {
+    None(T),
+    Warn(T, &'a str),
+    Error(&'a str),
+}
+
+impl<'a, T> Error<'a, T> {
+    pub fn unwrap(self) -> T {
+        match self {
+            Error::None(obj) => obj,
+            Error::Warn(obj, msg) => {
+                log::log!(Level::Warn, "{}", msg);
+                obj
+            },
+            Error::Error(msg) => panic!("{}", msg),
+        }
+    }
 }
 
 #[derive(Copy, Clone)]

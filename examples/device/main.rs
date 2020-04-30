@@ -65,6 +65,7 @@ unsafe fn execute() {
     );
 
     let _queue = device.new_command_queue();
+    let _library = device.new_library_with_data(&[0, 0, 0, 0]);
 }
 
 fn main() {

@@ -1,5 +1,5 @@
 use crate::import_macros::*;
-use crate::{handle, MTLSamplePosition, MTLSize, NSUInteger, Object, ObjectPointer};
+use crate::{handle, MTLSamplePosition, MTLSize, NSUInteger, Object, ObjectPointer, MTLCommandQueue};
 
 mod externs {
     use crate::ObjectPointer;
@@ -69,7 +69,8 @@ pub struct MTLDevice(ObjectPointer);
 handle!(MTLDevice);
 
 impl MTLDevice {
-    /// Returns the [name](https://developer.apple.com/documentation/metal/mtldevice/1433359-name?language=objc) property of the device.
+    /// Returns the [name](https://developer.apple.com/documentation/metal/mtldevice/1433359-name?language=objc)
+    /// property of the device.
     pub unsafe fn get_name(&self) -> &str {
         let string = ObjectPointer(msg_send![self.get_ptr(), name]);
         let bytes: *const u8 = msg_send![string, UTF8String];
@@ -77,52 +78,79 @@ impl MTLDevice {
         let bytes = std::slice::from_raw_parts(bytes, len as usize);
         std::str::from_utf8(bytes).unwrap()
     }
-    /// Returns the [headless](https://developer.apple.com/documentation/metal/mtldevice/1433377-headless?language=objc) property of the device.
+    /// Returns the [headless](https://developer.apple.com/documentation/metal/mtldevice/1433377-headless?language=objc)
+    /// property of the device.
     ///
     /// This property reflects whether the GPU is attached to a particular display.
     pub unsafe fn is_headless(&self) -> bool {
         msg_send![self.get_ptr(), isHeadless]
     }
-    /// Returns the [lowPower](https://developer.apple.com/documentation/metal/mtldevice/1433409-lowpower?language=objc) property of the device.
+    /// Returns the [lowPower](https://developer.apple.com/documentation/metal/mtldevice/1433409-lowpower?language=objc)
+    /// property of the device.
     ///
     /// If the GPU is integrated, this returns true. If it is discrete, it returns false.
     pub unsafe fn is_low_power(&self) -> bool {
         msg_send![self.get_ptr(), isLowPower]
     }
-    /// Returns the [removable](https://developer.apple.com/documentation/metal/mtldevice/2889851-removable?language=objc) property of the device.
+    /// Returns the [removable](https://developer.apple.com/documentation/metal/mtldevice/2889851-removable?language=objc)
+    /// property of the device.
     pub unsafe fn is_removable(&self) -> bool {
         msg_send![self.get_ptr(), isRemovable]
     }
-    /// Returns the [registryID](https://developer.apple.com/documentation/metal/mtldevice/2915737-registryid?language=objc) property of the device.
+    /// Returns the [registryID](https://developer.apple.com/documentation/metal/mtldevice/2915737-registryid?language=objc)
+    /// property of the device.
     pub unsafe fn get_registry_id(&self) -> u64 {
         msg_send![self.get_ptr(), registryID]
     }
-    /// Returns the [recommendedMaxWorkingSetSize](https://developer.apple.com/documentation/metal/mtldevice/2369280-recommendedmaxworkingsetsize?language=objc) property of the device.
+    /// Returns the [recommendedMaxWorkingSetSize](https://developer.apple.com/documentation/metal/mtldevice/2369280-recommendedmaxworkingsetsize?language=objc)
+    /// property of the device.
     pub unsafe fn get_recommended_max_working_set_size(&self) -> u64 {
         msg_send![self.get_ptr(), recommendedMaxWorkingSetSize]
     }
-    /// Returns the [currentAllocatedSize](https://developer.apple.com/documentation/metal/mtldevice/2915745-currentallocatedsize?language=objc) property of the device.
+    /// Returns the [currentAllocatedSize](https://developer.apple.com/documentation/metal/mtldevice/2915745-currentallocatedsize?language=objc)
+    /// property of the device.
     pub unsafe fn get_current_allocated_size(&self) -> NSUInteger {
         msg_send![self.get_ptr(), currentAllocatedSize]
     }
-    /// Returns the [maxThreadgroupMemoryLength](https://developer.apple.com/documentation/metal/mtldevice/2877429-maxthreadgroupmemorylength?language=objc) property of the device.
+    /// Returns the [maxThreadgroupMemoryLength](https://developer.apple.com/documentation/metal/mtldevice/2877429-maxthreadgroupmemorylength?language=objc)
+    /// property of the device.
     pub unsafe fn get_max_threadgroup_memory_length(&self) -> NSUInteger {
         msg_send![self.get_ptr(), maxThreadgroupMemoryLength]
     }
-    /// Returns the [maxThreadsPerThreadgroup](https://developer.apple.com/documentation/metal/mtldevice/1433393-maxthreadsperthreadgroup?language=objc) property of the device.
+    /// Returns the [maxThreadsPerThreadgroup](https://developer.apple.com/documentation/metal/mtldevice/1433393-maxthreadsperthreadgroup?language=objc)
+    /// property of the device.
     pub unsafe fn get_max_threads_per_threadgroup(&self) -> MTLSize {
         msg_send![self.get_ptr(), maxThreadsPerThreadgroup]
     }
-    /// Returns the [programmableSamplePositionsSupported](https://developer.apple.com/documentation/metal/mtldevice/2866117-programmablesamplepositionssuppo?language=objc) property of the device.
-    pub unsafe fn programmable_sample_positions_supported(&self) -> bool {
+    /// Returns the [programmableSamplePositionsSupported](https://developer.apple.com/documentation/metal/mtldevice/2866117-programmablesamplepositionssuppo?language=objc)
+    /// property of the device.
+    pub unsafe fn are_programmable_sample_positions_supported(&self) -> bool {
         msg_send![self.get_ptr(), areProgrammableSamplePositionsSupported]
     }
-    /// Calls the [getDefaultSamplePositions](https://developer.apple.com/documentation/metal/mtldevice/2866120-getdefaultsamplepositions?language=objc) method but instead
-    /// of taking a mutable pointer to an `MTLSamplePosition`, it returns an `MTLSamplePosition`.
+    /// Calls the [getDefaultSamplePositions](https://developer.apple.com/documentation/metal/mtldevice/2866120-getdefaultsamplepositions?language=objc)
+    /// method.
     pub unsafe fn get_default_sample_positions(&self, count: NSUInteger) -> MTLSamplePosition {
         let mut pos = MTLSamplePosition { x: 0.0, y: 0.0 };
         let _: () = msg_send![self.get_ptr(), getDefaultSamplePositions: &mut pos count: count];
         pos
+    }
+    /// Returns the [rasterOrderGroupsSupported](https://developer.apple.com/documentation/metal/mtldevice/2887285-rasterordergroupssupported?language=objc)
+    /// property of the device.
+    pub unsafe fn are_raster_order_groups_supported(&self) -> bool {
+        msg_send![self.get_ptr(), areRasterOrderGroupsSupported]
+    }
+    /// Returns the [depth24Stencil8PixelFormatSupported](https://developer.apple.com/documentation/metal/mtldevice/1433371-depth24stencil8pixelformatsuppor?language=objc)
+    /// property of the device.
+    pub unsafe fn is_d24_s8_pixel_format_supported(&self) -> bool {
+        msg_send![self.get_ptr(), isDepth24Stencil8PixelFormatSupported]
+    }
+    /// Creates a new [MTLCommandQueue](https://developer.apple.com/documentation/metal/mtlcommandqueue?language=objc)
+    /// via [this method](https://developer.apple.com/documentation/metal/mtldevice/1433388-newcommandqueue?language=objc).
+    pub unsafe fn new_command_queue(&self) -> MTLCommandQueue {
+        MTLCommandQueue::from_ptr({
+            let k = ObjectPointer(msg_send![self.get_ptr(), newCommandQueue]);
+            msg_send![k, retain]
+        })
     }
 }
 

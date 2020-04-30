@@ -40,7 +40,7 @@ unsafe fn execute() {
     );
     println!(
         "Programmable positions {} supported",
-        match device.programmable_sample_positions_supported() {
+        match device.are_programmable_sample_positions_supported() {
             true => "are",
             false => "are not",
         }
@@ -49,6 +49,22 @@ unsafe fn execute() {
         "Default sample positions: {}",
         device.get_default_sample_positions(1)
     );
+    println!(
+        "Raster order groups {} supported",
+        match device.are_raster_order_groups_supported() {
+            true => "are",
+            false => "are not",
+        }
+    );
+    println!(
+        "D24S8 {} supported",
+        match device.is_d24_s8_pixel_format_supported() {
+            true => "is",
+            false => "is not",
+        }
+    );
+
+    let _queue = device.new_command_queue();
 }
 
 fn main() {

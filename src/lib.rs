@@ -3,8 +3,10 @@
 use objc::Message;
 use std::ops::Deref;
 
+mod commandqueue;
 mod device;
 mod util;
+pub use commandqueue::*;
 pub use device::*;
 pub use util::*;
 
@@ -29,7 +31,7 @@ unsafe impl Message for ObjectPointer {}
 /// # Requirements
 ///
 /// There *must* be for an implementation of Object an implementation of Clone and Drop using
-/// the [handle!] macro. See [handle!] for more information about what these implementations do.
+/// the `handle!` macro. See `handle!` for more information about what these implementations do.
 pub trait Object: Clone + Drop {
     /// Constructs an object from the provided pointer.
     ///
@@ -44,7 +46,7 @@ pub trait Object: Clone + Drop {
     ///
     /// # Requirements
     ///
-    /// Must be a valid pointer to an Objective C object. If it is not, the [handle!] implementation
+    /// Must be a valid pointer to an Objective C object. If it is not, the `handle!` implementation
     /// will cause a crash on drop or clone.
     fn get_ptr(&self) -> ObjectPointer;
 }

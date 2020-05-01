@@ -15,10 +15,12 @@ use std::ops::Deref;
 mod commandqueue;
 mod device;
 mod library;
+mod pipeline;
 mod util;
 pub use commandqueue::*;
 pub use device::*;
 pub use library::*;
+pub use pipeline::*;
 pub use util::*;
 
 pub mod import_macros {

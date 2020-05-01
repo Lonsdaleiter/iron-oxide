@@ -141,7 +141,7 @@ pub enum MTLLanguageVersion {
 
 /// Settings for the compilation of an MSL shader library.
 ///
-/// Will send to its pointer only messages specified in theMTLCompileOptions interface linked
+/// Will send to its pointer only messages specified in the MTLCompileOptions interface linked
 /// [here](https://developer.apple.com/documentation/metal/mtlcompileoptions?language=objc).
 pub struct MTLCompileOptions(ObjectPointer);
 handle!(MTLCompileOptions);
@@ -159,20 +159,10 @@ impl MTLCompileOptions {
     pub unsafe fn set_fast_math_enabled(&self, enabled: bool) {
         msg_send![self.get_ptr(), setFastMathEnabled: enabled]
     }
-    /// Gets the [fastMathEnabled](https://developer.apple.com/documentation/metal/mtlcompileoptions/1515914-fastmathenabled?language=objc)
-    /// property.
-    pub unsafe fn is_fast_math_enabled(&self) -> bool {
-        msg_send![self.get_ptr(), fastMathEnabled]
-    }
     /// Sets the [languageVersion](https://developer.apple.com/documentation/metal/mtlcompileoptions/1515494-languageversion?language=objc)
     /// propery.
     pub unsafe fn set_language_version(&self, version: MTLLanguageVersion) {
         msg_send![self.get_ptr(), setLanguageVersion: version]
-    }
-    /// Gets the [languageVersion](https://developer.apple.com/documentation/metal/mtlcompileoptions/1515494-languageversion?language=objc)
-    /// propery.
-    pub unsafe fn get_language_version(&self) -> MTLLanguageVersion {
-        msg_send![self.get_ptr(), languageVersion]
     }
 }
 

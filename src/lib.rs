@@ -79,7 +79,7 @@ pub trait Array<T>: Object {
 ///
 /// # Requirements
 ///
-/// There *must* be for an implementation of Object an implementation of Clone and Drop using
+/// There *must* be for an implementation of Object an implementation of Drop using
 /// the `handle!` macro. See `handle!` for more information about what these implementations do.
 pub trait Object: Drop {
     /// Constructs an object from the provided pointer.

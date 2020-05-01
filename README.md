@@ -11,3 +11,4 @@ Backfill List
 - Preprocesser macros for library files
 - Asynchronous methods callously ditched for synchronous ones
 - Tile shaders / tile render pipeline
+- MTLVertexDescriptor

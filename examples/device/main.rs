@@ -106,8 +106,6 @@ unsafe fn execute() {
     let desc = MTLRenderPipelineDescriptor::new();
     desc.set_vertex_function(&vertex);
     desc.set_fragment_function(&fragment);
-
-    debug(&desc);
 }
 
 fn main() {

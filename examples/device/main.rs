@@ -5,60 +5,74 @@ unsafe fn execute() {
 
     let devices = MTLCopyAllDevices();
     let device = devices.into_iter().find_map(|d| Some(d)).unwrap();
-    println!("Name: {}", device.get_name());
-    println!(
+    log::log!(log::Level::Info, "Name: {}", device.get_name());
+    log::log!(
+        log::Level::Info,
         "{} headless",
         match device.is_headless() {
             true => "Is",
             false => "Is not",
         }
     );
-    println!(
+    log::log!(
+        log::Level::Info,
         "{} low powered",
         match device.is_low_power() {
             true => "Is",
             false => "Is not",
         }
     );
-    println!(
+    log::log!(
+        log::Level::Info,
         "{} removable",
         match device.is_removable() {
             true => "Is",
             false => "Is not",
         }
     );
-    println!("Allocated size: {}", device.get_current_allocated_size());
-    println!(
+    log::log!(
+        log::Level::Info,
+        "Allocated size: {}",
+        device.get_current_allocated_size()
+    );
+    log::log!(
+        log::Level::Info,
         "Threadgroup memory length: {}",
         device.get_max_threadgroup_memory_length()
     );
-    println!(
+    log::log!(
+        log::Level::Info,
         "Max threads per threadgroup: {}",
         device.get_max_threads_per_threadgroup()
     );
-    println!(
+    log::log!(
+        log::Level::Info,
         "Max working set size: {}",
         device.get_recommended_max_working_set_size()
     );
-    println!(
+    log::log!(
+        log::Level::Info,
         "Programmable positions {} supported",
         match device.are_programmable_sample_positions_supported() {
             true => "are",
             false => "are not",
         }
     );
-    println!(
+    log::log!(
+        log::Level::Info,
         "Default sample positions: {}",
         device.get_default_sample_positions(1)
     );
-    println!(
+    log::log!(
+        log::Level::Info,
         "Raster order groups {} supported",
         match device.are_raster_order_groups_supported() {
             true => "are",
             false => "are not",
         }
     );
-    println!(
+    log::log!(
+        log::Level::Info,
         "D24S8 {} supported",
         match device.is_d24_s8_pixel_format_supported() {
             true => "is",
@@ -71,9 +85,10 @@ unsafe fn execute() {
     let library = device
         .new_library_with_data(include_bytes!("quad.metallib"))
         .unwrap();
-    println!("{:?}", library.get_function_names());
+    log::log!(log::Level::Info, "{:?}", library.get_function_names());
     let vertex = library.new_function_with_name("vertex_shader").unwrap();
-    println!(
+    log::log!(
+        log::Level::Info,
         "Vertex function is of type: {}",
         match vertex.get_function_type() {
             MTLFunctionType::Vertex => "vertex... duh",
@@ -81,7 +96,11 @@ unsafe fn execute() {
             MTLFunctionType::Kernel => "kernel... ???",
         }
     );
-    println!("Vertex function is called: {}", vertex.get_name());
+    log::log!(
+        log::Level::Info,
+        "Vertex function is called: {}",
+        vertex.get_name()
+    );
     let fragment = library.new_function_with_name("fragment_shader").unwrap();
 
     let desc = MTLRenderPipelineDescriptor::new();

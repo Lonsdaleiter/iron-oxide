@@ -1,5 +1,5 @@
 use crate::import_macros::*;
-use crate::{ObjectPointer, handle, Object, MTLFunction};
+use crate::{handle, MTLFunction, Object, ObjectPointer};
 
 /// Settings for the creation of an MTLRenderPipelineState.
 ///
@@ -31,8 +31,10 @@ impl MTLRenderPipelineDescriptor {
 }
 
 impl Object for MTLRenderPipelineDescriptor {
-    unsafe fn from_ptr(ptr: ObjectPointer) -> Self where
-        Self: Sized {
+    unsafe fn from_ptr(ptr: ObjectPointer) -> Self
+    where
+        Self: Sized,
+    {
         MTLRenderPipelineDescriptor(ptr)
     }
 

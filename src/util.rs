@@ -7,7 +7,11 @@ pub unsafe fn debug<T: Object>(obj: &T) {
 
     let count: NSUInteger = msg_send![obj.get_ptr(), retainCount];
 
-    let level = if count != 1 {log::Level::Warn} else {log::Level::Info};
+    let level = if count != 1 {
+        log::Level::Warn
+    } else {
+        log::Level::Info
+    };
     log::log!(level, "Retain count = {}", count);
 }
 

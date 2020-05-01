@@ -8,7 +8,7 @@ use std::fmt::{Display, Formatter};
 /// Assumes that the implementation of `get_ptr` given by `T` unconditionally
 /// returns a pointer to a valid Objective-C object inheriting from `NSObject`.
 pub unsafe fn debug<T: Object>(obj: &T) {
-    use crate::import_macros::*;
+    use crate::import_objc_macros::*;
 
     let count: NSUInteger = msg_send![obj.get_ptr(), retainCount];
     let description = ObjectPointer(msg_send![obj.get_ptr(), description]);

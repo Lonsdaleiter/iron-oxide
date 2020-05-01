@@ -1,4 +1,4 @@
-use crate::import_macros::*;
+use crate::import_objc_macros::*;
 use crate::{handle, DeviceCreated, MTLDevice, NSUInteger, Object, ObjectPointer};
 
 /// A collection of MSL shader functions.

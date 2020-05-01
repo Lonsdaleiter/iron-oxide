@@ -1,4 +1,4 @@
-use crate::import_macros::*;
+use crate::import_objc_macros::*;
 use crate::{handle, MTLFunction, Object, ObjectPointer};
 
 /// Describes how buffers at specified indices are mapped to attributes at specified indices.

@@ -1,4 +1,4 @@
-use crate::import_macros::*;
+use crate::import_objc_macros::*;
 use crate::{
     handle, Error, MTLCommandQueue, MTLCompileOptions, MTLLibrary, MTLSamplePosition, MTLSize,
     NSUInteger, Object, ObjectPointer,

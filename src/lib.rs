@@ -25,7 +25,7 @@ pub use pipeline::*;
 pub use resource::*;
 pub use util::*;
 
-pub mod import_macros {
+pub mod import_objc_macros {
     pub use objc::{class, msg_send, sel, sel_impl};
 }
 
@@ -112,7 +112,7 @@ macro_rules! handle {
     ($name:ident) => {
         impl Drop for $name {
             fn drop(&mut self) {
-                use crate::import_macros::*;
+                use crate::import_objc_macros::*;
                 unsafe {
                     let _: () = msg_send![self.get_ptr(), release];
                 }

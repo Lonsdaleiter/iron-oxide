@@ -1,5 +1,15 @@
-use crate::NSUInteger;
+use crate::{NSUInteger, Object};
 use std::fmt::{Display, Formatter};
+
+/// Takes an implementor of `Object` and logs some information about it.
+pub unsafe fn debug<T: Object>(obj: &T) {
+    use crate::import_macros::*;
+
+    let count: NSUInteger = msg_send![obj.get_ptr(), retainCount];
+
+    let level = if count != 1 {log::Level::Warn} else {log::Level::Info};
+    log::log!(level, "Retain count = {}", count);
+}
 
 #[repr(C)]
 pub struct MTLSize {

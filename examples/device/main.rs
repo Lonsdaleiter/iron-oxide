@@ -1,6 +1,8 @@
 use iron_oxide::*;
 
 unsafe fn execute() {
+    simple_logger::init().unwrap();
+
     let devices = MTLCopyAllDevices();
     let device = devices.into_iter().find_map(|d| Some(d)).unwrap();
     println!("Name: {}", device.get_name());
@@ -65,7 +67,7 @@ unsafe fn execute() {
     );
 
     let _queue = device.new_command_queue();
-    let _l = device.new_library_with_source(include_str!("quad.metal"), MTLCompileOptions::new());
+    let _l = device.new_library_with_source(include_str!("quad.metal"), &MTLCompileOptions::new());
     let library = device
         .new_library_with_data(include_bytes!("quad.metallib"))
         .unwrap();
@@ -80,7 +82,13 @@ unsafe fn execute() {
         }
     );
     println!("Vertex function is called: {}", vertex.get_name());
-    let _fragment = library.new_function_with_name("fragment_shader").unwrap();
+    let fragment = library.new_function_with_name("fragment_shader").unwrap();
+
+    let desc = MTLRenderPipelineDescriptor::new();
+    desc.set_vertex_function(&vertex);
+    desc.set_fragment_function(&fragment);
+
+    debug(&desc);
 }
 
 fn main() {

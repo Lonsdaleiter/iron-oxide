@@ -226,7 +226,7 @@ impl MTLDevice {
     pub unsafe fn new_library_with_source(
         &self,
         source: &str,
-        options: MTLCompileOptions,
+        options: &MTLCompileOptions,
     ) -> Error<MTLLibrary> {
         let cls = class!(NSString);
         let bytes = source.as_ptr();

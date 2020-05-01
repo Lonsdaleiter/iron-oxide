@@ -18,8 +18,15 @@ impl MTLRenderPipelineDescriptor {
     }
     /// Sets the [vertexFunction](https://developer.apple.com/documentation/metal/mtlrenderpipelinedescriptor/1514679-vertexfunction?language=objc)
     /// attribute of the descriptor.
-    pub unsafe fn set_vertex_function(&self, function: MTLFunction) {
+    ///
+    /// *Must* be set.
+    pub unsafe fn set_vertex_function(&self, function: &MTLFunction) {
         msg_send![self.get_ptr(), setVertexFunction:function.get_ptr()]
+    }
+    /// Sets the [fragmentFunction](https://developer.apple.com/documentation/metal/mtlrenderpipelinedescriptor/1514600-fragmentfunction?language=objc)
+    /// attribute of the descriptor.
+    pub unsafe fn set_fragment_function(&self, function: &MTLFunction) {
+        msg_send![self.get_ptr(), setFragmentFunction:function.get_ptr()]
     }
 }
 

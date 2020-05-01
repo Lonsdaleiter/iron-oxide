@@ -8,3 +8,4 @@ Backfill List
 - MTLDevice Mojave / Catalina behavior
 - MTLFunctionConstantValues
 - MTLFunction input behavior
+- Preprocesser macros for library files

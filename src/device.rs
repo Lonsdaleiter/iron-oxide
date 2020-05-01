@@ -1,7 +1,7 @@
 use crate::import_macros::*;
 use crate::{
-    handle, Error, MTLCommandQueue, MTLLibrary, MTLSamplePosition, MTLSize, NSUInteger, Object,
-    ObjectPointer,
+    handle, Error, MTLCommandQueue, MTLCompileOptions, MTLLibrary, MTLSamplePosition, MTLSize,
+    NSUInteger, Object, ObjectPointer,
 };
 use std::os::raw::c_void;
 
@@ -42,7 +42,7 @@ mod externs {
 }
 
 #[allow(non_snake_case)]
-/// Creates a MTLDevice representing your system's default GPU. Analogous to [this](https://developer.apple.com/documentation/metal/1433401-mtlcreatesystemdefaultdevice?language=objc).
+/// Creates an MTLDevice representing your system's default GPU. Analogous to [this](https://developer.apple.com/documentation/metal/1433401-mtlcreatesystemdefaultdevice?language=objc).
 pub unsafe fn MTLCreateSystemDefaultDevice() -> MTLDevice {
     MTLDevice::from_ptr({
         let obj = externs::MTLCreateSystemDefaultDevice();
@@ -74,9 +74,11 @@ pub unsafe fn MTLCopyAllDevices() -> Vec<MTLDevice> {
 
 #[allow(non_snake_case)]
 /// Creates the MTLDevice driving the display of the given id. Analogous to [this](https://developer.apple.com/documentation/coregraphics/1493900-cgdirectdisplaycopycurrentmetald?language=objc).
-pub unsafe fn CGDirectDisplayCopyCurrentMetalDevice(monitor_id: u32) -> MTLDevice {
+///
+/// If the `display_id` provided is not a valid identifier, the behavior is undefined.
+pub unsafe fn CGDirectDisplayCopyCurrentMetalDevice(display_id: u32) -> MTLDevice {
     MTLDevice::from_ptr({
-        let obj = externs::CGDirectDisplayCopyCurrentMetalDevice(monitor_id);
+        let obj = externs::CGDirectDisplayCopyCurrentMetalDevice(display_id);
         msg_send![obj, retain]
     })
 }
@@ -214,6 +216,49 @@ impl MTLDevice {
                 Error::Error(st)
             } else {
                 Error::Warn(MTLLibrary::from_ptr(lib), st)
+            }
+        } else {
+            Error::None(MTLLibrary::from_ptr(lib))
+        }
+    }
+    /// Creates a new [MTLLibrary](https://developer.apple.com/documentation/metal/mtllibrary?language=objc)
+    /// via [this method](https://developer.apple.com/documentation/metal/mtldevice/1433431-newlibrarywithsource?language=objc).
+    pub unsafe fn new_library_with_source(
+        &self,
+        source: &str,
+        options: MTLCompileOptions,
+    ) -> Error<MTLLibrary> {
+        let cls = class!(NSString);
+        let bytes = source.as_ptr();
+        let st = ObjectPointer(msg_send![cls, alloc]);
+        let st = ObjectPointer(msg_send![
+           st,
+           initWithBytes:bytes
+           length:source.len()
+           encoding:4 // UTF-8
+        ]);
+        let mut error: *mut objc::runtime::Object = std::ptr::null_mut();
+
+        let lib = ObjectPointer(
+            msg_send![
+                self.get_ptr(),
+                newLibraryWithSource:st
+                options:options.get_ptr()
+                error:&mut error
+            ],
+        );
+
+        if !error.is_null() {
+            let info = ObjectPointer(msg_send![error, localizedDescription]);
+            let bytes: *const u8 = msg_send![info, UTF8String];
+            let len: NSUInteger = msg_send![info, length];
+            let bytes = std::slice::from_raw_parts(bytes, len as usize);
+            let st = std::str::from_utf8(bytes).unwrap();
+
+            if !lib.0.is_null() {
+                Error::Warn(MTLLibrary::from_ptr(lib), st)
+            } else {
+                Error::Error(st)
             }
         } else {
             Error::None(MTLLibrary::from_ptr(lib))

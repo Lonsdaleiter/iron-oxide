@@ -65,16 +65,20 @@ unsafe fn execute() {
     );
 
     let _queue = device.new_command_queue();
+    let _l = device.new_library_with_source(include_str!("quad.metal"), MTLCompileOptions::new());
     let library = device
         .new_library_with_data(include_bytes!("quad.metallib"))
         .unwrap();
     println!("{:?}", library.get_function_names());
     let vertex = library.new_function_with_name("vertex_shader").unwrap();
-    println!("Vertex function is of type: {}", match vertex.get_function_type() {
-        MTLFunctionType::Vertex => "vertex... duh",
-        MTLFunctionType::Fragment => "fragment",
-        MTLFunctionType::Kernel => "kernel",
-    });
+    println!(
+        "Vertex function is of type: {}",
+        match vertex.get_function_type() {
+            MTLFunctionType::Vertex => "vertex... duh",
+            MTLFunctionType::Fragment => "fragment",
+            MTLFunctionType::Kernel => "kernel",
+        }
+    );
     println!("Vertex function is called: {}", vertex.get_name());
     let _fragment = library.new_function_with_name("fragment_shader").unwrap();
 }

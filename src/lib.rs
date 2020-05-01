@@ -69,8 +69,6 @@ unsafe impl Message for ObjectPointer {}
 pub trait Object: Clone + Drop {
     /// Constructs an object from the provided pointer.
     ///
-    /// # Safety
-    ///
     /// The pointer provided *must* be a valid pointer to an Objective C object which can
     /// accept the messages which the used implementation of Object will send.
     unsafe fn from_ptr(ptr: ObjectPointer) -> Self
@@ -78,9 +76,7 @@ pub trait Object: Clone + Drop {
         Self: Sized;
     /// Returns the underlying pointer.
     ///
-    /// # Requirements
-    ///
-    /// *Must* be a valid pointer to an Objective C object.
+    /// The returned pointer *must* be a valid pointer to an Objective C object.
     fn get_ptr(&self) -> ObjectPointer;
 }
 

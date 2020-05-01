@@ -32,14 +32,14 @@ impl MTLLibrary {
     pub unsafe fn new_function_with_name(&self, name: &str) -> Option<MTLFunction> {
         let cls = class!(NSString);
         let bytes = name.as_ptr();
-        let st: *mut objc::runtime::Object = msg_send![cls, alloc];
-        let st: *mut objc::runtime::Object = msg_send![
+        let st = ObjectPointer(msg_send![cls, alloc]);
+        let st = ObjectPointer(msg_send![
            st,
            initWithBytes:bytes
            length:name.len()
            encoding:4 // UTF-8
-        ];
-        let obj = ObjectPointer(msg_send![self.get_ptr(), newFunctionWithName:st]);
+        ]);
+        let obj = ObjectPointer(msg_send![self.get_ptr(), newFunctionWithName: st]);
         if obj.0.is_null() {
             None
         } else {
@@ -72,6 +72,8 @@ impl DeviceCreated for MTLLibrary {
 
 #[repr(u64)]
 /// The type of an MSL shader function.
+///
+/// Analogous to [this](https://developer.apple.com/documentation/metal/mtlfunctiontype?language=objc).
 pub enum MTLFunctionType {
     /// A vertex function for use in an `MTLRenderPipelineState`.
     Vertex = 1,
@@ -106,8 +108,10 @@ impl MTLFunction {
 }
 
 impl Object for MTLFunction {
-    unsafe fn from_ptr(ptr: ObjectPointer) -> Self where
-        Self: Sized {
+    unsafe fn from_ptr(ptr: ObjectPointer) -> Self
+    where
+        Self: Sized,
+    {
         MTLFunction(ptr)
     }
 
@@ -119,5 +123,68 @@ impl Object for MTLFunction {
 impl DeviceCreated for MTLFunction {
     unsafe fn get_device(&self) -> MTLDevice {
         MTLDevice::from_ptr(msg_send![self.get_ptr(), device])
+    }
+}
+
+#[repr(u64)]
+/// MSL versions.
+///
+/// Analogous to [this](https://developer.apple.com/documentation/metal/mtllanguageversion?language=objc).
+pub enum MTLLanguageVersion {
+    V10 = 1 << 16,
+    V11 = (1 << 16) + 1,
+    V12 = (1 << 16) + 2,
+    V20 = (2 << 16),
+    V21 = (2 << 16) + 1,
+    V22 = (2 << 16) + 2,
+}
+
+/// Settings for the compilation of an MSL shader library.
+///
+/// Will send to its pointer only messages specified in theMTLCompileOptions interface linked
+/// [here](https://developer.apple.com/documentation/metal/mtlcompileoptions?language=objc).
+pub struct MTLCompileOptions(ObjectPointer);
+handle!(MTLCompileOptions);
+
+impl MTLCompileOptions {
+    /// Creates a new MTLCompileOptions with standard allocation and initialization.
+    pub unsafe fn new() -> MTLCompileOptions {
+        MTLCompileOptions({
+            let c = class!(MTLCompileOptions);
+            msg_send![c, new]
+        })
+    }
+    /// Sets the [fastMathEnabled](https://developer.apple.com/documentation/metal/mtlcompileoptions/1515914-fastmathenabled?language=objc)
+    /// property.
+    pub unsafe fn set_fast_math_enabled(&self, enabled: bool) {
+        msg_send![self.get_ptr(), setFastMathEnabled: enabled]
+    }
+    /// Gets the [fastMathEnabled](https://developer.apple.com/documentation/metal/mtlcompileoptions/1515914-fastmathenabled?language=objc)
+    /// property.
+    pub unsafe fn is_fast_math_enabled(&self) -> bool {
+        msg_send![self.get_ptr(), fastMathEnabled]
+    }
+    /// Sets the [languageVersion](https://developer.apple.com/documentation/metal/mtlcompileoptions/1515494-languageversion?language=objc)
+    /// propery.
+    pub unsafe fn set_language_version(&self, version: MTLLanguageVersion) {
+        msg_send![self.get_ptr(), setLanguageVersion: version]
+    }
+    /// Gets the [languageVersion](https://developer.apple.com/documentation/metal/mtlcompileoptions/1515494-languageversion?language=objc)
+    /// propery.
+    pub unsafe fn get_language_version(&self) -> MTLLanguageVersion {
+        msg_send![self.get_ptr(), languageVersion]
+    }
+}
+
+impl Object for MTLCompileOptions {
+    unsafe fn from_ptr(ptr: ObjectPointer) -> Self
+    where
+        Self: Sized,
+    {
+        MTLCompileOptions(ptr)
+    }
+
+    fn get_ptr(&self) -> ObjectPointer {
+        self.0
     }
 }

@@ -274,6 +274,7 @@ impl Object for MTLDevice {
     }
 }
 
+/// Implemented on Objects which were created by and are bound to a particular MTLDevice.
 pub trait DeviceCreated: Object {
     /// Returns a reference to the device which created this object.
     unsafe fn get_device(&self) -> MTLDevice;

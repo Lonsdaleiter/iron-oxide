@@ -57,6 +57,7 @@ impl<'a, T> Error<'a, T> {
 
 #[derive(Copy, Clone)]
 #[repr(C)]
+/// A messageable wrapper around a pointer to an Objective-C object.
 pub struct ObjectPointer(pub *mut objc::runtime::Object);
 impl Deref for ObjectPointer {
     type Target = objc::runtime::Object;

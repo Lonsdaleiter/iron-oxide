@@ -75,8 +75,8 @@ unsafe fn execute() {
         "Vertex function is of type: {}",
         match vertex.get_function_type() {
             MTLFunctionType::Vertex => "vertex... duh",
-            MTLFunctionType::Fragment => "fragment",
-            MTLFunctionType::Kernel => "kernel",
+            MTLFunctionType::Fragment => "fragment... ???",
+            MTLFunctionType::Kernel => "kernel... ???",
         }
     );
     println!("Vertex function is called: {}", vertex.get_name());

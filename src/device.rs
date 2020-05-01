@@ -239,14 +239,12 @@ impl MTLDevice {
         ]);
         let mut error: *mut objc::runtime::Object = std::ptr::null_mut();
 
-        let lib = ObjectPointer(
-            msg_send![
-                self.get_ptr(),
-                newLibraryWithSource:st
-                options:options.get_ptr()
-                error:&mut error
-            ],
-        );
+        let lib = ObjectPointer(msg_send![
+            self.get_ptr(),
+            newLibraryWithSource:st
+            options:options.get_ptr()
+            error:&mut error
+        ]);
 
         if !error.is_null() {
             let info = ObjectPointer(msg_send![error, localizedDescription]);

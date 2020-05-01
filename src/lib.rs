@@ -4,7 +4,11 @@
 //! Not all of Metal's functionality is added. The pointer underlying a MTL(something) can
 //! be accessed with `get_ptr`, and messages can be sent to it with `objc`'s `msg_send!`, if
 //! necessary functionality isn't yet implemented. This is very unsafe.
+//!
+//! It is the responsibility of the user to not use methods or functions which do not exist in
+//! versions of macOS below what they support (specified in the linked Metal docs).
 
+use log::Level;
 use objc::Message;
 use std::ops::Deref;
 
@@ -15,10 +19,9 @@ mod util;
 pub use commandqueue::*;
 pub use device::*;
 pub use library::*;
-use log::Level;
 pub use util::*;
 
-mod import_macros {
+pub mod import_macros {
     pub use objc::{class, msg_send, sel, sel_impl};
 }
 

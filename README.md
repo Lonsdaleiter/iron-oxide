@@ -9,3 +9,5 @@ Backfill List
 - MTLFunctionConstantValues
 - MTLFunction input behavior
 - Preprocesser macros for library files
+- Asynchronous methods callously ditched for synchronous ones
+- Tile shaders

@@ -1,7 +1,7 @@
 use iron_oxide::*;
 
 unsafe fn execute() {
-    simple_logger::init().unwrap();
+    colog::init();
 
     let devices = MTLCopyAllDevices();
     let device = devices.into_iter().find_map(|d| Some(d)).unwrap();

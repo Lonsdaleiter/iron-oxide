@@ -13,4 +13,4 @@ log = "0.4.8"
 
 [dev-dependencies]
 winit = "0.22.1"
-simple_logger = "1.6.0"
+colog = "1.0.0"

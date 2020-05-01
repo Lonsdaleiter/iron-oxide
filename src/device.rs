@@ -274,7 +274,7 @@ impl Object for MTLDevice {
     }
 }
 
-pub trait DeviceCreated {
+pub trait DeviceCreated: Object {
     /// Returns a reference to the device which created this object.
     unsafe fn get_device(&self) -> MTLDevice;
 }

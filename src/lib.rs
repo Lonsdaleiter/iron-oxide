@@ -67,6 +67,14 @@ impl Deref for ObjectPointer {
 }
 unsafe impl Message for ObjectPointer {}
 
+/// Trait used for representing interfaces of the form MTL(something)Array.
+pub trait Array<T>: Object {
+    /// Returns the parameter found at the provided index.
+    fn get_object_at_indexed_subscript(&self, index: NSUInteger) -> T;
+    /// Sets the parameter at the provided index.
+    fn set_object_at_indexed_subscript(&self, index: NSUInteger, obj: T);
+}
+
 /// Represents an Objective C object.
 ///
 /// # Requirements

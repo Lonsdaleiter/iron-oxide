@@ -60,6 +60,11 @@ impl MTLRenderPipelineDescriptor {
     pub unsafe fn set_vertex_descriptor(&self, desc: &MTLVertexDescriptor) {
         msg_send![self.get_ptr(), setVertexDescriptor:desc.get_ptr()]
     }
+    /// Calls the [reset](https://developer.apple.com/documentation/metal/mtlrenderpipelinedescriptor/1514688-reset?language=objc)
+    /// instance method.
+    pub unsafe fn reset(&self) {
+        msg_send![self.get_ptr(), reset]
+    }
 }
 
 impl Object for MTLRenderPipelineDescriptor {

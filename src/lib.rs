@@ -6,7 +6,7 @@
 //! necessary functionality isn't yet implemented. This is very unsafe.
 //!
 //! It is the responsibility of the user to not use methods or functions which do not exist in
-//! versions of macOS below what they support (specified in the linked Metal docs).
+//! OS versions below what they support (specified in the linked Metal docs).
 
 use log::Level;
 use objc::Message;

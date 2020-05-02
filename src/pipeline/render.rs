@@ -176,6 +176,15 @@ impl Object for MTLRenderPipelineColorAttachmentDescriptor {
     }
 }
 
+#[repr(u64)]
+/// Primitive topologies. Not to be confused with MTLPrimitiveType.
+pub enum MTLPrimitiveTopologyClass {
+    Unspecified = 0,
+    Point = 1,
+    Line = 2,
+    Triangle = 3,
+}
+
 /// Settings for the creation of an MTLRenderPipelineState.
 ///
 /// Will send to its pointer only messages specified in the MTLRenderPipelineDescriptor interface
@@ -252,6 +261,13 @@ impl MTLRenderPipelineDescriptor {
     /// attribute of the descriptor.
     pub unsafe fn set_rasterization_enabled(&self, enabled: bool) {
         msg_send![self.get_ptr(), setRasteriationEnabled:enabled]
+    }
+    /// Sets the [inputPrimitiveTopology](https://developer.apple.com/documentation/metal/mtlrenderpipelinedescriptor/1514684-inputprimitivetopology?language=objc)
+    /// attribute of the descriptor.
+    ///
+    /// Irrelevant without layered rendering.
+    pub unsafe fn set_input_primitive_topology(&self, topology: MTLPrimitiveTopologyClass) {
+        msg_send![self.get_ptr(), setInputPrimitiveTopology:topology]
     }
 }
 

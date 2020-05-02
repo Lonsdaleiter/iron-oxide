@@ -19,12 +19,7 @@ pub unsafe fn debug<T: Object>(obj: &T) {
         std::str::from_utf8(bytes).unwrap()
     };
 
-    let level = if count != 1 {
-        log::Level::Warn
-    } else {
-        log::Level::Info
-    };
-    log::log!(level, "Retain count = {}", count);
+    log::log!(log::Level::Info, "Retain count = {}", count);
     log::log!(log::Level::Info, "Description = {}", description);
 }
 

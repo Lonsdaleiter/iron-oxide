@@ -1,7 +1,8 @@
 use crate::import_objc_macros::*;
 use crate::{
-    handle, Error, MTLCommandQueue, MTLCompileOptions, MTLLibrary, MTLRenderPipelineDescriptor,
-    MTLRenderPipelineState, MTLSamplePosition, MTLSize, NSUInteger, Object, ObjectPointer,
+    handle, Error, MTLCommandQueue, MTLCompileOptions, MTLComputePipelineState, MTLFunction,
+    MTLLibrary, MTLRenderPipelineDescriptor, MTLRenderPipelineState, MTLSamplePosition, MTLSize,
+    NSUInteger, Object, ObjectPointer,
 };
 use std::os::raw::c_void;
 
@@ -287,6 +288,34 @@ impl MTLDevice {
                 Error::Error(st)
             } else {
                 Error::Warn(MTLRenderPipelineState::from_ptr(b), st)
+            }
+        }
+    }
+    /// Creates a new [MTLComputePipelineState](https://developer.apple.com/documentation/metal/mtlcomputepipelinestate?language=objc)
+    /// via [this method](https://developer.apple.com/documentation/metal/mtldevice/1433395-newcomputepipelinestatewithfunct?language=objc).
+    pub unsafe fn new_compute_pipeline_state_with_function(
+        &self,
+        function: MTLFunction,
+    ) -> Error<MTLComputePipelineState> {
+        let mut err: *mut objc::runtime::Object = std::ptr::null_mut();
+        let b = ObjectPointer(msg_send![
+            self.get_ptr(),
+            newComputePipelineStateWithFunction:function.get_ptr()
+            error:&mut err
+        ]);
+        if err.is_null() {
+            Error::None(MTLComputePipelineState::from_ptr(b))
+        } else {
+            let info = ObjectPointer(msg_send![err, localizedDescription]);
+            let bytes: *const u8 = msg_send![info, UTF8String];
+            let len: NSUInteger = msg_send![info, length];
+            let bytes = std::slice::from_raw_parts(bytes, len as usize);
+            let st = std::str::from_utf8(bytes).unwrap();
+
+            if b.0.is_null() {
+                Error::Error(st)
+            } else {
+                Error::Warn(MTLComputePipelineState::from_ptr(b), st)
             }
         }
     }

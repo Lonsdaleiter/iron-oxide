@@ -12,8 +12,9 @@ Backfill List
 - Asynchronous methods callously ditched for synchronous ones
 - Tile shaders / tile render pipeline
 - MTLVertexDescriptor
-- Buffer mutability in MTLRenderPipelineDescriptor
-- objectAtIndexedSubscript
-- render pipeline tessellation stage configuration
-- render pipeline indirect command buffer + vertex amplification
-- render pipeline state behavior
+- Buffer mutability checks
+- Render pipeline tessellation stage configuration
+- Render pipeline indirect command buffer + vertex amplification
+- Render pipeline state behavior
+- Compute pipeline state behavior
+- Compute pipeline descriptor

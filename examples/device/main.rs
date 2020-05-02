@@ -119,7 +119,9 @@ unsafe fn execute() {
         debug(&primary_color_attachment);
         primary_color_attachment
     });
-    let render_pipeline = device.new_render_pipeline_state_with_descriptor(&desc).unwrap();
+    let render_pipeline = device
+        .new_render_pipeline_state_with_descriptor(&desc)
+        .unwrap();
     debug(&render_pipeline);
 }
 

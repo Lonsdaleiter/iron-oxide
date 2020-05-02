@@ -14,18 +14,16 @@ use std::ops::Deref;
 
 mod commandqueue;
 mod device;
-mod enums;
 mod library;
 mod pipeline;
 mod resource;
-mod util;
+mod misc;
 pub use commandqueue::*;
 pub use device::*;
-pub use enums::*;
 pub use library::*;
 pub use pipeline::*;
 pub use resource::*;
-pub use util::*;
+pub use misc::*;
 
 pub mod import_objc_macros {
     pub use objc::{class, msg_send, sel, sel_impl};

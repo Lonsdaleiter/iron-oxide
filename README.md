@@ -6,6 +6,7 @@ Unsafe Rusty [Metal](https://developer.apple.com/documentation/metal?language=ob
 Backfill List
 -
 - MTLDevice Mojave / Catalina behavior
+- Fence + event stuff
 - MTLFunctionConstantValues
 - MTLFunction input behavior
 - Preprocesser macros for library files
@@ -18,3 +19,4 @@ Backfill List
 - Render pipeline state behavior
 - Compute pipeline state behavior
 - Compute pipeline descriptor
+- Heaps

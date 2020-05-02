@@ -1,6 +1,9 @@
 use crate::{Object, DeviceCreated, NSUInteger};
 use crate::import_objc_macros::*;
 
+mod buffer;
+pub use buffer::*;
+
 #[repr(u64)]
 /// Options for CPU cache mode defining the CPU mapping of the resource.
 ///

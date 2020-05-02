@@ -84,7 +84,7 @@ pub unsafe fn CGDirectDisplayCopyCurrentMetalDevice(display_id: u32) -> MTLDevic
     })
 }
 
-/// Represents a physical device, or GPU.
+/// A physical device, or GPU.
 ///
 /// Will send to its pointer only the messages specified in the MTLDevice protocol
 /// linked [here](https://developer.apple.com/documentation/metal/mtldevice?language=objc).

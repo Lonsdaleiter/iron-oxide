@@ -19,4 +19,6 @@ Backfill List
 - [ ] Render pipeline state behavior
 - [ ] Compute pipeline state behavior
 - [ ] Compute pipeline descriptor
+- [ ] Hazard tracking mode
+- [ ] Resource mode
 - [ ] Heaps

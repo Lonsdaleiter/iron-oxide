@@ -1,4 +1,4 @@
-use crate::{Object, DeviceCreated};
+use crate::{Object, DeviceCreated, NSUInteger};
 use crate::import_objc_macros::*;
 
 #[repr(u64)]
@@ -26,6 +26,21 @@ pub enum MTLStorageMode {
     Memoryless = 3,
 }
 
+#[repr(u64)]
+/// The purgeable state of a resource.
+///
+/// Analogous to [this](https://developer.apple.com/documentation/metal/mtlpurgeablestate?language=objc).
+pub enum MTLPurgeableState {
+    /// The state is queried but doesn't change.
+    KeepCurrent = 1,
+    /// The contents of the resource may not be discarded.
+    NonVolatile = 2,
+    /// The resource may be discarded.
+    Volatile = 3,
+    /// The contents of the resource may be or are discarded.
+    Empty = 4,
+}
+
 /// An allocation of GPU accessible memory. Implemented only on device created objects.
 ///
 /// Will send to its pointer only the messages specified in the MTLResource protocol
@@ -40,5 +55,16 @@ pub trait MTLResource: Object + DeviceCreated {
     /// property of the resource.
     unsafe fn set_storage_mode(&self, mode: MTLStorageMode) {
         msg_send![self.get_ptr(), setStorageMode:mode]
+    }
+    /// Sets the purgeable state of the resource via the
+    /// [setPurgeableState](https://developer.apple.com/documentation/metal/mtlresource/1515898-setpurgeablestate?language=objc)
+    /// method. Also returns the prior purgeable state of the resource.
+    unsafe fn set_purgeable_state(&self, state: MTLPurgeableState) -> MTLPurgeableState {
+        msg_send![self.get_ptr(), setPurgeableState:state]
+    }
+    /// Returns the [allocatedSize](https://developer.apple.com/documentation/metal/mtlresource/2915287-allocatedsize?language=objc)
+    /// property of the resource; the current allocated size in bytes.
+    unsafe fn get_allocated_size(&self) -> NSUInteger {
+        msg_send![self.get_ptr(), allocatedSize]
     }
 }

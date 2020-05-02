@@ -1,4 +1,4 @@
-use crate::{ObjectPointer, handle, Object, DeviceCreated, MTLDevice, NSUIntegerRange, NSRange};
+use crate::{ObjectPointer, handle, Object, DeviceCreated, MTLDevice, NSUIntegerRange, NSRange, NSUInteger};
 use crate::import_objc_macros::*;
 use std::os::raw::c_void;
 
@@ -27,6 +27,11 @@ impl MTLBuffer {
             length: range.end,
         };
         msg_send![self.get_ptr(), range]
+    }
+    /// Returns the instance property [length](https://developer.apple.com/documentation/metal/mtlbuffer/1515373-length?language=objc),
+    /// representing the logical size of the buffer in bytes.
+    pub unsafe fn get_length(&self) -> NSUInteger {
+        msg_send![self.get_ptr(), length]
     }
 }
 

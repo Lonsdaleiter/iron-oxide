@@ -23,3 +23,5 @@ Backfill List
 - [ ] Resource mode
 - [ ] Heaps
 - [ ] Making a texture from a buffer
+- [ ] Debug markers for buffers
+- [ ] Remote storage buffers for synchronizing over multiple GPUs

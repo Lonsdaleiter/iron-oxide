@@ -136,6 +136,7 @@ unsafe fn execute() {
             .set_cpu_cache_mode(MTLCPUCacheMode::Default),
     );
     debug(&buffer);
+    println!("Buffer contents: {:?}", &*(buffer.get_contents() as *mut [u8; 8]));
 }
 
 fn main() {

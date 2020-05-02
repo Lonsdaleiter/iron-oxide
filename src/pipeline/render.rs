@@ -1,5 +1,5 @@
 use crate::import_objc_macros::*;
-use crate::{handle, Array, MTLFunction, Object, ObjectPointer, MTLPixelFormat};
+use crate::{handle, Array, MTLFunction, Object, ObjectPointer, MTLPixelFormat, NSUInteger};
 use enumflags2::BitFlags;
 
 /// Describes how buffers at specified indices are mapped to attributes at specified indices.
@@ -222,6 +222,36 @@ impl MTLRenderPipelineDescriptor {
     /// instance method.
     pub unsafe fn reset(&self) {
         msg_send![self.get_ptr(), reset]
+    }
+    /// Sets the [depthAttachmentPixelFormat](https://developer.apple.com/documentation/metal/mtlrenderpipelinedescriptor/1514608-depthattachmentpixelformat?language=objc)
+    /// attribute of the descriptor.
+    pub unsafe fn set_depth_attachment_pixel_format(&self, format: MTLPixelFormat) {
+        msg_send![self.get_ptr(), setDepthAttachmentPixelFormat]
+    }
+    /// Sets the [stencilAttachmentPixelFormat](https://developer.apple.com/documentation/metal/mtlrenderpipelinedescriptor/1514650-stencilattachmentpixelformat?language=objc)
+    /// attribute of the descriptor.
+    pub unsafe fn set_stencil_attachment_pixel_format(&self, format: MTLPixelFormat) {
+        msg_send![self.get_ptr(), setStencilAttachmentPixelFormat]
+    }
+    /// Sets the [sampleCount](https://developer.apple.com/documentation/metal/mtlrenderpipelinedescriptor/1514699-samplecount?language=objc)
+    /// attribute of the descriptor.
+    pub unsafe fn set_sample_count(&self, count: NSUInteger) {
+        msg_send![self.get_ptr(), setSampleCount]
+    }
+    /// Sets the [alphaToCoverageEnabled](https://developer.apple.com/documentation/metal/mtlrenderpipelinedescriptor/1514624-alphatocoverageenabled?language=objc)
+    /// attribute of the descriptor.
+    pub unsafe fn set_alpha_to_coverage_enabled(&self, enabled: bool) {
+        msg_send![self.get_ptr(), setAlphaToCoverageEnabled:enabled]
+    }
+    /// Sets the [alphaToOneEnabled](https://developer.apple.com/documentation/metal/mtlrenderpipelinedescriptor/1514697-alphatooneenabled?language=objc)
+    /// attribute of the descriptor.
+    pub unsafe fn set_alpha_to_one_enabled(&self, enabled: bool) {
+        msg_send![self.get_ptr(), setAlphaToOneEnabled:enabled]
+    }
+    /// Sets the [rasterizationEnabled](https://developer.apple.com/documentation/metal/mtlrenderpipelinedescriptor/1514708-rasterizationenabled?language=objc)
+    /// attribute of the descriptor.
+    pub unsafe fn set_rasterization_enabled(&self, enabled: bool) {
+        msg_send![self.get_ptr(), setRasteriationEnabled:enabled]
     }
 }
 

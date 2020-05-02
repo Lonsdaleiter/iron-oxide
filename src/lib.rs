@@ -70,13 +70,8 @@ unsafe impl Message for ObjectPointer {}
 
 /// Trait used for representing interfaces of the form MTL(something)Array.
 pub trait Array<T: Object>: Object {
-    /// Returns the parameter found at the provided index.
-    unsafe fn get_object_at_indexed_subscript(&self, index: NSUInteger) -> T {
-        use crate::import_objc_macros::*;
-        T::from_ptr(msg_send![self.get_ptr(), objectAtIndexedSubscript:index])
-    }
     /// Sets the parameter at the provided index.
-    unsafe fn set_object_at_indexed_subscript(&self, index: NSUInteger, obj: T) {
+    unsafe fn set_object_at_indexed_subscript(&self, index: NSUInteger, obj: &T) {
         use crate::import_objc_macros::*;
         msg_send![self.get_ptr(), setObject:obj.get_ptr() atIndexedSubscript:index]
     }

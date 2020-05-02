@@ -106,6 +106,11 @@ unsafe fn execute() {
     let desc = MTLRenderPipelineDescriptor::new();
     desc.set_vertex_function(&vertex);
     desc.set_fragment_function(&fragment);
+    let color_attachments = desc.get_color_attachments();
+    color_attachments.set_object_at_indexed_subscript(0, &{
+        let primary_color_attachment = MTLRenderPipelineColorAttachmentDescriptor::new();
+        primary_color_attachment
+    });
 }
 
 fn main() {

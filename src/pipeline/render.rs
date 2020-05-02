@@ -235,17 +235,17 @@ impl MTLRenderPipelineDescriptor {
     /// Sets the [depthAttachmentPixelFormat](https://developer.apple.com/documentation/metal/mtlrenderpipelinedescriptor/1514608-depthattachmentpixelformat?language=objc)
     /// attribute of the descriptor.
     pub unsafe fn set_depth_attachment_pixel_format(&self, format: MTLPixelFormat) {
-        msg_send![self.get_ptr(), setDepthAttachmentPixelFormat]
+        msg_send![self.get_ptr(), setDepthAttachmentPixelFormat:format]
     }
     /// Sets the [stencilAttachmentPixelFormat](https://developer.apple.com/documentation/metal/mtlrenderpipelinedescriptor/1514650-stencilattachmentpixelformat?language=objc)
     /// attribute of the descriptor.
     pub unsafe fn set_stencil_attachment_pixel_format(&self, format: MTLPixelFormat) {
-        msg_send![self.get_ptr(), setStencilAttachmentPixelFormat]
+        msg_send![self.get_ptr(), setStencilAttachmentPixelFormat:format]
     }
     /// Sets the [sampleCount](https://developer.apple.com/documentation/metal/mtlrenderpipelinedescriptor/1514699-samplecount?language=objc)
     /// attribute of the descriptor.
     pub unsafe fn set_sample_count(&self, count: NSUInteger) {
-        msg_send![self.get_ptr(), setSampleCount]
+        msg_send![self.get_ptr(), setSampleCount:count]
     }
     /// Sets the [alphaToCoverageEnabled](https://developer.apple.com/documentation/metal/mtlrenderpipelinedescriptor/1514624-alphatocoverageenabled?language=objc)
     /// attribute of the descriptor.

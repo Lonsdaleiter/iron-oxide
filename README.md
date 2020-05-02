@@ -14,3 +14,6 @@ Backfill List
 - MTLVertexDescriptor
 - Buffer mutability in MTLRenderPipelineDescriptor
 - objectAtIndexedSubscript
+- render pipeline tessellation stage configuration
+- render pipeline indirect command buffer + vertex amplification
+- render pipeline state behavior

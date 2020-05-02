@@ -1,5 +1,8 @@
 use crate::import_objc_macros::*;
-use crate::{handle, Array, MTLFunction, Object, ObjectPointer, MTLPixelFormat, NSUInteger};
+use crate::{
+    handle, Array, DeviceCreated, MTLDevice, MTLFunction, MTLPixelFormat, NSUInteger, Object,
+    ObjectPointer,
+};
 use enumflags2::BitFlags;
 
 /// Describes how buffers at specified indices are mapped to attributes at specified indices.
@@ -124,42 +127,42 @@ impl MTLRenderPipelineColorAttachmentDescriptor {
     /// Sets the [pixelFormat](https://developer.apple.com/documentation/metal/mtlrenderpipelinecolorattachmentdescriptor/1514651-pixelformat?language=objc)
     /// attribute of the descriptor.
     pub unsafe fn set_pixel_format(&self, format: MTLPixelFormat) {
-        msg_send![self.get_ptr(), setPixelFormat:format]
+        msg_send![self.get_ptr(), setPixelFormat: format]
     }
     /// Sets the [blendingEnabled](https://developer.apple.com/documentation/metal/mtlrenderpipelinecolorattachmentdescriptor/1514642-blendingenabled?language=objc)
     /// attribute of the descriptor.
     pub unsafe fn set_blending_enabled(&self, enabled: bool) {
-        msg_send![self.get_ptr(), setBlendingEnabled:enabled]
+        msg_send![self.get_ptr(), setBlendingEnabled: enabled]
     }
     /// Sets the [alphaBlendOperation](https://developer.apple.com/documentation/metal/mtlrenderpipelinecolorattachmentdescriptor/1514666-alphablendoperation?language=objc)
     /// attribute of the descriptor.
     pub unsafe fn set_alpha_blend_operation(&self, operation: MTLBlendOperation) {
-        msg_send![self.get_ptr(), setAlphaBlendOperation:operation]
+        msg_send![self.get_ptr(), setAlphaBlendOperation: operation]
     }
     /// Sets the [rgbBlendOperation](https://developer.apple.com/documentation/metal/mtlrenderpipelinecolorattachmentdescriptor/1514659-rgbblendoperation?language=objc)
     /// attribute of the descriptor.
     pub unsafe fn set_rgb_blend_operation(&self, operation: MTLBlendOperation) {
-        msg_send![self.get_ptr(), setRgbBlendOperation:operation]
+        msg_send![self.get_ptr(), setRgbBlendOperation: operation]
     }
     /// Sets the [destinationAlphaBlendFactor](https://developer.apple.com/documentation/metal/mtlrenderpipelinecolorattachmentdescriptor/1514657-destinationalphablendfactor?language=objc)
     /// attribute of the descriptor.
     pub unsafe fn set_destination_alpha_blend_factor(&self, factor: MTLBlendFactor) {
-        msg_send![self.get_ptr(), setDestinationAlphaBlendFactor:factor]
+        msg_send![self.get_ptr(), setDestinationAlphaBlendFactor: factor]
     }
     /// Sets the [destinationRGBBlendFactor](https://developer.apple.com/documentation/metal/mtlrenderpipelinecolorattachmentdescriptor/1514626-destinationrgbblendfactor?language=objc)
     /// attribute of the descriptor.
     pub unsafe fn set_destination_rgb_blend_factor(&self, factor: MTLBlendFactor) {
-        msg_send![self.get_ptr(), setDestinationRGBBlendFactor:factor]
+        msg_send![self.get_ptr(), setDestinationRGBBlendFactor: factor]
     }
     /// Sets the [sourceAlphaBlendFactor](https://developer.apple.com/documentation/metal/mtlrenderpipelinecolorattachmentdescriptor/1514660-sourcealphablendfactor?language=objc)
     /// attribute of the descriptor.
     pub unsafe fn set_source_alpha_blend_factor(&self, factor: MTLBlendFactor) {
-        msg_send![self.get_ptr(), setSourceAlphaBlendFactor:factor]
+        msg_send![self.get_ptr(), setSourceAlphaBlendFactor: factor]
     }
     /// Sets the [sourceRGBBlendFactor](https://developer.apple.com/documentation/metal/mtlrenderpipelinecolorattachmentdescriptor/1514615-sourcergbblendfactor?language=objc)
     /// attribute of the descriptor.
     pub unsafe fn set_source_rgb_blend_factor(&self, factor: MTLBlendFactor) {
-        msg_send![self.get_ptr(), setSourceRGBBlendFactor:factor]
+        msg_send![self.get_ptr(), setSourceRGBBlendFactor: factor]
     }
 }
 
@@ -235,39 +238,39 @@ impl MTLRenderPipelineDescriptor {
     /// Sets the [depthAttachmentPixelFormat](https://developer.apple.com/documentation/metal/mtlrenderpipelinedescriptor/1514608-depthattachmentpixelformat?language=objc)
     /// attribute of the descriptor.
     pub unsafe fn set_depth_attachment_pixel_format(&self, format: MTLPixelFormat) {
-        msg_send![self.get_ptr(), setDepthAttachmentPixelFormat:format]
+        msg_send![self.get_ptr(), setDepthAttachmentPixelFormat: format]
     }
     /// Sets the [stencilAttachmentPixelFormat](https://developer.apple.com/documentation/metal/mtlrenderpipelinedescriptor/1514650-stencilattachmentpixelformat?language=objc)
     /// attribute of the descriptor.
     pub unsafe fn set_stencil_attachment_pixel_format(&self, format: MTLPixelFormat) {
-        msg_send![self.get_ptr(), setStencilAttachmentPixelFormat:format]
+        msg_send![self.get_ptr(), setStencilAttachmentPixelFormat: format]
     }
     /// Sets the [sampleCount](https://developer.apple.com/documentation/metal/mtlrenderpipelinedescriptor/1514699-samplecount?language=objc)
     /// attribute of the descriptor.
     pub unsafe fn set_sample_count(&self, count: NSUInteger) {
-        msg_send![self.get_ptr(), setSampleCount:count]
+        msg_send![self.get_ptr(), setSampleCount: count]
     }
     /// Sets the [alphaToCoverageEnabled](https://developer.apple.com/documentation/metal/mtlrenderpipelinedescriptor/1514624-alphatocoverageenabled?language=objc)
     /// attribute of the descriptor.
     pub unsafe fn set_alpha_to_coverage_enabled(&self, enabled: bool) {
-        msg_send![self.get_ptr(), setAlphaToCoverageEnabled:enabled]
+        msg_send![self.get_ptr(), setAlphaToCoverageEnabled: enabled]
     }
     /// Sets the [alphaToOneEnabled](https://developer.apple.com/documentation/metal/mtlrenderpipelinedescriptor/1514697-alphatooneenabled?language=objc)
     /// attribute of the descriptor.
     pub unsafe fn set_alpha_to_one_enabled(&self, enabled: bool) {
-        msg_send![self.get_ptr(), setAlphaToOneEnabled:enabled]
+        msg_send![self.get_ptr(), setAlphaToOneEnabled: enabled]
     }
     /// Sets the [rasterizationEnabled](https://developer.apple.com/documentation/metal/mtlrenderpipelinedescriptor/1514708-rasterizationenabled?language=objc)
     /// attribute of the descriptor.
     pub unsafe fn set_rasterization_enabled(&self, enabled: bool) {
-        msg_send![self.get_ptr(), setRasteriationEnabled:enabled]
+        msg_send![self.get_ptr(), setRasteriationEnabled: enabled]
     }
     /// Sets the [inputPrimitiveTopology](https://developer.apple.com/documentation/metal/mtlrenderpipelinedescriptor/1514684-inputprimitivetopology?language=objc)
     /// attribute of the descriptor.
     ///
     /// Irrelevant without layered rendering.
     pub unsafe fn set_input_primitive_topology(&self, topology: MTLPrimitiveTopologyClass) {
-        msg_send![self.get_ptr(), setInputPrimitiveTopology:topology]
+        msg_send![self.get_ptr(), setInputPrimitiveTopology: topology]
     }
 }
 
@@ -277,6 +280,39 @@ impl Object for MTLRenderPipelineDescriptor {
         Self: Sized,
     {
         MTLRenderPipelineDescriptor(ptr)
+    }
+
+    fn get_ptr(&self) -> ObjectPointer {
+        self.0
+    }
+}
+
+/// Contains bound to itself the state of a render pipeline configured by a device.
+///
+/// Will sent to its pointer only messages specified in the MTLRenderPipelineState
+/// protocol linked [here](https://developer.apple.com/documentation/metal/mtlrenderpipelinestate?language=objc).
+pub struct MTLRenderPipelineState(ObjectPointer);
+handle!(MTLRenderPipelineState);
+
+impl MTLRenderPipelineState {
+    //
+}
+
+impl DeviceCreated for MTLRenderPipelineState {
+    unsafe fn get_device(&self) -> MTLDevice {
+        MTLDevice::from_ptr({
+            let k = ObjectPointer(msg_send![self.get_ptr(), device]);
+            msg_send![k, retain]
+        })
+    }
+}
+
+impl Object for MTLRenderPipelineState {
+    unsafe fn from_ptr(ptr: ObjectPointer) -> Self
+    where
+        Self: Sized,
+    {
+        MTLRenderPipelineState(ptr)
     }
 
     fn get_ptr(&self) -> ObjectPointer {

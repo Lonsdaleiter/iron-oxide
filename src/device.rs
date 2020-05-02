@@ -1,8 +1,8 @@
 use crate::import_objc_macros::*;
 use crate::{
-    handle, Error, MTLCommandQueue, MTLCompileOptions, MTLComputePipelineState, MTLFunction,
-    MTLLibrary, MTLRenderPipelineDescriptor, MTLRenderPipelineState, MTLSamplePosition, MTLSize,
-    NSUInteger, Object, ObjectPointer,
+    handle, Error, MTLBuffer, MTLCommandQueue, MTLCompileOptions, MTLComputePipelineState,
+    MTLFunction, MTLLibrary, MTLRenderPipelineDescriptor, MTLRenderPipelineState,
+    MTLResourceOptions, MTLSamplePosition, MTLSize, NSUInteger, Object, ObjectPointer,
 };
 use std::os::raw::c_void;
 
@@ -323,6 +323,13 @@ impl MTLDevice {
     /// property of the device.
     pub unsafe fn get_max_buffer_length(&self) -> NSUInteger {
         msg_send![self.get_ptr(), maxBufferLength]
+    }
+    pub unsafe fn new_buffer_with_length(
+        &self,
+        _length: NSUInteger,
+        _options: MTLResourceOptions,
+    ) -> MTLBuffer {
+        unimplemented!()
     }
 }
 

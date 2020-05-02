@@ -79,7 +79,11 @@ unsafe fn execute() {
             false => "is not",
         }
     );
-    log::log!(log::Level::Info, "Max buffer length: {}", device.get_max_buffer_length());
+    log::log!(
+        log::Level::Info,
+        "Max buffer length: {}",
+        device.get_max_buffer_length()
+    );
 
     let _queue = device.new_command_queue();
     let _l = device.new_library_with_source(include_str!("quad.metal"), &MTLCompileOptions::new());

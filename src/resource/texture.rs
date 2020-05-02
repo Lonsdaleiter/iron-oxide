@@ -1,5 +1,5 @@
-use crate::{ObjectPointer, handle, Object, DeviceCreated, MTLDevice};
 use crate::import_objc_macros::*;
+use crate::{handle, DeviceCreated, MTLDevice, Object, ObjectPointer};
 
 /// A resource which stores data.
 ///
@@ -14,13 +14,15 @@ impl MTLTexture {
 
 impl DeviceCreated for MTLTexture {
     unsafe fn get_device(&self) -> MTLDevice {
-        MTLDevice(msg_send![self.get_ptr(), device])
+        MTLDevice::from_ptr(msg_send![self.get_ptr(), device])
     }
 }
 
 impl Object for MTLTexture {
-    unsafe fn from_ptr(ptr: ObjectPointer) -> Self where
-        Self: Sized {
+    unsafe fn from_ptr(ptr: ObjectPointer) -> Self
+    where
+        Self: Sized,
+    {
         MTLTexture(ptr)
     }
 

@@ -1,5 +1,5 @@
-use crate::{Object, DeviceCreated, NSUInteger};
 use crate::import_objc_macros::*;
+use crate::{DeviceCreated, NSUInteger, Object};
 
 mod buffer;
 mod texture;
@@ -46,6 +46,28 @@ pub enum MTLPurgeableState {
     Empty = 4,
 }
 
+/// Optional arguments to set the behavior of a resource.
+///
+/// Analogous to [this](https://developer.apple.com/documentation/metal/mtlresourceoptions?language=objc).
+pub struct MTLResourceOptions {
+    pub bits: NSUInteger,
+}
+
+impl MTLResourceOptions {
+    /// Sets the CPU cache mode of the resource.
+    pub fn set_cpu_cache_mode(&self, mode: MTLCPUCacheMode) -> MTLResourceOptions {
+        MTLResourceOptions {
+            bits: self.bits | mode as u64,
+        }
+    }
+    /// Sets the storage mode of the resource.
+    pub fn set_storage_mode(&self, mode: MTLStorageMode) -> MTLResourceOptions {
+        MTLResourceOptions {
+            bits: self.bits | ((mode as u64) << 4),
+        }
+    }
+}
+
 /// An allocation of GPU accessible memory. Implemented only on device created objects.
 ///
 /// Will send to its pointer only the messages specified in the MTLResource protocol
@@ -54,18 +76,18 @@ pub trait MTLResource: Object + DeviceCreated {
     /// Sets the [cpuCacheMode](https://developer.apple.com/documentation/metal/mtlresource/1516127-cpucachemode?language=objc)
     /// property of the resource.
     unsafe fn set_cpu_cache_mode(&self, mode: MTLCPUCacheMode) {
-        msg_send![self.get_ptr(), setCpuCacheMode:mode]
+        msg_send![self.get_ptr(), setCpuCacheMode: mode]
     }
     /// Sets the [storageMode](https://developer.apple.com/documentation/metal/mtlresource/1515477-storagemode?language=objc)
     /// property of the resource.
     unsafe fn set_storage_mode(&self, mode: MTLStorageMode) {
-        msg_send![self.get_ptr(), setStorageMode:mode]
+        msg_send![self.get_ptr(), setStorageMode: mode]
     }
     /// Sets the purgeable state of the resource via the
     /// [setPurgeableState](https://developer.apple.com/documentation/metal/mtlresource/1515898-setpurgeablestate?language=objc)
     /// method. Also returns the prior purgeable state of the resource.
     unsafe fn set_purgeable_state(&self, state: MTLPurgeableState) -> MTLPurgeableState {
-        msg_send![self.get_ptr(), setPurgeableState:state]
+        msg_send![self.get_ptr(), setPurgeableState: state]
     }
     /// Returns the [allocatedSize](https://developer.apple.com/documentation/metal/mtlresource/2915287-allocatedsize?language=objc)
     /// property of the resource; the current allocated size in bytes.

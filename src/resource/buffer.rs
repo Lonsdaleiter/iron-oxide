@@ -1,5 +1,7 @@
-use crate::{ObjectPointer, handle, Object, DeviceCreated, MTLDevice, NSUIntegerRange, NSRange, NSUInteger};
 use crate::import_objc_macros::*;
+use crate::{
+    handle, DeviceCreated, MTLDevice, NSRange, NSUInteger, NSUIntegerRange, Object, ObjectPointer,
+};
 use std::os::raw::c_void;
 
 /// A resource which stores data.
@@ -22,11 +24,11 @@ impl MTLBuffer {
     /// [didModifyRange](https://developer.apple.com/documentation/metal/mtlbuffer/1516121-didmodifyrange?language=objc)
     /// instance method.
     pub unsafe fn did_modify_range(&self, range: NSUIntegerRange) {
-        let range = NSRange {
+        let _range = NSRange {
             location: range.start,
             length: range.end,
         };
-        msg_send![self.get_ptr(), range]
+        msg_send![self.get_ptr(), _range]
     }
     /// Returns the instance property [length](https://developer.apple.com/documentation/metal/mtlbuffer/1515373-length?language=objc),
     /// representing the logical size of the buffer in bytes.
@@ -37,13 +39,15 @@ impl MTLBuffer {
 
 impl DeviceCreated for MTLBuffer {
     unsafe fn get_device(&self) -> MTLDevice {
-        MTLDevice(msg_send![self.get_ptr(), device])
+        MTLDevice::from_ptr(msg_send![self.get_ptr(), device])
     }
 }
 
 impl Object for MTLBuffer {
-    unsafe fn from_ptr(ptr: ObjectPointer) -> Self where
-        Self: Sized {
+    unsafe fn from_ptr(ptr: ObjectPointer) -> Self
+    where
+        Self: Sized,
+    {
         MTLBuffer(ptr)
     }
 

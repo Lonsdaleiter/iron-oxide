@@ -1,5 +1,6 @@
 use crate::import_objc_macros::*;
-use crate::{handle, Array, MTLFunction, Object, ObjectPointer};
+use crate::{handle, Array, MTLFunction, Object, ObjectPointer, MTLPixelFormat};
+use enumflags2::BitFlags;
 
 /// Describes how buffers at specified indices are mapped to attributes at specified indices.
 ///
@@ -50,6 +51,18 @@ impl Object for MTLRenderPipelineColorAttachmentDescriptorArray {
     }
 }
 
+#[derive(BitFlags, Copy, Clone, Debug, PartialEq)]
+#[repr(u64)]
+/// Bitflags describing color channels, and which of them are enabled.
+///
+/// Analogous to [this](https://developer.apple.com/documentation/metal/mtlcolorwritemask?language=objc).
+pub enum MTLColorWriteMask {
+    Red = 0x1 << 3,
+    Green = 0x1 << 2,
+    Blue = 0x1 << 1,
+    Alpha = 0x1,
+}
+
 /// Settings for the creation of an MTLRenderPipelineColorAttachmentDescriptorDescriptor.
 ///
 /// Will send to its pointer only messages specified in the MTLRenderPipelineColorAttachmentDescriptorDescriptor interface
@@ -64,6 +77,16 @@ impl MTLRenderPipelineColorAttachmentDescriptor {
             class!(MTLRenderPipelineColorAttachmentDescriptor),
             new
         ])
+    }
+    /// Sets the [writeMask](https://developer.apple.com/documentation/metal/mtlrenderpipelinecolorattachmentdescriptor/1514619-writemask?language=objc)
+    /// attribute of the descriptor.
+    pub unsafe fn set_write_mask(&self, mask: BitFlags<MTLColorWriteMask>) {
+        msg_send![self.get_ptr(), setWriteMask:mask.bits()]
+    }
+    /// Sets the [pixelFormat](https://developer.apple.com/documentation/metal/mtlrenderpipelinecolorattachmentdescriptor/1514651-pixelformat?language=objc)
+    /// attribute of the descriptor.
+    pub unsafe fn set_pixel_format(&self, format: MTLPixelFormat) {
+        msg_send![self.get_ptr(), setPixelFormat:format]
     }
 }
 

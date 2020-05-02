@@ -109,6 +109,14 @@ unsafe fn execute() {
     let color_attachments = desc.get_color_attachments();
     color_attachments.set_object_at_indexed_subscript(0, &{
         let primary_color_attachment = MTLRenderPipelineColorAttachmentDescriptor::new();
+        primary_color_attachment.set_pixel_format(MTLPixelFormat::BGRA8Unorm);
+        primary_color_attachment.set_write_mask(
+            MTLColorWriteMask::Red
+                | MTLColorWriteMask::Green
+                | MTLColorWriteMask::Blue
+                | MTLColorWriteMask::Alpha,
+        );
+        debug(&primary_color_attachment);
         primary_color_attachment
     });
 }

@@ -14,12 +14,14 @@ use std::ops::Deref;
 
 mod commandqueue;
 mod device;
+mod enums;
 mod library;
 mod pipeline;
 mod resource;
 mod util;
 pub use commandqueue::*;
 pub use device::*;
+pub use enums::*;
 pub use library::*;
 pub use pipeline::*;
 pub use resource::*;

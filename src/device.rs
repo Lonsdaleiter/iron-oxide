@@ -319,6 +319,11 @@ impl MTLDevice {
             }
         }
     }
+    /// Returns the [maxBufferLength](https://developer.apple.com/documentation/metal/mtldevice/2966563-maxbufferlength?language=objc)
+    /// property of the device.
+    pub unsafe fn get_max_buffer_length(&self) -> NSUInteger {
+        msg_send![self.get_ptr(), maxBufferLength]
+    }
 }
 
 impl Object for MTLDevice {

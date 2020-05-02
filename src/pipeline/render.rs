@@ -225,7 +225,9 @@ impl MTLRenderPipelineDescriptor {
     pub unsafe fn get_color_attachments(&self) -> MTLRenderPipelineColorAttachmentDescriptorArray {
         MTLRenderPipelineColorAttachmentDescriptorArray::from_ptr({
             let ptr = ObjectPointer(msg_send![self.get_ptr(), colorAttachments]);
-            // we retain the pointer so that drop doesn't overrelease the pointer
+            // we should not release this array ourselves, Metal does it for us
+            // we retain the pointer so that drop doesn't overrelease the pointer and
+            // the reference count remains at at least one until the parent dies
             let _: () = msg_send![ptr, retain];
             ptr
         })

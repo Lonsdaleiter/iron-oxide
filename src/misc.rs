@@ -154,6 +154,14 @@ pub enum MTLPixelFormat {
     BGR10_XR_SRGB = 555,
 }
 
+pub type NSUIntegerRange = std::ops::Range<NSUInteger>;
+
+#[repr(C)]
+pub struct NSRange {
+    pub location: NSUInteger,
+    pub length: NSUInteger,
+}
+
 #[repr(C)]
 pub struct MTLSize {
     pub width: NSUInteger,

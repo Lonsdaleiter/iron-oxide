@@ -63,6 +63,44 @@ pub enum MTLColorWriteMask {
     Alpha = 0x1,
 }
 
+#[repr(u64)]
+/// Describes an operation to use in a blend equation.
+///
+/// More variant specific details can be found [here](https://developer.apple.com/documentation/metal/mtlblendoperation?language=objc).
+pub enum MTLBlendOperation {
+    Add = 0,
+    Subtract = 1,
+    ReverseSubtract = 2,
+    Min = 3,
+    Max = 4,
+}
+
+#[repr(u64)]
+/// Factors in a blend equation.
+///
+/// More invariant specific details can be found [here](https://developer.apple.com/documentation/metal/mtlblendfactor?language=objc).
+pub enum MTLBlendFactor {
+    Zero = 0,
+    One = 1,
+    SourceColor = 2,
+    OneMinusSourceColor = 3,
+    SourceAlpha = 4,
+    OneMinusSourceAlpha = 5,
+    DestinationColor = 6,
+    OneMinusDestinationColor = 7,
+    DestinationAlpha = 8,
+    OneMinusDestinationAlpha = 9,
+    SourceAlphaSaturated = 10,
+    BlendColor = 11,
+    OneMinusBlendColor = 12,
+    BlendAlpha = 13,
+    OneMinusBlendAlpha = 14,
+    Source1Color = 15,
+    OneMinusSource1Color = 16,
+    Source1Alpha = 17,
+    OneMinusSource1Alpha = 18,
+}
+
 /// Settings for the creation of an MTLRenderPipelineColorAttachmentDescriptorDescriptor.
 ///
 /// Will send to its pointer only messages specified in the MTLRenderPipelineColorAttachmentDescriptorDescriptor interface
@@ -87,6 +125,41 @@ impl MTLRenderPipelineColorAttachmentDescriptor {
     /// attribute of the descriptor.
     pub unsafe fn set_pixel_format(&self, format: MTLPixelFormat) {
         msg_send![self.get_ptr(), setPixelFormat:format]
+    }
+    /// Sets the [blendingEnabled](https://developer.apple.com/documentation/metal/mtlrenderpipelinecolorattachmentdescriptor/1514642-blendingenabled?language=objc)
+    /// attribute of the descriptor.
+    pub unsafe fn set_blending_enabled(&self, enabled: bool) {
+        msg_send![self.get_ptr(), setBlendingEnabled:enabled]
+    }
+    /// Sets the [alphaBlendOperation](https://developer.apple.com/documentation/metal/mtlrenderpipelinecolorattachmentdescriptor/1514666-alphablendoperation?language=objc)
+    /// attribute of the descriptor.
+    pub unsafe fn set_alpha_blend_operation(&self, operation: MTLBlendOperation) {
+        msg_send![self.get_ptr(), setAlphaBlendOperation:operation]
+    }
+    /// Sets the [rgbBlendOperation](https://developer.apple.com/documentation/metal/mtlrenderpipelinecolorattachmentdescriptor/1514659-rgbblendoperation?language=objc)
+    /// attribute of the descriptor.
+    pub unsafe fn set_rgb_blend_operation(&self, operation: MTLBlendOperation) {
+        msg_send![self.get_ptr(), setRgbBlendOperation:operation]
+    }
+    /// Sets the [destinationAlphaBlendFactor](https://developer.apple.com/documentation/metal/mtlrenderpipelinecolorattachmentdescriptor/1514657-destinationalphablendfactor?language=objc)
+    /// attribute of the descriptor.
+    pub unsafe fn set_destination_alpha_blend_factor(&self, factor: MTLBlendFactor) {
+        msg_send![self.get_ptr(), setDestinationAlphaBlendFactor:factor]
+    }
+    /// Sets the [destinationRGBBlendFactor](https://developer.apple.com/documentation/metal/mtlrenderpipelinecolorattachmentdescriptor/1514626-destinationrgbblendfactor?language=objc)
+    /// attribute of the descriptor.
+    pub unsafe fn set_destination_rgb_blend_factor(&self, factor: MTLBlendFactor) {
+        msg_send![self.get_ptr(), setDestinationRGBBlendFactor:factor]
+    }
+    /// Sets the [sourceAlphaBlendFactor](https://developer.apple.com/documentation/metal/mtlrenderpipelinecolorattachmentdescriptor/1514660-sourcealphablendfactor?language=objc)
+    /// attribute of the descriptor.
+    pub unsafe fn set_source_alpha_blend_factor(&self, factor: MTLBlendFactor) {
+        msg_send![self.get_ptr(), setSourceAlphaBlendFactor:factor]
+    }
+    /// Sets the [sourceRGBBlendFactor](https://developer.apple.com/documentation/metal/mtlrenderpipelinecolorattachmentdescriptor/1514615-sourcergbblendfactor?language=objc)
+    /// attribute of the descriptor.
+    pub unsafe fn set_source_rgb_blend_factor(&self, factor: MTLBlendFactor) {
+        msg_send![self.get_ptr(), setSourceRGBBlendFactor:factor]
     }
 }
 

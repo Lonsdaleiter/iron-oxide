@@ -324,12 +324,17 @@ impl MTLDevice {
     pub unsafe fn get_max_buffer_length(&self) -> NSUInteger {
         msg_send![self.get_ptr(), maxBufferLength]
     }
+    /// Creates a new zero-filled buffer of the specified length with the
+    /// [newBufferWithLength](https://developer.apple.com/documentation/metal/mtldevice/1433375-newbufferwithlength?language=objc)
+    /// instance method.
     pub unsafe fn new_buffer_with_length(
         &self,
-        _length: NSUInteger,
-        _options: MTLResourceOptions,
+        length: NSUInteger,
+        options: MTLResourceOptions,
     ) -> MTLBuffer {
-        unimplemented!()
+        MTLBuffer::from_ptr(
+            msg_send![self.get_ptr(), newBufferWithLength:length options:options.bits],
+        )
     }
 }
 

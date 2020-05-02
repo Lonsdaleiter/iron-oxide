@@ -128,6 +128,14 @@ unsafe fn execute() {
         .new_render_pipeline_state_with_descriptor(&desc)
         .unwrap();
     debug(&render_pipeline);
+
+    let buffer = device.new_buffer_with_length(
+        8,
+        MTLResourceOptions::new()
+            .set_storage_mode(MTLStorageMode::Shared)
+            .set_cpu_cache_mode(MTLCPUCacheMode::Default),
+    );
+    debug(&buffer);
 }
 
 fn main() {

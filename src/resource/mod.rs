@@ -54,16 +54,19 @@ pub struct MTLResourceOptions {
 }
 
 impl MTLResourceOptions {
+    pub fn new() -> MTLResourceOptions {
+        MTLResourceOptions { bits: 0 }
+    }
     /// Sets the CPU cache mode of the resource.
     pub fn set_cpu_cache_mode(&self, mode: MTLCPUCacheMode) -> MTLResourceOptions {
         MTLResourceOptions {
-            bits: self.bits | mode as u64,
+            bits: self.bits | mode as NSUInteger,
         }
     }
     /// Sets the storage mode of the resource.
     pub fn set_storage_mode(&self, mode: MTLStorageMode) -> MTLResourceOptions {
         MTLResourceOptions {
-            bits: self.bits | ((mode as u64) << 4),
+            bits: self.bits | ((mode as NSUInteger) << 4),
         }
     }
 }

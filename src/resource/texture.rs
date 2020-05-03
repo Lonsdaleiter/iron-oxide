@@ -84,6 +84,9 @@ impl MTLTexture {
             newTextureViewWithPixelFormat: format
         ])
     }
+    /// Reinterprets this texture's data using a new pixel format and type but sharing the same
+    /// storage allocation via the [newTextureViewWithPixelFormat](https://developer.apple.com/documentation/metal/mtltexture/1515409-newtextureviewwithpixelformat?language=objc)
+    /// instance method.
     pub unsafe fn new_texture_view_with_pixel_format_and_texture_type(
         &self,
         format: MTLPixelFormat,

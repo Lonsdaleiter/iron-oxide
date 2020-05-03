@@ -24,11 +24,11 @@ impl MTLBuffer {
     /// [didModifyRange](https://developer.apple.com/documentation/metal/mtlbuffer/1516121-didmodifyrange?language=objc)
     /// instance method.
     pub unsafe fn did_modify_range(&self, range: NSUIntegerRange) {
-        let _range = NSRange {
+        let range = NSRange {
             location: range.start,
             length: range.end,
         };
-        msg_send![self.get_ptr(), _range]
+        msg_send![self.get_ptr(), didModifyRange: range]
     }
     /// Returns the instance property [length](https://developer.apple.com/documentation/metal/mtlbuffer/1515373-length?language=objc),
     /// representing the logical size of the buffer in bytes.

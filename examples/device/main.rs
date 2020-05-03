@@ -84,6 +84,14 @@ unsafe fn execute() {
         "Max buffer length: {}",
         device.get_max_buffer_length()
     );
+    log::log!(
+        log::Level::Info,
+        "Sample count of 2 {} supported",
+        match device.supports_texture_sample_count(2) {
+            true => "is",
+            false => "is not",
+        }
+    );
 
     let _queue = device.new_command_queue();
     let _l = device.new_library_with_source(include_str!("quad.metal"), &MTLCompileOptions::new());
@@ -136,7 +144,10 @@ unsafe fn execute() {
             .set_cpu_cache_mode(MTLCPUCacheMode::Default),
     );
     debug(&buffer);
-    println!("Buffer contents: {:?}", &*(buffer.get_contents() as *mut [u8; 8]));
+    println!(
+        "Buffer contents: {:?}",
+        &*(buffer.get_contents() as *mut [u8; 8])
+    );
 }
 
 fn main() {

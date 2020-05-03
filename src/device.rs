@@ -336,6 +336,25 @@ impl MTLDevice {
             msg_send![self.get_ptr(), newBufferWithLength:length options:options.bits],
         )
     }
+    /// Creates a new buffer of a given length and initializes its contents with those
+    /// existing at the provided pointer with the [newBufferWithBytes](https://developer.apple.com/documentation/metal/mtldevice/1433429-newbufferwithbytes?language=objc)
+    /// instance method.
+    pub unsafe fn new_buffer_with_bytes(
+        &self,
+        bytes: *const c_void,
+        length: NSUInteger,
+        options: MTLResourceOptions,
+    ) -> MTLBuffer {
+        MTLBuffer::from_ptr(
+            msg_send![self.get_ptr(), newBufferWithBytes:bytes length:length options:options.bits],
+        )
+    }
+    /// Returns whether a device supports a given texture sample count via the
+    /// [supportsTextureSampleCount](https://developer.apple.com/documentation/metal/mtldevice/1433355-supportstexturesamplecount?language=objc)
+    /// instance method.
+    pub unsafe fn supports_texture_sample_count(&self, count: NSUInteger) -> bool {
+        msg_send![self.get_ptr(), supportsTextureSampleCount: count]
+    }
 }
 
 impl Object for MTLDevice {

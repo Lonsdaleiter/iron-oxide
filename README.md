@@ -25,3 +25,4 @@ Backfill List
 - [ ] Making a texture from a buffer
 - [ ] Debug markers for buffers
 - [ ] Remote storage buffers for synchronizing over multiple GPUs
+- [ ] Querying texture support from an MTLDevice

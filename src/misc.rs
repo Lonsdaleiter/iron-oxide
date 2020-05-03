@@ -157,6 +157,12 @@ pub enum MTLPixelFormat {
 pub type NSUIntegerRange = std::ops::Range<NSUInteger>;
 
 #[repr(C)]
+pub struct MTLRegion {
+    pub origin: MTLSize,
+    pub size: MTLSize,
+}
+
+#[repr(C)]
 pub struct NSRange {
     pub location: NSUInteger,
     pub length: NSUInteger,

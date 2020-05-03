@@ -23,7 +23,48 @@ pub enum MTLTextureType {
     TextureBuffer = 9,
 }
 
-/// A resource which stores data.
+/// Describes a texture.
+///
+/// Will send to its pointer only the messages specified in the MTLTextureDescriptor
+/// interface linked [here](https://developer.apple.com/documentation/metal/mtltexturedescriptor?language=objc).
+pub struct MTLTextureDescriptor(ObjectPointer);
+handle!(MTLTextureDescriptor);
+
+impl MTLTextureDescriptor {
+    /// Sets the [textureType](https://developer.apple.com/documentation/metal/mtltexturedescriptor/1516228-texturetype?language=objc)
+    /// property of the descriptor.
+    pub unsafe fn set_texture_type(&self, texture_type: MTLTextureType) {
+        msg_send![self.get_ptr(), setTextureType:texture_type]
+    }
+    /// Sets the [pixelFormat](https://developer.apple.com/documentation/metal/mtltexturedescriptor/1515450-pixelformat?language=objc)
+    /// property of the descriptor.
+    pub unsafe fn set_pixel_format(&self, format: MTLPixelFormat) {
+        msg_send![self.get_ptr(), setPixelFormat:format]
+    }
+    /// Sets the [width](https://developer.apple.com/documentation/metal/mtltexturedescriptor/1515649-width?language=objc)
+    /// property of the descriptor.
+    pub unsafe fn set_width(&self, width: NSUInteger) {
+        msg_send![self.get_ptr() setWidth:width]
+    }
+    /// Sets the [height](https://developer.apple.com/documentation/metal/mtltexturedescriptor/1516000-height?language=objc)
+    /// property of the descriptor.
+    pub unsafe fn set_height(&self, height: NSUInteger) {
+        msg_send![self.get_ptr(), setHeight:height]
+    }
+}
+
+impl Object for MTLTextureDescriptor {
+    unsafe fn from_ptr(ptr: ObjectPointer) -> Self where
+        Self: Sized {
+        MTLTextureDescriptor(ptr)
+    }
+
+    fn get_ptr(&self) -> ObjectPointer {
+        self.0
+    }
+}
+
+/// A resource which stores formatted image data.
 ///
 /// Will send to its pointer only the messages specified in the MTLTexture protocol
 /// linked [here](https://developer.apple.com/documentation/metal/mtltexture?language=objc).

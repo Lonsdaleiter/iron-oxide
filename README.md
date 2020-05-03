@@ -27,3 +27,4 @@ Backfill List
 - [ ] Remote storage buffers for synchronizing over multiple GPUs
 - [ ] Querying texture support from an MTLDevice
 - [ ] Texture swizzle patterns
+- [ ] Querying texture data

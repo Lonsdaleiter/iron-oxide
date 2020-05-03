@@ -1,6 +1,27 @@
 use crate::import_objc_macros::*;
-use crate::{handle, DeviceCreated, MTLDevice, MTLRegion, NSUInteger, Object, ObjectPointer};
+use crate::{
+    handle, DeviceCreated, MTLDevice, MTLPixelFormat, MTLRegion, NSUInteger, NSUIntegerRange,
+    Object, ObjectPointer,
+};
 use std::os::raw::c_void;
+
+#[repr(u64)]
+/// The dimension of each image, including whether multiple images
+/// are arranged into an array or a cube.
+///
+/// Analogous to [this](https://developer.apple.com/documentation/metal/mtltexturetype?language=objc).
+pub enum MTLTextureType {
+    D1 = 0,
+    D1Array = 1,
+    D2 = 2,
+    D2Array = 3,
+    D2Multisample = 4,
+    Cube = 5,
+    CubeArray = 6,
+    D3 = 7,
+    D2MultisampleArray = 8,
+    TextureBuffer = 9,
+}
 
 /// A resource which stores data.
 ///
@@ -41,7 +62,7 @@ impl MTLTexture {
         bytes_per_row: NSUInteger,
         bytes_per_image: NSUInteger,
         region: MTLRegion,
-        mipmap_level: NSUinteger,
+        mipmap_level: NSUInteger,
         slice: NSUInteger,
     ) {
         msg_send![
@@ -53,6 +74,32 @@ impl MTLTexture {
             mipmapLevel:mipmap_level
             slice:slice
         ]
+    }
+    /// Reinterprets this texture's data using a new pixel format but sharing the same
+    /// storage allocation via the [newTextureViewWithPixelFormat](https://developer.apple.com/documentation/metal/mtltexture/1515598-newtextureviewwithpixelformat?language=objc)
+    /// instance method.
+    pub unsafe fn new_texture_view_with_pixel_format(&self, format: MTLPixelFormat) -> MTLTexture {
+        MTLTexture::from_ptr(msg_send![
+            self.get_ptr(),
+            newTextureViewWithPixelFormat: format
+        ])
+    }
+    pub unsafe fn new_texture_view_with_pixel_format_and_texture_type(
+        &self,
+        format: MTLPixelFormat,
+        texture_type: MTLTextureType,
+        levels: NSUIntegerRange,
+        slices: NSUIntegerRange,
+    ) -> MTLTexture {
+        MTLTexture::from_ptr(
+            msg_send![
+                self.get_ptr(),
+                newTextureViewWithPixelFormat:format
+                textureType:texture_type
+                levels:levels
+                slices:slices
+            ]
+        )
     }
 }
 

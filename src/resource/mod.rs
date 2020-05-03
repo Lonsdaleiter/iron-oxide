@@ -46,6 +46,7 @@ pub enum MTLPurgeableState {
     Empty = 4,
 }
 
+#[repr(C)]
 /// Optional arguments to set the behavior of a resource.
 ///
 /// Analogous to [this](https://developer.apple.com/documentation/metal/mtlresourceoptions?language=objc).
@@ -76,15 +77,22 @@ impl MTLResourceOptions {
 /// Will send to its pointer only the messages specified in the MTLResource protocol
 /// linked [here](https://developer.apple.com/documentation/metal/mtlresource?language=objc).
 pub trait MTLResource: Object + DeviceCreated {
-    /// Sets the [cpuCacheMode](https://developer.apple.com/documentation/metal/mtlresource/1516127-cpucachemode?language=objc)
+    /// Gets the [cpuCacheMode](https://developer.apple.com/documentation/metal/mtlresource/1516127-cpucachemode?language=objc)
     /// property of the resource.
-    unsafe fn set_cpu_cache_mode(&self, mode: MTLCPUCacheMode) {
-        msg_send![self.get_ptr(), setCpuCacheMode: mode]
+    unsafe fn get_cpu_cache_mode(&self) -> MTLCPUCacheMode {
+        msg_send![self.get_ptr(), cpuCacheMode]
     }
-    /// Sets the [storageMode](https://developer.apple.com/documentation/metal/mtlresource/1515477-storagemode?language=objc)
+    /// Gets the [storageMode](https://developer.apple.com/documentation/metal/mtlresource/1515477-storagemode?language=objc)
     /// property of the resource.
-    unsafe fn set_storage_mode(&self, mode: MTLStorageMode) {
-        msg_send![self.get_ptr(), setStorageMode: mode]
+    unsafe fn get_storage_mode(&self) -> MTLStorageMode {
+        msg_send![self.get_ptr(), storageMode]
+    }
+    /// Gets the [resourceOptions](https://developer.apple.com/documentation/metal/mtlresource/3131694-resourceoptions?language=objc)
+    /// property of the resource.
+    unsafe fn get_resource_options(&self) -> MTLResourceOptions {
+        MTLResourceOptions {
+            bits: msg_send![self.get_ptr(), resourceOptions]
+        }
     }
     /// Sets the purgeable state of the resource via the
     /// [setPurgeableState](https://developer.apple.com/documentation/metal/mtlresource/1515898-setpurgeablestate?language=objc)

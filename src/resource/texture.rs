@@ -1,8 +1,5 @@
 use crate::import_objc_macros::*;
-use crate::{
-    handle, DeviceCreated, MTLDevice, MTLPixelFormat, MTLRegion, NSUInteger, NSUIntegerRange,
-    Object, ObjectPointer,
-};
+use crate::{handle, DeviceCreated, MTLDevice, MTLPixelFormat, MTLRegion, NSUInteger, NSUIntegerRange, Object, ObjectPointer, MTLResourceOptions, MTLResource};
 use std::os::raw::c_void;
 
 #[repr(u64)]
@@ -44,12 +41,37 @@ impl MTLTextureDescriptor {
     /// Sets the [width](https://developer.apple.com/documentation/metal/mtltexturedescriptor/1515649-width?language=objc)
     /// property of the descriptor.
     pub unsafe fn set_width(&self, width: NSUInteger) {
-        msg_send![self.get_ptr() setWidth:width]
+        msg_send![self.get_ptr(), setWidth:width]
     }
     /// Sets the [height](https://developer.apple.com/documentation/metal/mtltexturedescriptor/1516000-height?language=objc)
     /// property of the descriptor.
     pub unsafe fn set_height(&self, height: NSUInteger) {
         msg_send![self.get_ptr(), setHeight:height]
+    }
+    /// Sets the [depth](https://developer.apple.com/documentation/metal/mtltexturedescriptor/1516298-depth?language=objc)
+    /// property of the descriptor.
+    pub unsafe fn set_depth(&self, depth: NSUInteger) {
+        msg_send![self.get_ptr(), setDepth:depth]
+    }
+    /// Sets the [mipmapLevelCount](https://developer.apple.com/documentation/metal/mtltexturedescriptor/1516300-mipmaplevelcount?language=objc)
+    /// property of the descriptor.
+    pub unsafe fn set_mipmap_level_count(&self, count: NSUInteger) {
+        msg_send![self.get_ptr(), setMipmapLevelCount:count]
+    }
+    /// Sets the [sampleCount](https://developer.apple.com/documentation/metal/mtltexturedescriptor/1516260-samplecount?language=objc)
+    /// property of the descriptor.
+    pub unsafe fn set_sample_count(&self, count: NSUInteger) {
+        msg_send![self.get_ptr(), setSampleCount:count]
+    }
+    /// Sets the [arrayLength](https://developer.apple.com/documentation/metal/mtltexturedescriptor/1515331-arraylength?language=objc)
+    /// property of the descriptor.
+    pub unsafe fn set_array_length(&self, length: NSUInteger) {
+        msg_send![self.get_ptr(), setArrayLength:length]
+    }
+    /// Sets the [resourceOptions](https://developer.apple.com/documentation/metal/mtltexturedescriptor/1515776-resourceoptions?language=objc)
+    /// property of the descriptor.
+    pub unsafe fn set_resource_options(&self, options: MTLResourceOptions) {
+        msg_send![self.get_ptr(), setResourceOptions:options.bits]
     }
 }
 
@@ -146,6 +168,8 @@ impl MTLTexture {
         )
     }
 }
+
+impl MTLResource for MTLTexture {}
 
 impl DeviceCreated for MTLTexture {
     unsafe fn get_device(&self) -> MTLDevice {

@@ -144,6 +144,7 @@ unsafe fn execute() {
             .set_cpu_cache_mode(MTLCPUCacheMode::Default),
     );
     debug(&buffer);
+    log::log!(log::Level::Info, "Buffer's CPU cache mode: {}", buffer.get_cpu_cache_mode() as u64);
     println!(
         "Buffer contents: {:?}",
         &*(buffer.get_contents() as *mut [u8; 8])

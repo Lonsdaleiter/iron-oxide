@@ -1,6 +1,7 @@
 use crate::import_objc_macros::*;
 use crate::{handle, DeviceCreated, MTLDevice, MTLPixelFormat, MTLRegion, NSUInteger, NSUIntegerRange, Object, ObjectPointer, MTLResourceOptions, MTLResource};
 use std::os::raw::c_void;
+use enumflags2::BitFlags;
 
 #[repr(u64)]
 /// The dimension of each image, including whether multiple images
@@ -18,6 +19,18 @@ pub enum MTLTextureType {
     D3 = 7,
     D2MultisampleArray = 8,
     TextureBuffer = 9,
+}
+
+#[derive(BitFlags, Copy, Clone, Debug, PartialEq)]
+#[repr(u64)]
+/// How this texture may be used.
+///
+/// Analogous to [this](https://developer.apple.com/documentation/metal/mtltextureusage?language=objc).
+pub enum MTLTextureUsage {
+    ShaderRead = 0x0001,
+    ShaderWrite = 0x0002,
+    RenderTarget = 0x004,
+    PixelFormatView = 0x0010,
 }
 
 /// Describes a texture.
@@ -72,6 +85,16 @@ impl MTLTextureDescriptor {
     /// property of the descriptor.
     pub unsafe fn set_resource_options(&self, options: MTLResourceOptions) {
         msg_send![self.get_ptr(), setResourceOptions:options.bits]
+    }
+    /// Sets the [allowGPUOptimizedContents](https://developer.apple.com/documentation/metal/mtltexturedescriptor/2966641-allowgpuoptimizedcontents?language=objc)
+    /// property of the descriptor.
+    pub unsafe fn set_allow_gpu_optimized_contents(&self, allow: bool) {
+        msg_send![self.get_ptr(), setAllowGPUOptimizedContents:allow]
+    }
+    /// Sets the [usage](https://developer.apple.com/documentation/metal/mtltexturedescriptor/1515783-usage?language=objc)
+    /// property of the descriptor.
+    pub unsafe fn set_usage(&self, usage: BitFlags<MTLTextureUsage>) {
+        msg_send![self.get_ptr(), setUsage: usage.bits()]
     }
 }
 

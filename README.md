@@ -28,3 +28,5 @@ Backfill List
 - [ ] Querying texture support from an MTLDevice
 - [ ] Texture swizzle patterns
 - [ ] Querying texture data
+- [ ] Shared texture handles
+- [ ] IOSurface

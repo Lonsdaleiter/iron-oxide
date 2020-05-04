@@ -18,12 +18,14 @@ mod library;
 mod misc;
 mod pipeline;
 mod resource;
+mod sampler;
 pub use commandqueue::*;
 pub use device::*;
 pub use library::*;
 pub use misc::*;
 pub use pipeline::*;
 pub use resource::*;
+pub use sampler::*;
 
 pub mod import_objc_macros {
     pub use objc::{class, msg_send, sel, sel_impl};

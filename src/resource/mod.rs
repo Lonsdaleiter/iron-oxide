@@ -91,7 +91,7 @@ pub trait MTLResource: Object + DeviceCreated {
     /// property of the resource.
     unsafe fn get_resource_options(&self) -> MTLResourceOptions {
         MTLResourceOptions {
-            bits: msg_send![self.get_ptr(), resourceOptions]
+            bits: msg_send![self.get_ptr(), resourceOptions],
         }
     }
     /// Sets the purgeable state of the resource via the

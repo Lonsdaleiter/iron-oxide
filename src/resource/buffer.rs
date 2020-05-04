@@ -1,5 +1,8 @@
 use crate::import_objc_macros::*;
-use crate::{handle, DeviceCreated, MTLDevice, NSRange, NSUInteger, NSUIntegerRange, Object, ObjectPointer, MTLResource};
+use crate::{
+    handle, DeviceCreated, MTLDevice, MTLResource, NSRange, NSUInteger, NSUIntegerRange, Object,
+    ObjectPointer,
+};
 use std::os::raw::c_void;
 
 /// A resource which stores data.

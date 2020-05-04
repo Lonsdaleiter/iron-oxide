@@ -144,11 +144,30 @@ unsafe fn execute() {
             .set_cpu_cache_mode(MTLCPUCacheMode::Default),
     );
     debug(&buffer);
-    log::log!(log::Level::Info, "Buffer's CPU cache mode: {}", buffer.get_cpu_cache_mode() as u64);
+    log::log!(
+        log::Level::Info,
+        "Buffer's CPU cache mode: {}",
+        buffer.get_cpu_cache_mode() as u64
+    );
     println!(
         "Buffer contents: {:?}",
         &*(buffer.get_contents() as *mut [u8; 8])
     );
+
+    let texture = device.new_texture_with_descriptor(&{
+        let desc = MTLTextureDescriptor::new();
+        desc.set_width(10);
+        desc.set_height(10);
+        desc.set_usage(MTLTextureUsage::ShaderRead | MTLTextureUsage::ShaderWrite);
+        desc.set_texture_type(MTLTextureType::D2);
+        desc.set_resource_options(
+            MTLResourceOptions::new()
+                .set_storage_mode(MTLStorageMode::Private)
+                .set_cpu_cache_mode(MTLCPUCacheMode::WriteCombined),
+        );
+        desc
+    });
+    debug(&texture);
 }
 
 fn main() {

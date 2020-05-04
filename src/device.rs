@@ -2,7 +2,8 @@ use crate::import_objc_macros::*;
 use crate::{
     handle, Error, MTLBuffer, MTLCommandQueue, MTLCompileOptions, MTLComputePipelineState,
     MTLFunction, MTLLibrary, MTLRenderPipelineDescriptor, MTLRenderPipelineState,
-    MTLResourceOptions, MTLSamplePosition, MTLSize, NSUInteger, Object, ObjectPointer,
+    MTLResourceOptions, MTLSamplePosition, MTLSize, MTLTexture, MTLTextureDescriptor, NSUInteger,
+    Object, ObjectPointer,
 };
 use std::os::raw::c_void;
 
@@ -354,6 +355,17 @@ impl MTLDevice {
     /// instance method.
     pub unsafe fn supports_texture_sample_count(&self, count: NSUInteger) -> bool {
         msg_send![self.get_ptr(), supportsTextureSampleCount: count]
+    }
+    /// Creates a new texture with the given descriptor via the
+    /// [newTextureWithDescriptor](https://developer.apple.com/documentation/metal/mtldevice/1433425-newtexturewithdescriptor?language=objc)
+    /// instance method.
+    pub unsafe fn new_texture_with_descriptor(
+        &self,
+        descriptor: &MTLTextureDescriptor,
+    ) -> MTLTexture {
+        MTLTexture::from_ptr(
+            msg_send![self.get_ptr(), newTextureWithDescriptor:descriptor.get_ptr()],
+        )
     }
 }
 

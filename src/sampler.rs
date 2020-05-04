@@ -1,4 +1,5 @@
 use crate::{ObjectPointer, handle, Object};
+use crate::import_objc_macros::*;
 
 #[repr(u64)]
 /// Determines the texture coordinate at each pixel when a query
@@ -67,6 +68,36 @@ impl MTLSamplerDescriptor {
     /// attribute of the descriptor.
     pub unsafe fn set_border_color(&self, color: MTLSamplerBorderColor) {
         msg_send![self.get_ptr(), setBorderColor:color]
+    }
+    /// Sets the [minFilter](https://developer.apple.com/documentation/metal/mtlsamplerdescriptor/1515792-minfilter?language=objc)
+    /// attribute of the descriptor.
+    pub unsafe fn set_min_filter(&self, filter: MTLSamplerMinMagFilter) {
+        msg_send![self.get_ptr(), setMinFilter:filter]
+    }
+    /// Sets the [magFilter](https://developer.apple.com/documentation/metal/mtlsamplerdescriptor/1515926-magfilter?language=objc)
+    /// attribute of the descriptor.
+    pub unsafe fn set_mag_filter(&self, filter: MTLSamplerMinMagFilter) {
+        msg_send![self.get_ptr(), setMagFilter:filter]
+    }
+    /// Sets the [mipFilter](https://developer.apple.com/documentation/metal/mtlsamplerdescriptor/1515553-mipfilter?language=objc)
+    /// attribute of the descriptor.
+    pub unsafe fn set_map_filter(&self, filter: MTLSamplerMinMagFilter) {
+        msg_send![self.get_ptr(), setMipFilter:filter]
+    }
+    /// Sets the [lodMinClamp](https://developer.apple.com/documentation/metal/mtlsamplerdescriptor/1515629-lodminclamp?language=objc)
+    /// attribute of the descriptor.
+    pub unsafe fn set_lod_min_clamp(&self, clamp: f32) {
+        msg_send![self.get_ptr(), setLodMinClamp:clamp]
+    }
+    /// Sets the [lodMaxClamp](https://developer.apple.com/documentation/metal/mtlsamplerdescriptor/1516234-lodmaxclamp?language=objc)
+    /// attribute of the descriptor.
+    pub unsafe fn set_lod_max_clamp(&self, clamp: f32) {
+        msg_send![self.get_ptr(), setLodMaxClamp:clamp]
+    }
+    /// Sets the [lodAverage](https://developer.apple.com/documentation/metal/mtlsamplerdescriptor/1615844-lodaverage?language=objc)
+    /// attribute of the descriptor.
+    pub unsafe fn set_lod_average(&self, average: bool) {
+        msg_send![self.get_ptr(), setLodAverage:average]
     }
 }
 

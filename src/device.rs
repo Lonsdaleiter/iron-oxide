@@ -367,6 +367,9 @@ impl MTLDevice {
             msg_send![self.get_ptr(), newTextureWithDescriptor:descriptor.get_ptr()],
         )
     }
+    /// Creates a new sampler with the given descriptor via the
+    /// [newSamplerStateWithDescriptor](https://developer.apple.com/documentation/metal/mtldevice/1433408-newsamplerstatewithdescriptor?language=objc)
+    /// instance method.
     pub unsafe fn new_sampler_state_with_descriptor(
         &self,
         desc: &MTLSamplerDescriptor,

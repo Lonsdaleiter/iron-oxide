@@ -13,6 +13,7 @@ use objc::Message;
 use std::ops::Deref;
 
 mod commandqueue;
+mod depthstencil;
 mod device;
 mod library;
 mod misc;
@@ -20,6 +21,7 @@ mod pipeline;
 mod resource;
 mod sampler;
 pub use commandqueue::*;
+pub use depthstencil::*;
 pub use device::*;
 pub use library::*;
 pub use misc::*;

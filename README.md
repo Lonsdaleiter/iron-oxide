@@ -21,7 +21,6 @@ Backfill List
 - [ ] Compute pipeline descriptor
 - [ ] Hazard tracking mode
 - [ ] Resource mode
-- [ ] Heaps
 - [ ] Making a texture from a buffer
 - [ ] Debug markers for buffers
 - [ ] Remote storage buffers for synchronizing over multiple GPUs
@@ -30,3 +29,9 @@ Backfill List
 - [ ] Querying texture data
 - [ ] Shared texture handles
 - [ ] IOSurface
+- [ ] Argument buffers + arg buffer encoders
+- [ ] Heaps
+- [ ] Sparse tiles / tiles
+- [ ] Rasteriaztion rate maps
+- [ ] Sample timestamps
+- [ ] Counter sample buffers

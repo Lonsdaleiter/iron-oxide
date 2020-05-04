@@ -168,6 +168,12 @@ unsafe fn execute() {
         desc
     });
     debug(&texture);
+
+    let sampler = device.new_sampler_state_with_descriptor(&{
+        let desc = MTLSamplerDescriptor::new();
+        desc
+    });
+    debug(&sampler);
 }
 
 fn main() {

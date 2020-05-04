@@ -23,6 +23,22 @@ pub unsafe fn debug<T: Object>(obj: &T) {
     log::log!(log::Level::Info, "Description = {}", description);
 }
 
+#[repr(u64)]
+/// Describes how a sample operation should be evaluated: when the incoming fragment should
+/// replace the old fragment.
+///
+/// Analogous to [this](https://developer.apple.com/documentation/metal/mtlcomparefunction?language=objc).
+pub enum MTLCompareFunction {
+    Never = 0,
+    Less = 1,
+    Equal = 2,
+    LessEqual = 3,
+    Greater = 4,
+    NotEqual = 5,
+    GreaterEqual = 6,
+    Always = 7,
+}
+
 #[allow(non_camel_case_types)]
 #[repr(u64)]
 /// An enumeration of the ways in which per-pixel data can be interpreted.

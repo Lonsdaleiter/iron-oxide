@@ -2,8 +2,8 @@ use crate::import_objc_macros::*;
 use crate::{
     handle, Error, MTLBuffer, MTLCommandQueue, MTLCompileOptions, MTLComputePipelineState,
     MTLFunction, MTLLibrary, MTLRenderPipelineDescriptor, MTLRenderPipelineState,
-    MTLResourceOptions, MTLSamplePosition, MTLSize, MTLTexture, MTLTextureDescriptor, NSUInteger,
-    Object, ObjectPointer,
+    MTLResourceOptions, MTLSamplePosition, MTLSamplerDescriptor, MTLSamplerState, MTLSize,
+    MTLTexture, MTLTextureDescriptor, NSUInteger, Object, ObjectPointer,
 };
 use std::os::raw::c_void;
 
@@ -365,6 +365,14 @@ impl MTLDevice {
     ) -> MTLTexture {
         MTLTexture::from_ptr(
             msg_send![self.get_ptr(), newTextureWithDescriptor:descriptor.get_ptr()],
+        )
+    }
+    pub unsafe fn new_sampler_state_with_descriptor(
+        &self,
+        desc: &MTLSamplerDescriptor,
+    ) -> MTLSamplerState {
+        MTLSamplerState::from_ptr(
+            msg_send![self.get_ptr(), newSamplerStateWithDescriptor:desc.get_ptr()],
         )
     }
 }

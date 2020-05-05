@@ -1,1 +1,44 @@
+use crate::{ObjectPointer, handle, Object, MTLCompareFunction};
+use crate::import_objc_macros::*;
 
+/// Describes a stencil face.
+///
+/// Will send to its pointer only the messages specified in the MTLStencilDescriptor interface
+/// linked [here](https://developer.apple.com/documentation/metal/mtlstencildescriptor?language=objc).
+pub struct MTLStencilDescriptor(ObjectPointer);
+handle!(MTLStencilDescriptor);
+
+/// Describes a depth stencil state.
+///
+/// Will send to its pointer only the messages specified in the MTLDepthStencilDescriptor interface
+/// linked [here](https://developer.apple.com/documentation/metal/mtldepthstencildescriptor?language=objc).
+pub struct MTLDepthStencilDescriptor(ObjectPointer);
+handle!(MTLDepthStencilDescriptor);
+
+impl MTLDepthStencilDescriptor {
+    /// Creates a new MTLDepthStencilDescriptor with standard allocation and initialization.
+    pub unsafe fn new() -> MTLDepthStencilDescriptor {
+        MTLDepthStencilDescriptor::from_ptr(msg_send![class!(MTLDepthStencilDescriptor), new])
+    }
+    /// Sets the [depthCompareFunction](https://developer.apple.com/documentation/metal/mtldepthstencildescriptor/1462463-depthcomparefunction?language=objc)
+    /// attribute of the descriptor.
+    pub unsafe fn set_depth_compare_function(&self, function: MTLCompareFunction) {
+        msg_send![self.get_ptr(), setDepthCompareFunction:function]
+    }
+    /// Sets the [depthWriteEnabled](https://developer.apple.com/documentation/metal/mtldepthstencildescriptor/1462501-depthwriteenabled?language=objc)
+    /// attribute of the descriptor.
+    pub unsafe fn set_depth_write_enabled(&self, enabled: bool) {
+        msg_send![self.get_ptr(), setDepthWriteEnabled:enabled]
+    }
+}
+
+impl Object for MTLDepthStencilDescriptor {
+    unsafe fn from_ptr(ptr: ObjectPointer) -> Self where
+        Self: Sized {
+        MTLDepthStencilDescriptor(ptr)
+    }
+
+    fn get_ptr(&self) -> ObjectPointer {
+        self.0
+    }
+}

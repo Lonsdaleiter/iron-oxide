@@ -1,6 +1,21 @@
 use crate::{ObjectPointer, handle, Object, MTLCompareFunction};
 use crate::import_objc_macros::*;
 
+#[repr(u64)]
+/// The option performed on a stored stencil value when a test passes or fails.
+///
+/// Analogous to [this](https://developer.apple.com/documentation/metal/mtlstenciloperation?language=objc).
+pub enum MTLStencilOperation {
+    Keep = 0,
+    Zero = 1,
+    Replace = 2,
+    IncrementClamp = 3,
+    DecrementClamp = 4,
+    Invert = 5,
+    IncrementWrap = 6,
+    DecrementWrap = 7,
+}
+
 /// Describes a stencil face.
 ///
 /// Will send to its pointer only the messages specified in the MTLStencilDescriptor interface

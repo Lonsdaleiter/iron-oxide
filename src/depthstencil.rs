@@ -23,6 +23,35 @@ pub enum MTLStencilOperation {
 pub struct MTLStencilDescriptor(ObjectPointer);
 handle!(MTLStencilDescriptor);
 
+impl MTLStencilDescriptor {
+    /// Sets the [stencilFailureOperation](https://developer.apple.com/documentation/metal/mtlstencildescriptor/1462471-stencilfailureoperation?language=objc)
+    /// attribute of the descriptor.
+    pub unsafe fn set_stencil_fail_operation(&self, operation: MTLStencilOperation) {
+        msg_send![self.get_ptr(), setStencilFailureOperation:operation]
+    }
+    /// Sets the [depthFailureOperation](https://developer.apple.com/documentation/metal/mtlstencildescriptor/1462500-depthfailureoperation?language=objc)
+    /// attribute of the descriptor.
+    pub unsafe fn set_depth_fail_operation(&self, operation: MTLStencilOperation) {
+        msg_send![self.get_ptr(), setDepthFailureOperation:operation]
+    }
+    /// Sets the [depthStencilPassOperation](https://developer.apple.com/documentation/metal/mtlstencildescriptor/1462486-depthstencilpassoperation?language=objc)
+    /// attribute of the descriptor.
+    pub unsafe fn set_depth_stencil_pass_operation(&self, operation: MTLStencilOperation) {
+        msg_send![self.get_ptr(), setDepthStencilPassOperation:operation]
+    }
+}
+
+impl Object for MTLStencilDescriptor {
+    unsafe fn from_ptr(ptr: ObjectPointer) -> Self where
+        Self: Sized {
+        MTLStencilDescriptor(ptr)
+    }
+
+    fn get_ptr(&self) -> ObjectPointer {
+        self.0
+    }
+}
+
 /// Describes a depth stencil state.
 ///
 /// Will send to its pointer only the messages specified in the MTLDepthStencilDescriptor interface

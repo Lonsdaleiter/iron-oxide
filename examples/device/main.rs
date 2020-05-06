@@ -174,6 +174,14 @@ unsafe fn execute() {
         desc
     });
     debug(&sampler);
+
+    let depth_stencil = device.new_depth_stencil_state_with_descriptor(&{
+        let desc = MTLDepthStencilDescriptor::new();
+        desc.set_depth_write_enabled(true);
+        desc.set_depth_compare_function(MTLCompareFunction::Less);
+        desc
+    });
+    debug(&depth_stencil);
 }
 
 fn main() {

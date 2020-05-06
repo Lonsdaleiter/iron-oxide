@@ -5,6 +5,7 @@ Unsafe Rusty [Metal](https://developer.apple.com/documentation/metal?language=ob
 
 Backfill List
 -
+- [ ] Make the docs more consistent in style + content
 - [ ] MTLDevice Mojave / Catalina behavior
 - [ ] Fence + event stuff
 - [ ] MTLFunctionConstantValues

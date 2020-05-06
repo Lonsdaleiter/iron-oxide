@@ -42,7 +42,10 @@ impl MTLResource for MTLBuffer {}
 
 impl DeviceCreated for MTLBuffer {
     unsafe fn get_device(&self) -> MTLDevice {
-        MTLDevice::from_ptr(msg_send![self.get_ptr(), device])
+        MTLDevice::from_ptr({
+            let k = ObjectPointer(msg_send![self.get_ptr(), device]);
+            msg_send![k, retain]
+        })
     }
 }
 

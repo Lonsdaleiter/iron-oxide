@@ -134,6 +134,9 @@ impl Object for MTLDepthStencilState {
 
 impl DeviceCreated for MTLDepthStencilState {
     unsafe fn get_device(&self) -> MTLDevice {
-        MTLDevice::from_ptr(msg_send![self.get_ptr(), device])
+        MTLDevice::from_ptr({
+            let k = ObjectPointer(msg_send![self.get_ptr(), device]);
+            msg_send![k, retain]
+        })
     }
 }

@@ -93,8 +93,9 @@ unsafe fn execute() {
         }
     );
 
-    let _queue = device.new_command_queue();
-    let _l = device.new_library_with_source(include_str!("quad.metal"), &MTLCompileOptions::new());
+    let queue = device.new_command_queue();
+    debug(&queue);
+
     let library = device
         .new_library_with_data(include_bytes!("quad.metallib"))
         .unwrap();
@@ -129,7 +130,6 @@ unsafe fn execute() {
                 | MTLColorWriteMask::Blue
                 | MTLColorWriteMask::Alpha,
         );
-        debug(&primary_color_attachment);
         primary_color_attachment
     });
     let render_pipeline = device

@@ -49,72 +49,72 @@ impl MTLSamplerDescriptor {
         MTLSamplerDescriptor::from_ptr(msg_send![class!(MTLSamplerDescriptor), new])
     }
     /// Sets the [normalizedCoords](https://developer.apple.com/documentation/metal/mtlsamplerdescriptor/1516289-normalizedcoordinates?language=objc)
-    /// attribute of the descriptor.
+    /// property of the descriptor.
     pub unsafe fn set_normalized_coords(&self, normalized: bool) {
         msg_send![self.get_ptr(), setNormalizedCoordinates: normalized]
     }
     /// Sets the [rAddressMode](https://developer.apple.com/documentation/metal/mtlsamplerdescriptor/1515466-raddressmode?language=objc)
-    /// attribute of the descriptor.
+    /// property of the descriptor.
     pub unsafe fn set_r_address_mode(&self, mode: MTLSamplerAddressMode) {
         msg_send![self.get_ptr(), setRAddressMode: mode]
     }
     /// Sets the [sAddressMode](https://developer.apple.com/documentation/metal/mtlsamplerdescriptor/1515779-saddressmode?language=objc)
-    /// attribute of the descriptor.
+    /// property of the descriptor.
     pub unsafe fn set_s_address_mode(&self, mode: MTLSamplerAddressMode) {
         msg_send![self.get_ptr(), setSAddressMode: mode]
     }
     /// Sets the [tAddressMode](https://developer.apple.com/documentation/metal/mtlsamplerdescriptor/1515900-taddressmode?language=objc)
-    /// attribute of the descriptor.
+    /// property of the descriptor.
     pub unsafe fn set_t_address_mode(&self, mode: MTLSamplerAddressMode) {
         msg_send![self.get_ptr(), setTAddressMode: mode]
     }
     /// Sets the [borderColor](https://developer.apple.com/documentation/metal/mtlsamplerdescriptor/2092299-bordercolor?language=objc)
-    /// attribute of the descriptor.
+    /// property of the descriptor.
     pub unsafe fn set_border_color(&self, color: MTLSamplerBorderColor) {
         msg_send![self.get_ptr(), setBorderColor: color]
     }
     /// Sets the [minFilter](https://developer.apple.com/documentation/metal/mtlsamplerdescriptor/1515792-minfilter?language=objc)
-    /// attribute of the descriptor.
+    /// property of the descriptor.
     pub unsafe fn set_min_filter(&self, filter: MTLSamplerMinMagFilter) {
         msg_send![self.get_ptr(), setMinFilter: filter]
     }
     /// Sets the [magFilter](https://developer.apple.com/documentation/metal/mtlsamplerdescriptor/1515926-magfilter?language=objc)
-    /// attribute of the descriptor.
+    /// property of the descriptor.
     pub unsafe fn set_mag_filter(&self, filter: MTLSamplerMinMagFilter) {
         msg_send![self.get_ptr(), setMagFilter: filter]
     }
     /// Sets the [mipFilter](https://developer.apple.com/documentation/metal/mtlsamplerdescriptor/1515553-mipfilter?language=objc)
-    /// attribute of the descriptor.
+    /// property of the descriptor.
     pub unsafe fn set_map_filter(&self, filter: MTLSamplerMinMagFilter) {
         msg_send![self.get_ptr(), setMipFilter: filter]
     }
     /// Sets the [lodMinClamp](https://developer.apple.com/documentation/metal/mtlsamplerdescriptor/1515629-lodminclamp?language=objc)
-    /// attribute of the descriptor.
+    /// property of the descriptor.
     pub unsafe fn set_lod_min_clamp(&self, clamp: f32) {
         msg_send![self.get_ptr(), setLodMinClamp: clamp]
     }
     /// Sets the [lodMaxClamp](https://developer.apple.com/documentation/metal/mtlsamplerdescriptor/1516234-lodmaxclamp?language=objc)
-    /// attribute of the descriptor.
+    /// property of the descriptor.
     pub unsafe fn set_lod_max_clamp(&self, clamp: f32) {
         msg_send![self.get_ptr(), setLodMaxClamp: clamp]
     }
     /// Sets the [lodAverage](https://developer.apple.com/documentation/metal/mtlsamplerdescriptor/1615844-lodaverage?language=objc)
-    /// attribute of the descriptor.
+    /// property of the descriptor.
     pub unsafe fn set_lod_average(&self, average: bool) {
         msg_send![self.get_ptr(), setLodAverage: average]
     }
     /// Sets the [maxAnisotropy](https://developer.apple.com/documentation/metal/mtlsamplerdescriptor/1516164-maxanisotropy?language=objc)
-    /// attribute of the descriptor.
+    /// property of the descriptor.
     pub unsafe fn set_max_anisotropy(&self, max: NSUInteger) {
         msg_send![self.get_ptr(), setMaxAnisotropy: max]
     }
     /// Sets the [compareFunction](https://developer.apple.com/documentation/metal/mtlsamplerdescriptor/1516001-comparefunction?language=objc)
-    /// attribute of the descriptor.
+    /// property of the descriptor.
     pub unsafe fn set_compare_function(&self, function: MTLCompareFunction) {
         msg_send![self.get_ptr(), setCompareFunction: function]
     }
     /// Sets the [supportArgumentBuffers](https://developer.apple.com/documentation/metal/mtlsamplerdescriptor/2915782-supportargumentbuffers?language=objc)
-    /// attribute of the descriptor.
+    /// property of the descriptor.
     pub unsafe fn set_supports_argument_buffers(&self, supports: bool) {
         msg_send![self.get_ptr(), setSupportArgumentBuffers: supports]
     }

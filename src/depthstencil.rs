@@ -25,19 +25,29 @@ handle!(MTLStencilDescriptor);
 
 impl MTLStencilDescriptor {
     /// Sets the [stencilFailureOperation](https://developer.apple.com/documentation/metal/mtlstencildescriptor/1462471-stencilfailureoperation?language=objc)
-    /// attribute of the descriptor.
+    /// property of the descriptor.
     pub unsafe fn set_stencil_fail_operation(&self, operation: MTLStencilOperation) {
         msg_send![self.get_ptr(), setStencilFailureOperation:operation]
     }
     /// Sets the [depthFailureOperation](https://developer.apple.com/documentation/metal/mtlstencildescriptor/1462500-depthfailureoperation?language=objc)
-    /// attribute of the descriptor.
+    /// property of the descriptor.
     pub unsafe fn set_depth_fail_operation(&self, operation: MTLStencilOperation) {
         msg_send![self.get_ptr(), setDepthFailureOperation:operation]
     }
     /// Sets the [depthStencilPassOperation](https://developer.apple.com/documentation/metal/mtlstencildescriptor/1462486-depthstencilpassoperation?language=objc)
-    /// attribute of the descriptor.
+    /// property of the descriptor.
     pub unsafe fn set_depth_stencil_pass_operation(&self, operation: MTLStencilOperation) {
         msg_send![self.get_ptr(), setDepthStencilPassOperation:operation]
+    }
+    /// Sets the [readMask](https://developer.apple.com/documentation/metal/mtlstencildescriptor/1462465-readmask?language=objc)
+    /// property of the descriptor.
+    pub unsafe fn set_read_mask(&self, mask: u32) {
+        msg_send![self.get_ptr(), setReadMask:mask]
+    }
+    /// Sets the [writeMask](https://developer.apple.com/documentation/metal/mtlstencildescriptor/1462496-writemask?language=objc)
+    /// property of the descriptor.
+    pub unsafe fn set_write_mask(&self, mask: u32) {
+        msg_send![self.get_ptr(), setWriteMask:mask]
     }
 }
 
@@ -65,14 +75,24 @@ impl MTLDepthStencilDescriptor {
         MTLDepthStencilDescriptor::from_ptr(msg_send![class!(MTLDepthStencilDescriptor), new])
     }
     /// Sets the [depthCompareFunction](https://developer.apple.com/documentation/metal/mtldepthstencildescriptor/1462463-depthcomparefunction?language=objc)
-    /// attribute of the descriptor.
+    /// property of the descriptor.
     pub unsafe fn set_depth_compare_function(&self, function: MTLCompareFunction) {
         msg_send![self.get_ptr(), setDepthCompareFunction:function]
     }
     /// Sets the [depthWriteEnabled](https://developer.apple.com/documentation/metal/mtldepthstencildescriptor/1462501-depthwriteenabled?language=objc)
-    /// attribute of the descriptor.
+    /// property of the descriptor.
     pub unsafe fn set_depth_write_enabled(&self, enabled: bool) {
         msg_send![self.get_ptr(), setDepthWriteEnabled:enabled]
+    }
+    /// Sets the [backFaceStencil](https://developer.apple.com/documentation/metal/mtldepthstencildescriptor/1462507-backfacestencil?language=objc)
+    /// property of the descriptor.
+    pub unsafe fn set_back_face_stencil(&self, stencil: &MTLStencilDescriptor) {
+        msg_send![self.get_ptr(), setBackFaceStencil:stencil.get_ptr()]
+    }
+    /// Sets the [frontFaceStencil](https://developer.apple.com/documentation/metal/mtldepthstencildescriptor/1462476-frontfacestencil?language=objc)
+    /// property of the descriptor.
+    pub unsafe fn set_front_face_stencil(&self, stencil: &MTLStencilDescriptor) {
+        msg_send![self.get_ptr(), setFrontFaceStencil:stencil.get_ptr()]
     }
 }
 

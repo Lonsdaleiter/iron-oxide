@@ -1,7 +1,6 @@
 use crate::import_objc_macros::*;
 use crate::{
-    handle, Array, DeviceCreated, MTLDevice, MTLFunction, MTLPixelFormat, NSUInteger, Object,
-    ObjectPointer,
+    handle, Array, DeviceCreated, MTLFunction, MTLPixelFormat, NSUInteger, Object, ObjectPointer,
 };
 use enumflags2::BitFlags;
 
@@ -300,14 +299,7 @@ impl MTLRenderPipelineState {
     //
 }
 
-impl DeviceCreated for MTLRenderPipelineState {
-    unsafe fn get_device(&self) -> MTLDevice {
-        MTLDevice::from_ptr({
-            let k = ObjectPointer(msg_send![self.get_ptr(), device]);
-            msg_send![k, retain]
-        })
-    }
-}
+impl DeviceCreated for MTLRenderPipelineState {}
 
 impl Object for MTLRenderPipelineState {
     unsafe fn from_ptr(ptr: ObjectPointer) -> Self

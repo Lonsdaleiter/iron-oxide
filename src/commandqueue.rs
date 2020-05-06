@@ -1,5 +1,5 @@
 use crate::import_objc_macros::*;
-use crate::{handle, DeviceCreated, MTLDevice, Object, ObjectPointer};
+use crate::{handle, DeviceCreated, Object, ObjectPointer};
 
 /// A queue which organizes command buffers to be executed by a GPU.
 ///
@@ -21,11 +21,4 @@ impl Object for MTLCommandQueue {
     }
 }
 
-impl DeviceCreated for MTLCommandQueue {
-    unsafe fn get_device(&self) -> MTLDevice {
-        MTLDevice::from_ptr({
-            let k = ObjectPointer(msg_send![self.get_ptr(), device]);
-            msg_send![k, retain]
-        })
-    }
-}
+impl DeviceCreated for MTLCommandQueue {}

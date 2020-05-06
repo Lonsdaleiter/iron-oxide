@@ -405,5 +405,13 @@ impl Object for MTLDevice {
 /// Implemented on Objects which were created by and are bound to a particular MTLDevice.
 pub trait DeviceCreated: Object {
     /// Returns a reference to the device which created this object.
-    unsafe fn get_device(&self) -> MTLDevice;
+    unsafe fn get_device(&self) -> Option<MTLDevice> {
+        use crate::import_objc_macros::*;
+        let d = ObjectPointer(msg_send![self.get_ptr(), device]);
+        if d.0.is_null() {
+            None
+        } else {
+            Some(MTLDevice::from_ptr(d))
+        }
+    }
 }

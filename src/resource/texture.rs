@@ -1,7 +1,7 @@
 use crate::import_objc_macros::*;
 use crate::{
-    handle, DeviceCreated, MTLDevice, MTLPixelFormat, MTLRegion, MTLResource, MTLResourceOptions,
-    NSUInteger, NSUIntegerRange, Object, ObjectPointer,
+    handle, DeviceCreated, MTLPixelFormat, MTLRegion, MTLResource, MTLResourceOptions, NSUInteger,
+    NSUIntegerRange, Object, ObjectPointer,
 };
 use enumflags2::BitFlags;
 use std::os::raw::c_void;
@@ -201,14 +201,7 @@ impl MTLTexture {
 
 impl MTLResource for MTLTexture {}
 
-impl DeviceCreated for MTLTexture {
-    unsafe fn get_device(&self) -> MTLDevice {
-        MTLDevice::from_ptr({
-            let k = ObjectPointer(msg_send![self.get_ptr(), device]);
-            msg_send![k, retain]
-        })
-    }
-}
+impl DeviceCreated for MTLTexture {}
 
 impl Object for MTLTexture {
     unsafe fn from_ptr(ptr: ObjectPointer) -> Self

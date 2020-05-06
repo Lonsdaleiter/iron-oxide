@@ -1,5 +1,5 @@
 use crate::import_objc_macros::*;
-use crate::{handle, DeviceCreated, MTLDevice, NSUInteger, Object, ObjectPointer};
+use crate::{handle, DeviceCreated, NSUInteger, Object, ObjectPointer};
 
 /// A collection of MSL shader functions.
 ///
@@ -61,14 +61,7 @@ impl Object for MTLLibrary {
     }
 }
 
-impl DeviceCreated for MTLLibrary {
-    unsafe fn get_device(&self) -> MTLDevice {
-        MTLDevice::from_ptr({
-            let k = ObjectPointer(msg_send![self.get_ptr(), device]);
-            msg_send![k, retain]
-        })
-    }
-}
+impl DeviceCreated for MTLLibrary {}
 
 #[repr(u64)]
 /// The type of an MSL shader function.
@@ -120,14 +113,7 @@ impl Object for MTLFunction {
     }
 }
 
-impl DeviceCreated for MTLFunction {
-    unsafe fn get_device(&self) -> MTLDevice {
-        MTLDevice::from_ptr({
-            let k = ObjectPointer(msg_send![self.get_ptr(), device]);
-            msg_send![k, retain]
-        })
-    }
-}
+impl DeviceCreated for MTLFunction {}
 
 #[repr(u64)]
 /// MSL versions.

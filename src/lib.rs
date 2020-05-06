@@ -12,6 +12,7 @@ use log::Level;
 use objc::Message;
 use std::ops::Deref;
 
+mod commandbuffer;
 mod commandqueue;
 mod depthstencil;
 mod device;
@@ -20,6 +21,7 @@ mod misc;
 mod pipeline;
 mod resource;
 mod sampler;
+pub use commandbuffer::*;
 pub use commandqueue::*;
 pub use depthstencil::*;
 pub use device::*;

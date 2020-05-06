@@ -1,5 +1,5 @@
 use crate::import_objc_macros::*;
-use crate::{handle, DeviceCreated, MTLCompareFunction, MTLDevice, Object, ObjectPointer};
+use crate::{handle, DeviceCreated, MTLCompareFunction, Object, ObjectPointer};
 
 #[repr(u64)]
 /// The option performed on a stored stencil value when a test passes or fails.
@@ -132,11 +132,4 @@ impl Object for MTLDepthStencilState {
     }
 }
 
-impl DeviceCreated for MTLDepthStencilState {
-    unsafe fn get_device(&self) -> MTLDevice {
-        MTLDevice::from_ptr({
-            let k = ObjectPointer(msg_send![self.get_ptr(), device]);
-            msg_send![k, retain]
-        })
-    }
-}
+impl DeviceCreated for MTLDepthStencilState {}

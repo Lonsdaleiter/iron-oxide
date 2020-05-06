@@ -1,9 +1,10 @@
 use crate::import_objc_macros::*;
 use crate::{
     handle, Error, MTLBuffer, MTLCommandQueue, MTLCompileOptions, MTLComputePipelineState,
-    MTLFunction, MTLLibrary, MTLRenderPipelineDescriptor, MTLRenderPipelineState,
-    MTLResourceOptions, MTLSamplePosition, MTLSamplerDescriptor, MTLSamplerState, MTLSize,
-    MTLTexture, MTLTextureDescriptor, NSUInteger, Object, ObjectPointer,
+    MTLDepthStencilDescriptor, MTLDepthStencilState, MTLFunction, MTLLibrary,
+    MTLRenderPipelineDescriptor, MTLRenderPipelineState, MTLResourceOptions, MTLSamplePosition,
+    MTLSamplerDescriptor, MTLSamplerState, MTLSize, MTLTexture, MTLTextureDescriptor, NSUInteger,
+    Object, ObjectPointer,
 };
 use std::os::raw::c_void;
 
@@ -376,6 +377,17 @@ impl MTLDevice {
     ) -> MTLSamplerState {
         MTLSamplerState::from_ptr(
             msg_send![self.get_ptr(), newSamplerStateWithDescriptor:desc.get_ptr()],
+        )
+    }
+    /// Creates a new depth stencil state with the given descriptor via the
+    /// [newDepthStencilStateWithDescriptor](https://developer.apple.com/documentation/metal/mtldevice/1433412-newdepthstencilstatewithdescript?language=objc)
+    /// instance method.
+    pub unsafe fn new_depth_stencil_state_with_descriptor(
+        &self,
+        desc: &MTLDepthStencilDescriptor,
+    ) -> MTLDepthStencilState {
+        MTLDepthStencilState::from_ptr(
+            msg_send![self.get_ptr(), newDepthStencilStateWithDescriptor:desc.get_ptr()],
         )
     }
 }

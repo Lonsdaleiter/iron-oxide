@@ -35,16 +35,9 @@ pub mod import_objc_macros {
     pub use objc::{class, msg_send, sel, sel_impl};
 }
 
-/// Represents either an error, a `T`, or a warning and a `T`.
-///
-/// When there is a Metal function or method which takes a pointer to an error,
-/// the bound Rust function or method will return an `Error`.
 pub enum Error<'a, T> {
-    /// The operation succeeded.
     None(T),
-    /// The operation succeeded but a warning was produced.
     Warn(T, &'a str),
-    /// The operation failed.
     Error(&'a str),
 }
 
@@ -63,7 +56,6 @@ impl<'a, T> Error<'a, T> {
 
 #[derive(Copy, Clone)]
 #[repr(C)]
-/// A messageable wrapper around a pointer to an Objective-C object.
 pub struct ObjectPointer(pub *mut objc::runtime::Object);
 impl Deref for ObjectPointer {
     type Target = objc::runtime::Object;
@@ -74,9 +66,7 @@ impl Deref for ObjectPointer {
 }
 unsafe impl Message for ObjectPointer {}
 
-/// Trait used for representing interfaces of the form MTL(something)Array.
 pub trait Array<T: Object>: Object {
-    /// Sets the parameter at the provided index.
     unsafe fn set_object_at_indexed_subscript(&self, index: NSUInteger, obj: &T) {
         use crate::import_objc_macros::*;
         msg_send![self.get_ptr(), setObject:obj.get_ptr() atIndexedSubscript:index]
@@ -103,11 +93,11 @@ pub trait Object: Drop {
     fn get_ptr(&self) -> ObjectPointer;
 }
 
-/// Aliased exclusively so that, should the watchOS target be added to Rust, NSInteger can handle
-/// watchOS' 32-bit architecture.
+/// Aliased exclusively so that, should the watchOS target be added to Rust, NSInteger can
+/// conform to watchOS' 32-bit architecture.
 pub type NSInteger = i64;
-/// Aliased exclusively so that, should the watchOS target be added to Rust, NSUInteger can handle
-/// watchOS' 32-bit architecture.
+/// Aliased exclusively so that, should the watchOS target be added to Rust, NSUInteger can
+/// conform to watchOS' 32-bit architecture.
 pub type NSUInteger = u64;
 
 #[macro_export]

@@ -7,42 +7,24 @@ pub use buffer::*;
 pub use texture::*;
 
 #[repr(u64)]
-/// Options for CPU cache mode defining the CPU mapping of the resource.
-///
-/// Analogous to [this](https://developer.apple.com/documentation/metal/mtlcpucachemode?language=objc).
 pub enum MTLCPUCacheMode {
     Default = 0,
-    /// Optimized for writes by the CPU. Reads may be inefficient.
     WriteCombined = 1,
 }
 
 #[repr(u64)]
-/// Options for the memory location and access permissions for a resource.
-///
-/// Analogous to [this](https://developer.apple.com/documentation/metal/mtlstoragemode?language=objc).
 pub enum MTLStorageMode {
-    /// System memory is used. Both the GPU and CPU may access it.
     Shared = 0,
-    /// The GPU and CPU maintain separate copies which must be explicitly synchronized. macOS only.
     Managed = 1,
-    /// Only the GPU may access the resource.
     Private = 2,
-    /// Only the GPU may access the resource and only during a single render pass. iOS only.
     Memoryless = 3,
 }
 
 #[repr(u64)]
-/// The purgeable state of a resource.
-///
-/// Analogous to [this](https://developer.apple.com/documentation/metal/mtlpurgeablestate?language=objc).
 pub enum MTLPurgeableState {
-    /// The state is queried but doesn't change.
     KeepCurrent = 1,
-    /// The contents of the resource may not be discarded.
     NonVolatile = 2,
-    /// The resource may be discarded.
     Volatile = 3,
-    /// The contents of the resource may be or are discarded.
     Empty = 4,
 }
 

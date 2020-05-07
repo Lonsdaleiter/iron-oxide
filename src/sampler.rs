@@ -2,10 +2,6 @@ use crate::import_objc_macros::*;
 use crate::{handle, MTLCompareFunction, NSUInteger, Object, ObjectPointer};
 
 #[repr(u64)]
-/// Determines the texture coordinate at each pixel when a query
-/// falls outside of a texture's bounds.
-///
-/// Analogous to [this](https://developer.apple.com/documentation/metal/mtlsampleraddressmode?language=objc).
 pub enum MTLSamplerAddressMode {
     ClampToEdge = 0,
     MirrorClampToEdge = 1,
@@ -16,8 +12,6 @@ pub enum MTLSamplerAddressMode {
 }
 
 #[repr(u64)]
-/// Describes colors for out-of-bounds texture values when the chosen MTLSamplerAddressMode
-/// is ClampToBorderColor.
 pub enum MTLSamplerBorderColor {
     /// 0, 0, 0, 0,
     TransparentBlack = 0,
@@ -28,93 +22,57 @@ pub enum MTLSamplerBorderColor {
 }
 
 #[repr(u64)]
-/// Options for determining which pixel value is returned within a mipmap level.
 pub enum MTLSamplerMinMagFilter {
-    /// The nearest pixel to the sample point.
     Nearest = 0,
-    /// Select 2 pixels per dimension and linearly interpolate.
     Linear = 1,
 }
 
-/// Describes a sampler which samples textures.
-///
-/// Will send to its pointer only messages specified in theMTLSamplerDescriptor interface
-/// linked [here](https://developer.apple.com/documentation/metal/mtlsamplerdescriptor?language=objc).
 pub struct MTLSamplerDescriptor(ObjectPointer);
 handle!(MTLSamplerDescriptor);
 
 impl MTLSamplerDescriptor {
-    /// Creates a new MTLSamplerDescriptor with standard allocation and initialization.
     pub unsafe fn new() -> MTLSamplerDescriptor {
         MTLSamplerDescriptor::from_ptr(msg_send![class!(MTLSamplerDescriptor), new])
     }
-    /// Sets the [normalizedCoords](https://developer.apple.com/documentation/metal/mtlsamplerdescriptor/1516289-normalizedcoordinates?language=objc)
-    /// property of the descriptor.
     pub unsafe fn set_normalized_coords(&self, normalized: bool) {
         msg_send![self.get_ptr(), setNormalizedCoordinates: normalized]
     }
-    /// Sets the [rAddressMode](https://developer.apple.com/documentation/metal/mtlsamplerdescriptor/1515466-raddressmode?language=objc)
-    /// property of the descriptor.
     pub unsafe fn set_r_address_mode(&self, mode: MTLSamplerAddressMode) {
         msg_send![self.get_ptr(), setRAddressMode: mode]
     }
-    /// Sets the [sAddressMode](https://developer.apple.com/documentation/metal/mtlsamplerdescriptor/1515779-saddressmode?language=objc)
-    /// property of the descriptor.
     pub unsafe fn set_s_address_mode(&self, mode: MTLSamplerAddressMode) {
         msg_send![self.get_ptr(), setSAddressMode: mode]
     }
-    /// Sets the [tAddressMode](https://developer.apple.com/documentation/metal/mtlsamplerdescriptor/1515900-taddressmode?language=objc)
-    /// property of the descriptor.
     pub unsafe fn set_t_address_mode(&self, mode: MTLSamplerAddressMode) {
         msg_send![self.get_ptr(), setTAddressMode: mode]
     }
-    /// Sets the [borderColor](https://developer.apple.com/documentation/metal/mtlsamplerdescriptor/2092299-bordercolor?language=objc)
-    /// property of the descriptor.
     pub unsafe fn set_border_color(&self, color: MTLSamplerBorderColor) {
         msg_send![self.get_ptr(), setBorderColor: color]
     }
-    /// Sets the [minFilter](https://developer.apple.com/documentation/metal/mtlsamplerdescriptor/1515792-minfilter?language=objc)
-    /// property of the descriptor.
     pub unsafe fn set_min_filter(&self, filter: MTLSamplerMinMagFilter) {
         msg_send![self.get_ptr(), setMinFilter: filter]
     }
-    /// Sets the [magFilter](https://developer.apple.com/documentation/metal/mtlsamplerdescriptor/1515926-magfilter?language=objc)
-    /// property of the descriptor.
     pub unsafe fn set_mag_filter(&self, filter: MTLSamplerMinMagFilter) {
         msg_send![self.get_ptr(), setMagFilter: filter]
     }
-    /// Sets the [mipFilter](https://developer.apple.com/documentation/metal/mtlsamplerdescriptor/1515553-mipfilter?language=objc)
-    /// property of the descriptor.
     pub unsafe fn set_map_filter(&self, filter: MTLSamplerMinMagFilter) {
         msg_send![self.get_ptr(), setMipFilter: filter]
     }
-    /// Sets the [lodMinClamp](https://developer.apple.com/documentation/metal/mtlsamplerdescriptor/1515629-lodminclamp?language=objc)
-    /// property of the descriptor.
     pub unsafe fn set_lod_min_clamp(&self, clamp: f32) {
         msg_send![self.get_ptr(), setLodMinClamp: clamp]
     }
-    /// Sets the [lodMaxClamp](https://developer.apple.com/documentation/metal/mtlsamplerdescriptor/1516234-lodmaxclamp?language=objc)
-    /// property of the descriptor.
     pub unsafe fn set_lod_max_clamp(&self, clamp: f32) {
         msg_send![self.get_ptr(), setLodMaxClamp: clamp]
     }
-    /// Sets the [lodAverage](https://developer.apple.com/documentation/metal/mtlsamplerdescriptor/1615844-lodaverage?language=objc)
-    /// property of the descriptor.
     pub unsafe fn set_lod_average(&self, average: bool) {
         msg_send![self.get_ptr(), setLodAverage: average]
     }
-    /// Sets the [maxAnisotropy](https://developer.apple.com/documentation/metal/mtlsamplerdescriptor/1516164-maxanisotropy?language=objc)
-    /// property of the descriptor.
     pub unsafe fn set_max_anisotropy(&self, max: NSUInteger) {
         msg_send![self.get_ptr(), setMaxAnisotropy: max]
     }
-    /// Sets the [compareFunction](https://developer.apple.com/documentation/metal/mtlsamplerdescriptor/1516001-comparefunction?language=objc)
-    /// property of the descriptor.
     pub unsafe fn set_compare_function(&self, function: MTLCompareFunction) {
         msg_send![self.get_ptr(), setCompareFunction: function]
     }
-    /// Sets the [supportArgumentBuffers](https://developer.apple.com/documentation/metal/mtlsamplerdescriptor/2915782-supportargumentbuffers?language=objc)
-    /// property of the descriptor.
     pub unsafe fn set_supports_argument_buffers(&self, supports: bool) {
         msg_send![self.get_ptr(), setSupportArgumentBuffers: supports]
     }
@@ -133,10 +91,6 @@ impl Object for MTLSamplerDescriptor {
     }
 }
 
-/// A sampler which samples textures.
-///
-/// Will send to its pointer only messages specified in the MTLSamplerState protocol
-/// linked [here](https://developer.apple.com/documentation/metal/mtlsamplerstate?language=objc).
 pub struct MTLSamplerState(ObjectPointer);
 handle!(MTLSamplerState);
 

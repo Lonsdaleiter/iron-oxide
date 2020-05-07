@@ -163,6 +163,7 @@ pub enum MTLPixelFormat {
     BGR10_XR_SRGB = 555,
 }
 
+/// A Rust range of NSUIntegers.
 pub type NSUIntegerRange = std::ops::Range<NSUInteger>;
 
 #[repr(C)]

@@ -52,6 +52,7 @@ pub mod import_objc_macros {
     pub use objc::{class, msg_send, sel, sel_impl};
 }
 
+// TODO turn this into an NSError and give it behavior
 pub enum MetalError<'a, T> {
     None(T),
     Warn(T, &'a str),

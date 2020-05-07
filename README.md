@@ -5,8 +5,13 @@ Unsafe Rusty [Metal](https://developer.apple.com/documentation/metal?language=ob
 
 Backfill List
 -
-- [ ] Redo all the docs!!!!!!!
-- [ ] CAMetalLayer
+**HIGH PRIORITY**:
+- [ ] Reform errors to have Objective-C behavior and not be automatically unwrapped
+- [ ] Remainder of command buffer instance methods
+- [ ] CAMetalLayer behavior
+- [ ] Redo all the docs
+
+**LOW PRIORITY**:
 - [ ] MTLDevice Mojave / Catalina behavior
 - [ ] objectAtIndexedSubscript
 - [ ] Fence + event stuff

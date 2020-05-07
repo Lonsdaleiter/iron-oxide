@@ -1,6 +1,16 @@
 use crate::import_objc_macros::*;
 use crate::{handle, DeviceCreated, MTLDrawable, Object, ObjectPointer};
 
+#[repr(u64)]
+pub enum MTLCommandBufferStatus {
+    NotEnqueued = 0,
+    Enqueued = 1,
+    Committed = 2,
+    Scheduled = 3,
+    Completed = 4,
+    Error = 5,
+}
+
 pub struct MTLCommandBuffer(ObjectPointer);
 handle!(MTLCommandBuffer);
 
@@ -33,6 +43,15 @@ impl MTLCommandBuffer {
         time: f64,
     ) {
         msg_send![self.get_ptr(), presentDrawable:drawable.get_ptr() atTime:time]
+    }
+    pub unsafe fn get_status(&self) -> MTLCommandBufferStatus {
+        msg_send![self.get_ptr(), status]
+    }
+    pub unsafe fn get_kernel_start_time(&self) -> f64 {
+        msg_send![self.get_ptr(), kernelStartTime]
+    }
+    pub unsafe fn get_kernel_end_time(&self) -> f64 {
+        msg_send![self.get_ptr(), kernelEndTime]
     }
 }
 

@@ -13,6 +13,7 @@ Backfill List
 - [ ] MTLFunction input behavior
 - [ ] Preprocesser macros for library files
 - [ ] Asynchronous methods callously ditched for synchronous ones
+- [ ] Similarly, methods which involve Objective C blocks
 - [ ] Tile shaders / tile render pipeline
 - [ ] MTLVertexDescriptor
 - [ ] Buffer mutability checks

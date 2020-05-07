@@ -7,10 +7,11 @@
 //! be accessed with `get_ptr`, and messages can be sent to it with `objc`'s `msg_send!`, if
 //! necessary functionality isn't yet implemented. This is very unsafe.
 //!
-//! # Warning
+//! # Metal Docs
 //!
 //! It is the responsibility of the user to not use methods or functions which do not exist in
-//! OS versions below what they support. macOS, iOS, tvOS, and watchOS only!
+//! OS versions below what they support. macOS, iOS, tvOS, and watchOS only! They can be checked
+//! in the Metal docs corresponding with a given method or function.
 //!
 //! # Examples
 //!
@@ -33,6 +34,7 @@ mod misc;
 mod pipeline;
 mod resource;
 mod sampler;
+mod surface;
 pub use commandbuffer::*;
 pub use commandqueue::*;
 pub use depthstencil::*;
@@ -42,6 +44,7 @@ pub use misc::*;
 pub use pipeline::*;
 pub use resource::*;
 pub use sampler::*;
+pub use surface::*;
 
 pub mod import_objc_macros {
     pub use objc::{class, msg_send, sel, sel_impl};
@@ -75,7 +78,7 @@ unsafe impl Message for ObjectPointerMarker {}
 
 #[derive(Copy, Clone)]
 #[repr(C)]
-/// A messageable wrapper of a pointer to an Objective C object.
+/// A messageable pointer to a (presumed) Objective C object.
 pub struct ObjectPointer(*mut ObjectPointerMarker);
 impl Deref for ObjectPointer {
     type Target = ObjectPointerMarker;
@@ -86,7 +89,6 @@ impl Deref for ObjectPointer {
 }
 unsafe impl Message for ObjectPointer {}
 
-/// Represents a Metal array.
 pub trait Array<T: Object>: Object {
     unsafe fn set_object_at_indexed_subscript(&self, index: NSUInteger, obj: &T) {
         use crate::import_objc_macros::*;
@@ -111,8 +113,7 @@ pub trait Object: Drop {
         Self: Sized;
     /// Returns the underlying pointer of the object.
     ///
-    /// The returned pointer *must* be a valid pointer to an Objective C object. Otherwise it
-    /// is undefined behavior.
+    /// The returned pointer *must* be a valid pointer to an Objective C object.
     fn get_ptr(&self) -> ObjectPointer;
 }
 

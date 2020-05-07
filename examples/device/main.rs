@@ -184,7 +184,7 @@ unsafe fn execute() {
     debug(&depth_stencil);
 
     let command_buffer = queue.new_command_buffer(true);
-    debug(&command_buffer);
+    command_buffer.commit();
 }
 
 fn main() {

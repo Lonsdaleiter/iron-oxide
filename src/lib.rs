@@ -106,7 +106,6 @@ pub trait Array<T: Object>: Object {
 ///
 /// There *must* be for an implementation of Object an implementation of Drop using
 /// the `handle!` macro. See `handle!` for more information and an example.
-/// ```
 pub trait Object: Drop {
     /// Constructs an object from the provided pointer.
     ///

@@ -1,9 +1,7 @@
 use crate::{NSUInteger, Object, ObjectPointer};
 use std::fmt::{Display, Formatter};
 
-/// Takes an implementor of `Object` and logs some basic information about it:
-/// - `retainCount`
-/// - `description`
+/// Takes an implementor of `Object` and logs its description and retain count.
 ///
 /// Assumes that the implementation of `get_ptr` given by `T` unconditionally
 /// returns a pointer to a valid Objective-C object inheriting from `NSObject`.
@@ -19,15 +17,11 @@ pub unsafe fn debug<T: Object>(obj: &T) {
         std::str::from_utf8(bytes).unwrap()
     };
 
-    log::log!(log::Level::Info, "Retain count = {}", count);
-    log::log!(log::Level::Info, "Description = {}", description);
+    log::log!(log::Level::Info, "{}", description);
+    log::log!(log::Level::Info, "Retain count of {}", count);
 }
 
 #[repr(u64)]
-/// Describes how a sample operation should be evaluated: when the incoming fragment should
-/// replace the old fragment.
-///
-/// Analogous to [this](https://developer.apple.com/documentation/metal/mtlcomparefunction?language=objc).
 pub enum MTLCompareFunction {
     Never = 0,
     Less = 1,
@@ -41,7 +35,6 @@ pub enum MTLCompareFunction {
 
 #[allow(non_camel_case_types)]
 #[repr(u64)]
-/// An enumeration of the ways in which per-pixel data can be interpreted.
 pub enum MTLPixelFormat {
     Invalid = 0,
     A8Unorm = 1,

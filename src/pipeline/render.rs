@@ -4,13 +4,6 @@ use crate::{
 };
 use enumflags2::BitFlags;
 
-/// Describes how buffers at specified indices are mapped to attributes at specified indices.
-///
-/// Irrelevant if there is no [[stage_in]] in the vertex shader and buffers given to the
-/// vertex shader are specified therein as buffers, not attributes.
-///
-/// Will send to its pointer only messages specified in the MTLVertexDescriptor interface
-/// linked [here](https://developer.apple.com/documentation/metal/mtlvertexdescriptor?language=objc).
 pub struct MTLVertexDescriptor(ObjectPointer);
 handle!(MTLVertexDescriptor);
 

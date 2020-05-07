@@ -47,9 +47,6 @@ pub enum MTLPurgeableState {
 }
 
 #[repr(C)]
-/// Optional arguments to set the behavior of a resource.
-///
-/// Analogous to [this](https://developer.apple.com/documentation/metal/mtlresourceoptions?language=objc).
 pub struct MTLResourceOptions {
     pub bits: NSUInteger,
 }
@@ -58,13 +55,11 @@ impl MTLResourceOptions {
     pub fn new() -> MTLResourceOptions {
         MTLResourceOptions { bits: 0 }
     }
-    /// Sets the CPU cache mode of the resource.
     pub fn set_cpu_cache_mode(&self, mode: MTLCPUCacheMode) -> MTLResourceOptions {
         MTLResourceOptions {
             bits: self.bits | mode as NSUInteger,
         }
     }
-    /// Sets the storage mode of the resource.
     pub fn set_storage_mode(&self, mode: MTLStorageMode) -> MTLResourceOptions {
         MTLResourceOptions {
             bits: self.bits | ((mode as NSUInteger) << 4),
@@ -72,36 +67,21 @@ impl MTLResourceOptions {
     }
 }
 
-/// An allocation of GPU accessible memory. Implemented only on device created objects.
-///
-/// Will send to its pointer only the messages specified in the MTLResource protocol
-/// linked [here](https://developer.apple.com/documentation/metal/mtlresource?language=objc).
 pub trait MTLResource: Object + DeviceCreated {
-    /// Gets the [cpuCacheMode](https://developer.apple.com/documentation/metal/mtlresource/1516127-cpucachemode?language=objc)
-    /// property of the resource.
     unsafe fn get_cpu_cache_mode(&self) -> MTLCPUCacheMode {
         msg_send![self.get_ptr(), cpuCacheMode]
     }
-    /// Gets the [storageMode](https://developer.apple.com/documentation/metal/mtlresource/1515477-storagemode?language=objc)
-    /// property of the resource.
     unsafe fn get_storage_mode(&self) -> MTLStorageMode {
         msg_send![self.get_ptr(), storageMode]
     }
-    /// Gets the [resourceOptions](https://developer.apple.com/documentation/metal/mtlresource/3131694-resourceoptions?language=objc)
-    /// property of the resource.
     unsafe fn get_resource_options(&self) -> MTLResourceOptions {
         MTLResourceOptions {
             bits: msg_send![self.get_ptr(), resourceOptions],
         }
     }
-    /// Sets the purgeable state of the resource via the
-    /// [setPurgeableState](https://developer.apple.com/documentation/metal/mtlresource/1515898-setpurgeablestate?language=objc)
-    /// method. Also returns the prior purgeable state of the resource.
     unsafe fn set_purgeable_state(&self, state: MTLPurgeableState) -> MTLPurgeableState {
         msg_send![self.get_ptr(), setPurgeableState: state]
     }
-    /// Returns the [allocatedSize](https://developer.apple.com/documentation/metal/mtlresource/2915287-allocatedsize?language=objc)
-    /// property of the resource; the current allocated size in bytes.
     unsafe fn get_allocated_size(&self) -> NSUInteger {
         msg_send![self.get_ptr(), allocatedSize]
     }

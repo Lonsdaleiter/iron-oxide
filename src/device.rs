@@ -45,7 +45,6 @@ mod externs {
 }
 
 #[allow(non_snake_case)]
-/// Creates an MTLDevice representing your system's default GPU. Analogous to [this](https://developer.apple.com/documentation/metal/1433401-mtlcreatesystemdefaultdevice?language=objc).
 pub unsafe fn MTLCreateSystemDefaultDevice() -> MTLDevice {
     MTLDevice::from_ptr({
         let obj = externs::MTLCreateSystemDefaultDevice();
@@ -54,9 +53,6 @@ pub unsafe fn MTLCreateSystemDefaultDevice() -> MTLDevice {
 }
 
 #[allow(non_snake_case)]
-/// Creates a vector of MTLDevices representing all of your system's GPUs. Analogous to [this](https://developer.apple.com/documentation/metal/1433367-mtlcopyalldevices?language=objc).
-///
-/// Note that the original function is not supported on iOS or tvOS, but this function is.
 pub unsafe fn MTLCopyAllDevices() -> Vec<MTLDevice> {
     #[cfg(target_os = "macos")]
     {
@@ -76,9 +72,6 @@ pub unsafe fn MTLCopyAllDevices() -> Vec<MTLDevice> {
 }
 
 #[allow(non_snake_case)]
-/// Creates the MTLDevice driving the display of the given id. Analogous to [this](https://developer.apple.com/documentation/coregraphics/1493900-cgdirectdisplaycopycurrentmetald?language=objc).
-///
-/// If the `display_id` provided is not a valid identifier, the behavior is undefined.
 pub unsafe fn CGDirectDisplayCopyCurrentMetalDevice(display_id: u32) -> MTLDevice {
     MTLDevice::from_ptr({
         let obj = externs::CGDirectDisplayCopyCurrentMetalDevice(display_id);
@@ -86,16 +79,10 @@ pub unsafe fn CGDirectDisplayCopyCurrentMetalDevice(display_id: u32) -> MTLDevic
     })
 }
 
-/// A physical device, or GPU.
-///
-/// Will send to its pointer only the messages specified in the MTLDevice protocol
-/// linked [here](https://developer.apple.com/documentation/metal/mtldevice?language=objc).
 pub struct MTLDevice(ObjectPointer);
 handle!(MTLDevice);
 
 impl MTLDevice {
-    /// Returns the [name](https://developer.apple.com/documentation/metal/mtldevice/1433359-name?language=objc)
-    /// property of the device.
     pub unsafe fn get_name(&self) -> &str {
         let string = ObjectPointer(msg_send![self.get_ptr(), name]);
         let bytes: *const u8 = msg_send![string, UTF8String];
@@ -103,82 +90,50 @@ impl MTLDevice {
         let bytes = std::slice::from_raw_parts(bytes, len as usize);
         std::str::from_utf8(bytes).unwrap()
     }
-    /// Returns the [headless](https://developer.apple.com/documentation/metal/mtldevice/1433377-headless?language=objc)
-    /// property of the device.
-    ///
-    /// This property reflects whether the GPU is attached to a particular display.
     pub unsafe fn is_headless(&self) -> bool {
         msg_send![self.get_ptr(), isHeadless]
     }
-    /// Returns the [lowPower](https://developer.apple.com/documentation/metal/mtldevice/1433409-lowpower?language=objc)
-    /// property of the device.
-    ///
-    /// If the GPU is integrated, this returns true. If it is discrete, it returns false.
     pub unsafe fn is_low_power(&self) -> bool {
         msg_send![self.get_ptr(), isLowPower]
     }
-    /// Returns the [removable](https://developer.apple.com/documentation/metal/mtldevice/2889851-removable?language=objc)
-    /// property of the device.
     pub unsafe fn is_removable(&self) -> bool {
         msg_send![self.get_ptr(), isRemovable]
     }
-    /// Returns the [registryID](https://developer.apple.com/documentation/metal/mtldevice/2915737-registryid?language=objc)
-    /// property of the device.
     pub unsafe fn get_registry_id(&self) -> u64 {
         msg_send![self.get_ptr(), registryID]
     }
-    /// Returns the [recommendedMaxWorkingSetSize](https://developer.apple.com/documentation/metal/mtldevice/2369280-recommendedmaxworkingsetsize?language=objc)
-    /// property of the device.
     pub unsafe fn get_recommended_max_working_set_size(&self) -> u64 {
         msg_send![self.get_ptr(), recommendedMaxWorkingSetSize]
     }
-    /// Returns the [currentAllocatedSize](https://developer.apple.com/documentation/metal/mtldevice/2915745-currentallocatedsize?language=objc)
-    /// property of the device.
     pub unsafe fn get_current_allocated_size(&self) -> NSUInteger {
         msg_send![self.get_ptr(), currentAllocatedSize]
     }
-    /// Returns the [maxThreadgroupMemoryLength](https://developer.apple.com/documentation/metal/mtldevice/2877429-maxthreadgroupmemorylength?language=objc)
-    /// property of the device.
     pub unsafe fn get_max_threadgroup_memory_length(&self) -> NSUInteger {
         msg_send![self.get_ptr(), maxThreadgroupMemoryLength]
     }
-    /// Returns the [maxThreadsPerThreadgroup](https://developer.apple.com/documentation/metal/mtldevice/1433393-maxthreadsperthreadgroup?language=objc)
-    /// property of the device.
     pub unsafe fn get_max_threads_per_threadgroup(&self) -> MTLSize {
         msg_send![self.get_ptr(), maxThreadsPerThreadgroup]
     }
-    /// Returns the [programmableSamplePositionsSupported](https://developer.apple.com/documentation/metal/mtldevice/2866117-programmablesamplepositionssuppo?language=objc)
-    /// property of the device.
     pub unsafe fn are_programmable_sample_positions_supported(&self) -> bool {
         msg_send![self.get_ptr(), areProgrammableSamplePositionsSupported]
     }
-    /// Calls the [getDefaultSamplePositions](https://developer.apple.com/documentation/metal/mtldevice/2866120-getdefaultsamplepositions?language=objc)
-    /// method.
     pub unsafe fn get_default_sample_positions(&self, count: NSUInteger) -> MTLSamplePosition {
         let mut pos = MTLSamplePosition { x: 0.0, y: 0.0 };
         let _: () = msg_send![self.get_ptr(), getDefaultSamplePositions: &mut pos count: count];
         pos
     }
-    /// Returns the [rasterOrderGroupsSupported](https://developer.apple.com/documentation/metal/mtldevice/2887285-rasterordergroupssupported?language=objc)
-    /// property of the device.
     pub unsafe fn are_raster_order_groups_supported(&self) -> bool {
         msg_send![self.get_ptr(), areRasterOrderGroupsSupported]
     }
-    /// Returns the [depth24Stencil8PixelFormatSupported](https://developer.apple.com/documentation/metal/mtldevice/1433371-depth24stencil8pixelformatsuppor?language=objc)
-    /// property of the device.
     pub unsafe fn is_d24_s8_pixel_format_supported(&self) -> bool {
         msg_send![self.get_ptr(), isDepth24Stencil8PixelFormatSupported]
     }
-    /// Creates a new [MTLCommandQueue](https://developer.apple.com/documentation/metal/mtlcommandqueue?language=objc)
-    /// via [this method](https://developer.apple.com/documentation/metal/mtldevice/1433388-newcommandqueue?language=objc).
     pub unsafe fn new_command_queue(&self) -> MTLCommandQueue {
         MTLCommandQueue::from_ptr({
             let k = ObjectPointer(msg_send![self.get_ptr(), newCommandQueue]);
             msg_send![k, retain]
         })
     }
-    /// Creates a new [MTLCommandQueue](https://developer.apple.com/documentation/metal/mtlcommandqueue?language=objc)
-    /// via [this method](https://developer.apple.com/documentation/metal/mtldevice/1433433-newcommandqueuewithmaxcommandbuf?language=objc).
     pub unsafe fn new_command_queue_with_max_command_buffer_count(
         &self,
         count: NSUInteger,
@@ -191,8 +146,6 @@ impl MTLDevice {
             msg_send![k, retain]
         })
     }
-    /// Creates a new [MTLLibrary](https://developer.apple.com/documentation/metal/mtllibrary?language=objc)
-    /// via [this method](https://developer.apple.com/documentation/metal/mtldevice/1433391-newlibrarywithdata?language=objc).
     pub unsafe fn new_library_with_data(&self, data: &[u8]) -> Error<MTLLibrary> {
         use externs::*;
 
@@ -224,8 +177,6 @@ impl MTLDevice {
             Error::None(MTLLibrary::from_ptr(lib))
         }
     }
-    /// Creates a new [MTLLibrary](https://developer.apple.com/documentation/metal/mtllibrary?language=objc)
-    /// via [this method](https://developer.apple.com/documentation/metal/mtldevice/1433431-newlibrarywithsource?language=objc).
     pub unsafe fn new_library_with_source(
         &self,
         source: &str,
@@ -265,8 +216,6 @@ impl MTLDevice {
             Error::None(MTLLibrary::from_ptr(lib))
         }
     }
-    /// Creates a new [MTLRenderPipelineState](https://developer.apple.com/documentation/metal/mtlrenderpipelinestate?language=objc)
-    /// via [this method](https://developer.apple.com/documentation/metal/mtldevice/1433369-newrenderpipelinestatewithdescri?language=objc).
     pub unsafe fn new_render_pipeline_state_with_descriptor(
         &self,
         desc: &MTLRenderPipelineDescriptor,
@@ -293,8 +242,6 @@ impl MTLDevice {
             }
         }
     }
-    /// Creates a new [MTLComputePipelineState](https://developer.apple.com/documentation/metal/mtlcomputepipelinestate?language=objc)
-    /// via [this method](https://developer.apple.com/documentation/metal/mtldevice/1433395-newcomputepipelinestatewithfunct?language=objc).
     pub unsafe fn new_compute_pipeline_state_with_function(
         &self,
         function: MTLFunction,
@@ -321,14 +268,9 @@ impl MTLDevice {
             }
         }
     }
-    /// Returns the [maxBufferLength](https://developer.apple.com/documentation/metal/mtldevice/2966563-maxbufferlength?language=objc)
-    /// property of the device.
     pub unsafe fn get_max_buffer_length(&self) -> NSUInteger {
         msg_send![self.get_ptr(), maxBufferLength]
     }
-    /// Creates a new zero-filled buffer of the specified length with the
-    /// [newBufferWithLength](https://developer.apple.com/documentation/metal/mtldevice/1433375-newbufferwithlength?language=objc)
-    /// instance method.
     pub unsafe fn new_buffer_with_length(
         &self,
         length: NSUInteger,
@@ -338,9 +280,6 @@ impl MTLDevice {
             msg_send![self.get_ptr(), newBufferWithLength:length options:options.bits],
         )
     }
-    /// Creates a new buffer of a given length and initializes its contents with those
-    /// existing at the provided pointer with the [newBufferWithBytes](https://developer.apple.com/documentation/metal/mtldevice/1433429-newbufferwithbytes?language=objc)
-    /// instance method.
     pub unsafe fn new_buffer_with_bytes(
         &self,
         bytes: *const c_void,
@@ -351,15 +290,9 @@ impl MTLDevice {
             msg_send![self.get_ptr(), newBufferWithBytes:bytes length:length options:options.bits],
         )
     }
-    /// Returns whether a device supports a given texture sample count via the
-    /// [supportsTextureSampleCount](https://developer.apple.com/documentation/metal/mtldevice/1433355-supportstexturesamplecount?language=objc)
-    /// instance method.
     pub unsafe fn supports_texture_sample_count(&self, count: NSUInteger) -> bool {
         msg_send![self.get_ptr(), supportsTextureSampleCount: count]
     }
-    /// Creates a new texture with the given descriptor via the
-    /// [newTextureWithDescriptor](https://developer.apple.com/documentation/metal/mtldevice/1433425-newtexturewithdescriptor?language=objc)
-    /// instance method.
     pub unsafe fn new_texture_with_descriptor(
         &self,
         descriptor: &MTLTextureDescriptor,
@@ -368,9 +301,6 @@ impl MTLDevice {
             msg_send![self.get_ptr(), newTextureWithDescriptor:descriptor.get_ptr()],
         )
     }
-    /// Creates a new sampler with the given descriptor via the
-    /// [newSamplerStateWithDescriptor](https://developer.apple.com/documentation/metal/mtldevice/1433408-newsamplerstatewithdescriptor?language=objc)
-    /// instance method.
     pub unsafe fn new_sampler_state_with_descriptor(
         &self,
         desc: &MTLSamplerDescriptor,
@@ -379,9 +309,6 @@ impl MTLDevice {
             msg_send![self.get_ptr(), newSamplerStateWithDescriptor:desc.get_ptr()],
         )
     }
-    /// Creates a new depth stencil state with the given descriptor via the
-    /// [newDepthStencilStateWithDescriptor](https://developer.apple.com/documentation/metal/mtldevice/1433412-newdepthstencilstatewithdescript?language=objc)
-    /// instance method.
     pub unsafe fn new_depth_stencil_state_with_descriptor(
         &self,
         desc: &MTLDepthStencilDescriptor,
@@ -402,9 +329,7 @@ impl Object for MTLDevice {
     }
 }
 
-/// Implemented on Objects which were created by and are bound to a particular MTLDevice.
 pub trait DeviceCreated: Object {
-    /// Returns a reference to the device which created this object.
     unsafe fn get_device(&self) -> Option<MTLDevice> {
         use crate::import_objc_macros::*;
         let d = ObjectPointer(msg_send![self.get_ptr(), device]);

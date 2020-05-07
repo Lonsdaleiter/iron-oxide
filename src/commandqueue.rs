@@ -1,5 +1,5 @@
 use crate::import_objc_macros::*;
-use crate::{handle, DeviceCreated, Object, ObjectPointer, MTLCommandBuffer};
+use crate::{handle, DeviceCreated, MTLCommandBuffer, Object, ObjectPointer};
 
 /// A queue which organizes command buffers to be executed by a GPU.
 ///
@@ -14,7 +14,7 @@ impl MTLCommandQueue {
     /// or [commandBufferWithUnretainedReferences](https://developer.apple.com/documentation/metal/mtlcommandqueue/1508684-commandbufferwithunretainedrefer?language=objc)
     /// methods.
     pub unsafe fn new_command_buffer(&self, retain_references: bool) -> MTLCommandBuffer {
-        MTLCommandBuffer::from_ptr(match retain_references{
+        MTLCommandBuffer::from_ptr(match retain_references {
             true => msg_send![self.get_ptr(), commandBuffer],
             false => msg_send![self.get_ptr(), commandBufferWithUnretainedReferences],
         })

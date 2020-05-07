@@ -5,6 +5,17 @@ use std::fmt::{Display, Formatter};
 ///
 /// Assumes that the implementation of `get_ptr` given by `T` unconditionally
 /// returns a pointer to a valid Objective-C object inheriting from `NSObject`.
+///
+/// # Example
+///
+/// ```
+/// fn main() {
+///     use iron_oxide::{MTLCreateSystemDefaultDevice, debug};
+///
+///     let device = unsafe { MTLCreateSystemDefaultDevice() };
+///     unsafe { debug(&device) };
+/// }
+/// ```
 pub unsafe fn debug<T: Object>(obj: &T) {
     use crate::import_objc_macros::*;
 

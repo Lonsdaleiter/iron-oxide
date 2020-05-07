@@ -1,12 +1,24 @@
 //! `iron-oxide` provides unsafe [Metal](https://developer.apple.com/documentation/metal?language=objc)
 //! bindings for Rust.
 //!
+//! # Metal Functionality
+//!
 //! Not all of Metal's functionality is added. The pointer underlying a MTL(something) can
 //! be accessed with `get_ptr`, and messages can be sent to it with `objc`'s `msg_send!`, if
 //! necessary functionality isn't yet implemented. This is very unsafe.
 //!
+//! # Warning
+//!
 //! It is the responsibility of the user to not use methods or functions which do not exist in
-//! OS versions below what they support (specified in the linked Metal docs).
+//! OS versions below what they support. macOS, iOS, tvOS, and watchOS only!
+//!
+//! # Examples
+//!
+//! See the examples directory for examples.
+//!
+//! # License
+//!
+//! Licensed under the MIT license.
 
 use log::Level;
 use objc::Message;
@@ -35,30 +47,38 @@ pub mod import_objc_macros {
     pub use objc::{class, msg_send, sel, sel_impl};
 }
 
-pub enum Error<'a, T> {
+pub enum MetalError<'a, T> {
     None(T),
     Warn(T, &'a str),
     Error(&'a str),
 }
 
-impl<'a, T> Error<'a, T> {
+impl<'a, T> MetalError<'a, T> {
     pub fn unwrap(self) -> T {
         match self {
-            Error::None(obj) => obj,
-            Error::Warn(obj, msg) => {
+            MetalError::None(obj) => obj,
+            MetalError::Warn(obj, msg) => {
                 log::log!(Level::Warn, "{}", msg);
                 obj
             }
-            Error::Error(msg) => panic!("{}", msg),
+            MetalError::Error(msg) => panic!("{}", msg),
         }
     }
 }
 
+#[repr(C)]
+#[doc(hidden)]
+pub struct ObjectPointerMarker { // ignore me
+    _member: u8,
+}
+unsafe impl Message for ObjectPointerMarker {}
+
 #[derive(Copy, Clone)]
 #[repr(C)]
-pub struct ObjectPointer(pub *mut objc::runtime::Object);
+/// A messageable wrapper of a pointer to an Objective C object.
+pub struct ObjectPointer(*mut ObjectPointerMarker);
 impl Deref for ObjectPointer {
-    type Target = objc::runtime::Object;
+    type Target = ObjectPointerMarker;
 
     fn deref(&self) -> &Self::Target {
         unsafe { &*self.0 }
@@ -66,6 +86,7 @@ impl Deref for ObjectPointer {
 }
 unsafe impl Message for ObjectPointer {}
 
+/// Represents a Metal array.
 pub trait Array<T: Object>: Object {
     unsafe fn set_object_at_indexed_subscript(&self, index: NSUInteger, obj: &T) {
         use crate::import_objc_macros::*;
@@ -78,7 +99,8 @@ pub trait Array<T: Object>: Object {
 /// # Requirements
 ///
 /// There *must* be for an implementation of Object an implementation of Drop using
-/// the `handle!` macro. See `handle!` for more information about what these implementations do.
+/// the `handle!` macro. See `handle!` for more information and an example.
+/// ```
 pub trait Object: Drop {
     /// Constructs an object from the provided pointer.
     ///
@@ -87,9 +109,10 @@ pub trait Object: Drop {
     unsafe fn from_ptr(ptr: ObjectPointer) -> Self
     where
         Self: Sized;
-    /// Returns the underlying pointer.
+    /// Returns the underlying pointer of the object.
     ///
-    /// The returned pointer *must* be a valid pointer to an Objective C object.
+    /// The returned pointer *must* be a valid pointer to an Objective C object. Otherwise it
+    /// is undefined behavior.
     fn get_ptr(&self) -> ObjectPointer;
 }
 
@@ -101,11 +124,38 @@ pub type NSInteger = i64;
 pub type NSUInteger = u64;
 
 #[macro_export]
-/// Provides an implementation of `Drop` for a struct implementing `Object`.
+/// Provides an implementation of `Drop` which implements lifetime-based releasing
+/// on the implemented type's pointer to an Objective C object.
 ///
 /// This implementation of `Drop` decrements the reference count of the object which the
 /// `get_ptr` method returns. This ensures that the object to which the implementor points
 /// lives only for the lifetime of the implementor.
+///
+/// # Requirements
+///
+/// The ident passed into `handle!` must be the correct local name of a struct or enum which
+/// implements `Object`.
+///
+/// # Example
+///
+/// ```
+/// use iron_oxide::{ObjectPointer, handle, Object};
+///
+/// struct Wrapper(ObjectPointer);
+/// handle!(Wrapper);
+///
+/// impl Object for Wrapper {
+///     unsafe fn from_ptr(ptr: ObjectPointer) -> Self where
+///         Self: Sized {
+///         Wrapper(ptr)
+///     }
+///
+///     fn get_ptr(&self) -> ObjectPointer {
+///         self.0
+///     }
+///
+/// }
+/// ```
 macro_rules! handle {
     ($name:ident) => {
         impl Drop for $name {

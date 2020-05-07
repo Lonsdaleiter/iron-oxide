@@ -7,6 +7,7 @@ Backfill List
 -
 - [ ] Redo all the docs!!!!!!!
 - [ ] MTLDevice Mojave / Catalina behavior
+- [ ] objectAtIndexedSubscript
 - [ ] Fence + event stuff
 - [ ] MTLFunctionConstantValues
 - [ ] MTLFunction input behavior
@@ -21,7 +22,6 @@ Backfill List
 - [ ] Compute pipeline state behavior
 - [ ] Compute pipeline descriptor
 - [ ] Hazard tracking mode
-- [ ] Resource mode
 - [ ] Making a texture from a buffer
 - [ ] Debug markers for buffers
 - [ ] Remote storage buffers for synchronizing over multiple GPUs

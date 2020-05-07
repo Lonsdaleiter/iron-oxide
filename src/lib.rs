@@ -29,6 +29,7 @@ mod commandbuffer;
 mod commandqueue;
 mod depthstencil;
 mod device;
+mod drawable;
 mod library;
 mod misc;
 mod pipeline;
@@ -39,6 +40,7 @@ pub use commandbuffer::*;
 pub use commandqueue::*;
 pub use depthstencil::*;
 pub use device::*;
+pub use drawable::*;
 pub use library::*;
 pub use misc::*;
 pub use pipeline::*;
@@ -71,7 +73,8 @@ impl<'a, T> MetalError<'a, T> {
 
 #[repr(C)]
 #[doc(hidden)]
-pub struct ObjectPointerMarker { // ignore me
+pub struct ObjectPointerMarker {
+    // ignore me
     _member: u8,
 }
 unsafe impl Message for ObjectPointerMarker {}

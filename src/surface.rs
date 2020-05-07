@@ -1,30 +1,18 @@
-use crate::{ObjectPointer, handle, Object, NSUInteger};
+use crate::{handle, Object, ObjectPointer};
 
-pub struct MTLDrawable(ObjectPointer);
-handle!(MTLDrawable);
+pub struct CAMetalLayer(ObjectPointer);
+handle!(CAMetalLayer);
 
-impl MTLDrawable {
-    pub unsafe fn get_id(&self) -> NSUInteger {
-        msg_send![self.get_ptr(), drawableID]
-    }
-    pub unsafe fn present(&self) {
-        msg_send![self.get_ptr(), present]
-    }
-    pub unsafe fn present_after_minimum_duration(&self, duration: f64) {
-        msg_send![self.get_ptr(), presentAfterMinimumDuration:duration]
-    }
-    pub unsafe fn present_at_time(&self, time: f64) {
-        msg_send![self.get_ptr(), presentAtTime:time]
-    }
-    pub unsafe fn get_presented_time(&self) -> f64 {
-        msg_send![self.get_ptr(), presentedTime]
-    }
+impl CAMetalLayer {
+    // TODO implement
 }
 
-impl Object for MTLDrawable {
-    unsafe fn from_ptr(ptr: ObjectPointer) -> Self where
-        Self: Sized {
-        MTLDrawable(ptr)
+impl Object for CAMetalLayer {
+    unsafe fn from_ptr(ptr: ObjectPointer) -> Self
+    where
+        Self: Sized,
+    {
+        CAMetalLayer(ptr)
     }
 
     fn get_ptr(&self) -> ObjectPointer {

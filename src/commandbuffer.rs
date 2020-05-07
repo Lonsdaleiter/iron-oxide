@@ -37,11 +37,7 @@ impl MTLCommandBuffer {
     ) {
         msg_send![self.get_ptr(), presentDrawable:drawable.get_ptr() afterMinimumDuration:duration]
     }
-    pub unsafe fn present_drawable_at_time<T: MTLDrawable>(
-        &self,
-        drawable: T,
-        time: f64,
-    ) {
+    pub unsafe fn present_drawable_at_time<T: MTLDrawable>(&self, drawable: T, time: f64) {
         msg_send![self.get_ptr(), presentDrawable:drawable.get_ptr() atTime:time]
     }
     pub unsafe fn get_status(&self) -> MTLCommandBufferStatus {

@@ -30,24 +30,29 @@ mod commandqueue;
 mod depthstencil;
 mod device;
 mod drawable;
+mod layer;
 mod library;
 mod misc;
 mod pipeline;
 mod resource;
 mod sampler;
-mod surface;
 pub use commandbuffer::*;
 pub use commandqueue::*;
 pub use depthstencil::*;
 pub use device::*;
 pub use drawable::*;
+pub use layer::*;
 pub use library::*;
 pub use misc::*;
 pub use pipeline::*;
 pub use resource::*;
 pub use sampler::*;
-pub use surface::*;
 
+/// Reexports important macros for sending messages from the `objc` crate:
+/// - `msg_send`
+/// - `class`
+/// - `sel`
+/// - `sel_impl`
 pub mod import_objc_macros {
     pub use objc::{class, msg_send, sel, sel_impl};
 }

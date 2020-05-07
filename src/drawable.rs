@@ -1,5 +1,5 @@
-use crate::{handle, CAMetalLayer, MTLTexture, NSUInteger, Object, ObjectPointer};
 use crate::import_objc_macros::*;
+use crate::{handle, CAMetalLayer, MTLTexture, NSUInteger, Object, ObjectPointer};
 
 pub trait MTLDrawable: Object {
     unsafe fn get_id(&self) -> NSUInteger {

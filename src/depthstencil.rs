@@ -116,6 +116,9 @@ impl Object for MTLDepthStencilDescriptor {
 }
 
 /// Specifies depth and stencil configuration in a render pass.
+///
+/// Will send to its pointer only the messages specified in the MTLDepthStencilState
+/// protocol linked [here](https://developer.apple.com/documentation/metal/mtldepthstencilstate?language=objc).
 pub struct MTLDepthStencilState(ObjectPointer);
 handle!(MTLDepthStencilState);
 

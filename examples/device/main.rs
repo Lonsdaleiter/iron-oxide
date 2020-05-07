@@ -182,6 +182,9 @@ unsafe fn execute() {
         desc
     });
     debug(&depth_stencil);
+
+    let command_buffer = queue.new_command_buffer(true);
+    debug(&command_buffer);
 }
 
 fn main() {

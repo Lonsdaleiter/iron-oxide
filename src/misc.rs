@@ -1,4 +1,4 @@
-use crate::{NSUInteger, Object, ObjectPointer};
+use crate::{NSUInteger, Object, ObjectPointer, CGFloat};
 use std::fmt::{Display, Formatter};
 
 /// Takes an implementor of `Object` and logs its description and retain count.
@@ -194,6 +194,12 @@ pub struct MTLSize {
     pub width: NSUInteger,
     pub height: NSUInteger,
     pub depth: NSUInteger,
+}
+
+#[repr(C)]
+pub struct CGSize {
+    pub width: CGFloat,
+    pub height: CGFloat,
 }
 
 impl Display for MTLSize {

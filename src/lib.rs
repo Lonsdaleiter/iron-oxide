@@ -131,6 +131,9 @@ pub type NSInteger = i64;
 /// Aliased exclusively so that, should the watchOS target be added to Rust, NSUInteger can
 /// conform to watchOS' 32-bit architecture.
 pub type NSUInteger = u64;
+/// Aliased exclusively so that, should the watchOS target be added to Rust, CGFloat can
+/// conform to watchOS' 32-bit architecture.
+pub type CGFloat = f64;
 
 #[macro_export]
 /// Provides an implementation of `Drop` which implements lifetime-based releasing

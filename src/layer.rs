@@ -6,11 +6,11 @@ use crate::{
 use raw_window_handle::{HasRawWindowHandle, RawWindowHandle};
 
 pub trait CreateCAMetalLayer {
-    fn new_ca_metal_layer(&self) -> CAMetalLayer;
+    unsafe fn set_layer(&self, layer: &CAMetalLayer);
 }
 
 impl<T: HasRawWindowHandle> CreateCAMetalLayer for T {
-    fn new_ca_metal_layer(&self) -> CAMetalLayer {
+    unsafe fn set_layer(&self, layer: &CAMetalLayer) {
         let ns_view = match self.raw_window_handle() {
             RawWindowHandle::MacOS(handle) => {
                 ObjectPointer(handle.ns_view as *mut ObjectPointerMarker)
@@ -18,7 +18,7 @@ impl<T: HasRawWindowHandle> CreateCAMetalLayer for T {
             _ => unimplemented!(),
         };
 
-        unsafe { CAMetalLayer::from_ptr(msg_send![ns_view, layer]) }
+        msg_send![ns_view, setLayer:layer.get_ptr()]
     }
 }
 
@@ -26,6 +26,9 @@ pub struct CAMetalLayer(ObjectPointer);
 handle!(CAMetalLayer);
 
 impl CAMetalLayer {
+    pub unsafe fn new() -> CAMetalLayer {
+        CAMetalLayer::from_ptr(msg_send![class!(CAMetalLayer), new])
+    }
     pub unsafe fn set_device(&self, device: &MTLDevice) {
         msg_send![self.get_ptr(), setDevice:device.get_ptr()]
     }

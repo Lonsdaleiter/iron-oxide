@@ -185,6 +185,19 @@ unsafe fn execute() {
 
     let command_buffer = queue.new_command_buffer(true);
     command_buffer.commit();
+
+    let event_loop = winit::event_loop::EventLoop::new();
+    let window = winit::window::Window::new(&event_loop).unwrap();
+    let layer = CAMetalLayer::new();
+    layer.set_device(&device);
+    layer.set_vsync(true);
+    layer.set_pixel_format(MTLPixelFormat::BGRA8Unorm);
+    layer.set_framebuffer_only(true);
+    layer.set_drawable_size(CGSize {
+        width: 500.0,
+        height: 500.0,
+    });
+    window.set_layer(&layer);
 }
 
 fn main() {

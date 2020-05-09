@@ -1,4 +1,4 @@
-use crate::{NSUInteger, Object, ObjectPointer, CGFloat};
+use crate::{CGFloat, NSUInteger, Object, ObjectPointer};
 use std::fmt::{Display, Formatter};
 
 /// Takes an implementor of `Object` and logs its description and retain count.

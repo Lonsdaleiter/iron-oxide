@@ -14,8 +14,10 @@ impl<T: HasRawWindowHandle> CreateCAMetalLayer for T {
         let ns_view = match self.raw_window_handle() {
             RawWindowHandle::MacOS(handle) => {
                 ObjectPointer(handle.ns_view as *mut ObjectPointerMarker)
-            }
-            _ => unimplemented!(),
+            },
+            _ => unimplemented!(
+                "CAMetalLayers can only be set for macOS RawWindowHandles right now."
+            ),
         };
 
         msg_send![ns_view, setLayer:layer.get_ptr()]

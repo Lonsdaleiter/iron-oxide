@@ -207,6 +207,7 @@ unsafe fn execute() {
             color
         });
     rp_desc.get_depth_attachment().set_clear_depth(1.0);
+    rp_desc.get_stencil_attachment().set_clear_stencil(0);
 }
 
 fn main() {

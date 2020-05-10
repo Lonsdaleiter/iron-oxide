@@ -1,5 +1,5 @@
-use crate::{handle, MTLCommandEncoder, MTLRenderPipelineState, Object, ObjectPointer};
 use crate::import_objc_macros::*;
+use crate::{handle, MTLCommandEncoder, MTLRenderPipelineState, Object, ObjectPointer};
 
 #[repr(u64)]
 pub enum MTLTriangleFillMode {

@@ -197,6 +197,10 @@ unsafe fn execute() {
     });
 
     let rp_desc = MTLRenderPassDescriptor::new();
+    rp_desc.get_color_attachments().set_object_at_indexed_subscript(0, &{
+        let color = MTLRenderPassColorAttachmentDescriptor::new();
+        color
+    });
 }
 
 fn main() {

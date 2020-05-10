@@ -58,6 +58,7 @@ pub mod import_objc_macros {
 }
 
 // TODO turn this into an NSError and give it behavior
+#[deprecated]
 pub enum MetalError<'a, T> {
     None(T),
     Warn(T, &'a str),

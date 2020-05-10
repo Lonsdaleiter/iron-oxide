@@ -1,4 +1,5 @@
-use crate::{CGFloat, NSUInteger, Object, ObjectPointer};
+use crate::{CGFloat, NSUInteger, Object, ObjectPointer, NSInteger, handle};
+use crate::import_objc_macros::*;
 use std::fmt::{Display, Formatter};
 
 /// Takes an implementor of `Object` and logs its description and retain count.
@@ -172,6 +173,47 @@ pub enum MTLPixelFormat {
     BGRA10_XR_SRGB = 553,
     BGR10_XR = 554,
     BGR10_XR_SRGB = 555,
+}
+
+pub struct NSError(ObjectPointer);
+handle!(NSError);
+
+impl NSError {
+    pub unsafe fn get_code(&self) -> NSInteger {
+        msg_send![self.get_ptr(), code]
+    }
+    pub unsafe fn get_domain(&self) -> &str {
+        let domain = ObjectPointer(msg_send![self.get_ptr(), domain]);
+        let bytes: *const u8 = msg_send![domain, UTF8String];
+        let len: NSUInteger = msg_send![domain, length];
+        let bytes = std::slice::from_raw_parts(bytes, len as usize);
+        std::str::from_utf8(bytes).unwrap()
+    }
+    pub unsafe fn get_localized_description(&self) -> &str {
+        let desc = ObjectPointer(msg_send![self.get_ptr(), localizedDescription]);
+        let bytes: *const u8 = msg_send![desc, UTF8String];
+        let len: NSUInteger = msg_send![desc, length];
+        let bytes = std::slice::from_raw_parts(bytes, len as usize);
+        std::str::from_utf8(bytes).unwrap()
+    }
+    pub unsafe fn get_localized_failure_reason(&self) -> &str {
+        let reason = ObjectPointer(msg_send![self.get_ptr(), localizedFailureReason]);
+        let bytes: *const u8 = msg_send![reason, UTF8String];
+        let len: NSUInteger = msg_send![reason, length];
+        let bytes = std::slice::from_raw_parts(bytes, len as usize);
+        std::str::from_utf8(bytes).unwrap()
+    }
+}
+
+impl Object for NSError {
+    unsafe fn from_ptr(ptr: ObjectPointer) -> Self where
+        Self: Sized {
+        NSError(ptr)
+    }
+
+    fn get_ptr(&self) -> ObjectPointer {
+        self.0
+    }
 }
 
 /// A Rust range of NSUIntegers.

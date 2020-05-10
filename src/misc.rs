@@ -207,7 +207,14 @@ impl NSError {
 
 impl Debug for NSError {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
-        f.write_str(unsafe { self.get_localized_description() })
+        f.write_str(unsafe {
+            let desc = self.get_localized_description();
+            let reason = self.get_localized_failure_reason();
+            let domain = self.get_domain();
+            let code = self.get_code();
+
+            format!("NSError: {}\n{}\nDomain: {}\nCode: {}", desc, reason, domain, code).as_str()
+        })
     }
 }
 

@@ -1,5 +1,5 @@
 use crate::import_objc_macros::*;
-use crate::{handle, DeviceCreated, MTLDrawable, Object, ObjectPointer};
+use crate::{handle, DeviceCreated, MTLDrawable, Object, ObjectPointer, NSError};
 
 #[repr(u64)]
 pub enum MTLCommandBufferStatus {
@@ -42,6 +42,14 @@ impl MTLCommandBuffer {
     }
     pub unsafe fn get_status(&self) -> MTLCommandBufferStatus {
         msg_send![self.get_ptr(), status]
+    }
+    pub unsafe fn get_error(&self) -> Option<NSError> {
+        let err = ObjectPointer(msg_send![self.get_ptr(), error]);
+        if err.0.is_null() {
+            None
+        } else {
+            Some(NSError::from_ptr(err))
+        }
     }
     pub unsafe fn get_kernel_start_time(&self) -> f64 {
         msg_send![self.get_ptr(), kernelStartTime]

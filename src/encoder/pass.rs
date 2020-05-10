@@ -116,8 +116,24 @@ impl Object for MTLRenderPassColorAttachmentDescriptorArray {
     }
 }
 
+#[repr(u64)]
+pub enum MTLMultisampleDepthResolveFilter {
+    Sample0 = 0,
+    FilterMin = 1,
+    FilterMax = 2,
+}
+
 pub struct MTLRenderPassDepthAttachmentDescriptor(ObjectPointer);
 handle!(MTLRenderPassDepthAttachmentDescriptor);
+
+impl MTLRenderPassDepthAttachmentDescriptor {
+    pub unsafe fn set_clear_depth(&self, depth: f64) {
+        msg_send![self.get_ptr(), setClearDepth:depth]
+    }
+    pub unsafe fn set_depth_resolve_filter(&self, filter: MTLMultisampleDepthResolveFilter) {
+        msg_send![self.get_ptr(), setDepthResolveFilter:filter]
+    }
+}
 
 impl Object for MTLRenderPassDepthAttachmentDescriptor {
     unsafe fn from_ptr(ptr: ObjectPointer) -> Self

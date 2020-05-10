@@ -206,7 +206,7 @@ unsafe fn execute() {
             color.set_texture(&texture);
             color
         });
-    rp_desc.get_depth_attachment();
+    rp_desc.get_depth_attachment().set_clear_depth(1.0);
 }
 
 fn main() {

@@ -197,10 +197,16 @@ unsafe fn execute() {
     });
 
     let rp_desc = MTLRenderPassDescriptor::new();
-    rp_desc.get_color_attachments().set_object_at_indexed_subscript(0, &{
-        let color = MTLRenderPassColorAttachmentDescriptor::new();
-        color
-    });
+    rp_desc
+        .get_color_attachments()
+        .set_object_at_indexed_subscript(0, &{
+            let color = MTLRenderPassColorAttachmentDescriptor::new();
+            color.set_load_action(MTLLoadAction::Clear);
+            color.set_store_action(MTLStoreAction::Store);
+            color.set_texture(&texture);
+            color
+        });
+    rp_desc.get_depth_attachment();
 }
 
 fn main() {

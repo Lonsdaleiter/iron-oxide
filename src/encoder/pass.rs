@@ -60,6 +60,14 @@ pub trait MTLRenderPassAttachmentDescriptor: Object {
     }
 }
 
+#[repr(C)]
+pub struct MTLClearColor {
+    pub r: f64,
+    pub g: f64,
+    pub b: f64,
+    pub a: f64,
+}
+
 pub struct MTLRenderPassColorAttachmentDescriptor(ObjectPointer);
 handle!(MTLRenderPassColorAttachmentDescriptor);
 
@@ -69,6 +77,9 @@ impl MTLRenderPassColorAttachmentDescriptor {
             class!(MTLRenderPassColorAttachmentDescriptor),
             new
         ])
+    }
+    pub unsafe fn set_clear_color(&self, color: MTLClearColor) {
+        msg_send![self.get_ptr(), setClearColor: color]
     }
 }
 
@@ -105,6 +116,22 @@ impl Object for MTLRenderPassColorAttachmentDescriptorArray {
     }
 }
 
+pub struct MTLRenderPassDepthAttachmentDescriptor(ObjectPointer);
+handle!(MTLRenderPassDepthAttachmentDescriptor);
+
+impl Object for MTLRenderPassDepthAttachmentDescriptor {
+    unsafe fn from_ptr(ptr: ObjectPointer) -> Self
+    where
+        Self: Sized,
+    {
+        MTLRenderPassDepthAttachmentDescriptor(ptr)
+    }
+
+    fn get_ptr(&self) -> ObjectPointer {
+        self.0
+    }
+}
+
 pub struct MTLRenderPassDescriptor(ObjectPointer);
 handle!(MTLRenderPassDescriptor);
 
@@ -118,6 +145,12 @@ impl MTLRenderPassDescriptor {
     pub unsafe fn get_color_attachments(&self) -> MTLRenderPassColorAttachmentDescriptorArray {
         MTLRenderPassColorAttachmentDescriptorArray::from_ptr({
             let k = ObjectPointer(msg_send![self.get_ptr(), colorAttachments]);
+            msg_send![k, retain]
+        })
+    }
+    pub unsafe fn get_depth_attachment(&self) -> MTLRenderPassDepthAttachmentDescriptor {
+        MTLRenderPassDepthAttachmentDescriptor::from_ptr({
+            let k = ObjectPointer(msg_send![self.get_ptr(), depthAttachment]);
             msg_send![k, retain]
         })
     }

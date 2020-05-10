@@ -4,7 +4,7 @@ pub use pass::*;
 pub use render::*;
 
 use crate::import_objc_macros::*;
-use crate::{DeviceCreated, Object};
+use crate::Object;
 
 pub trait MTLCommandEncoder: Object {
     unsafe fn end_encoding(&self) {

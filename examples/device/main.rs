@@ -195,6 +195,8 @@ unsafe fn execute() {
         width: 500.0,
         height: 500.0,
     });
+
+    let rp_desc = MTLRenderPassDescriptor::new();
 }
 
 fn main() {

@@ -1,6 +1,6 @@
 use crate::import_objc_macros::*;
 use crate::{handle, CGFloat, NSInteger, NSUInteger, Object, ObjectPointer};
-use std::fmt::{Display, Formatter};
+use std::fmt::{Display, Formatter, Debug, Error};
 
 /// Takes an implementor of `Object` and logs its description and retain count.
 ///
@@ -202,6 +202,12 @@ impl NSError {
         let len: NSUInteger = msg_send![reason, length];
         let bytes = std::slice::from_raw_parts(bytes, len as usize);
         std::str::from_utf8(bytes).unwrap()
+    }
+}
+
+impl Debug for NSError {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        f.write_str(unsafe { self.get_localized_description() })
     }
 }
 

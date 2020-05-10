@@ -1,11 +1,5 @@
 use crate::import_objc_macros::*;
-use crate::{
-    handle, MTLBuffer, MTLCommandQueue, MTLCompileOptions, MTLComputePipelineState,
-    MTLDepthStencilDescriptor, MTLDepthStencilState, MTLFunction, MTLLibrary,
-    MTLRenderPipelineDescriptor, MTLRenderPipelineState, MTLResourceOptions, MTLSamplePosition,
-    MTLSamplerDescriptor, MTLSamplerState, MTLSize, MTLTexture, MTLTextureDescriptor, MetalError,
-    NSUInteger, Object, ObjectPointer,
-};
+use crate::{handle, MTLBuffer, MTLCommandQueue, MTLCompileOptions, MTLComputePipelineState, MTLDepthStencilDescriptor, MTLDepthStencilState, MTLFunction, MTLLibrary, MTLRenderPipelineDescriptor, MTLRenderPipelineState, MTLResourceOptions, MTLSamplePosition, MTLSamplerDescriptor, MTLSamplerState, MTLSize, MTLTexture, MTLTextureDescriptor, MetalError, NSUInteger, Object, ObjectPointer, NSError};
 use std::os::raw::c_void;
 
 mod externs {
@@ -146,10 +140,10 @@ impl MTLDevice {
             msg_send![k, retain]
         })
     }
-    pub unsafe fn new_library_with_data(&self, data: &[u8]) -> MetalError<MTLLibrary> {
+    pub unsafe fn new_library_with_data(&self, data: &[u8]) -> Result<MTLLibrary, NSError> {
         use externs::*;
 
-        let mut err: *mut objc::runtime::Object = std::ptr::null_mut();
+        let mut err = ObjectPointer(std::ptr::null_mut());
 
         let dispatch_data = dispatch_data_create(
             data.as_ptr() as *const c_void,
@@ -161,27 +155,17 @@ impl MTLDevice {
         let lib = ObjectPointer(msg_send![self.0, newLibraryWithData:dispatch_data error:&mut err]);
         dispatch_release(dispatch_data);
 
-        if !err.is_null() {
-            let info = ObjectPointer(msg_send![err, localizedDescription]);
-            let bytes: *const u8 = msg_send![info, UTF8String];
-            let len: NSUInteger = msg_send![info, length];
-            let bytes = std::slice::from_raw_parts(bytes, len as usize);
-            let st = std::str::from_utf8(bytes).unwrap();
-
-            if lib.0.is_null() {
-                MetalError::Error(st)
-            } else {
-                MetalError::Warn(MTLLibrary::from_ptr(lib), st)
-            }
+        if !err.0.is_null() {
+            Err(NSError::from_ptr(err))
         } else {
-            MetalError::None(MTLLibrary::from_ptr(lib))
+            Ok(MTLLibrary::from_ptr(lib))
         }
     }
     pub unsafe fn new_library_with_source(
         &self,
         source: &str,
         options: &MTLCompileOptions,
-    ) -> MetalError<MTLLibrary> {
+    ) -> Result<MTLLibrary, NSError> {
         let cls = class!(NSString);
         let bytes = source.as_ptr();
         let st = ObjectPointer(msg_send![cls, alloc]);
@@ -191,55 +175,35 @@ impl MTLDevice {
            length:source.len()
            encoding:4 // UTF-8
         ]);
-        let mut error: *mut objc::runtime::Object = std::ptr::null_mut();
+        let mut err = ObjectPointer(std::ptr::null_mut());
 
         let lib = ObjectPointer(msg_send![
             self.get_ptr(),
             newLibraryWithSource:st
             options:options.get_ptr()
-            error:&mut error
+            error:&mut err
         ]);
 
-        if !error.is_null() {
-            let info = ObjectPointer(msg_send![error, localizedDescription]);
-            let bytes: *const u8 = msg_send![info, UTF8String];
-            let len: NSUInteger = msg_send![info, length];
-            let bytes = std::slice::from_raw_parts(bytes, len as usize);
-            let st = std::str::from_utf8(bytes).unwrap();
-
-            if !lib.0.is_null() {
-                MetalError::Warn(MTLLibrary::from_ptr(lib), st)
-            } else {
-                MetalError::Error(st)
-            }
+        if !err.0.is_null() {
+            Err(NSError::from_ptr(err))
         } else {
-            MetalError::None(MTLLibrary::from_ptr(lib))
+            Ok(MTLLibrary::from_ptr(lib))
         }
     }
     pub unsafe fn new_render_pipeline_state_with_descriptor(
         &self,
         desc: &MTLRenderPipelineDescriptor,
-    ) -> MetalError<MTLRenderPipelineState> {
-        let mut err: *mut objc::runtime::Object = std::ptr::null_mut();
+    ) -> Result<MTLRenderPipelineState, NSError> {
+        let mut err = ObjectPointer(std::ptr::null_mut());
         let b = ObjectPointer(msg_send![
             self.get_ptr(),
             newRenderPipelineStateWithDescriptor:desc.get_ptr()
             error:&mut err
         ]);
-        if err.is_null() {
-            MetalError::None(MTLRenderPipelineState::from_ptr(b))
+        if !err.0.is_null() {
+            Err(NSError::from_ptr(err))
         } else {
-            let info = ObjectPointer(msg_send![err, localizedDescription]);
-            let bytes: *const u8 = msg_send![info, UTF8String];
-            let len: NSUInteger = msg_send![info, length];
-            let bytes = std::slice::from_raw_parts(bytes, len as usize);
-            let st = std::str::from_utf8(bytes).unwrap();
-
-            if b.0.is_null() {
-                MetalError::Error(st)
-            } else {
-                MetalError::Warn(MTLRenderPipelineState::from_ptr(b), st)
-            }
+            Ok(MTLRenderPipelineState::from_ptr(b))
         }
     }
     pub unsafe fn new_compute_pipeline_state_with_function(

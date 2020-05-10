@@ -1,6 +1,6 @@
 use crate::import_objc_macros::*;
 use crate::{handle, CGFloat, NSInteger, NSUInteger, Object, ObjectPointer};
-use std::fmt::{Display, Formatter, Debug, Error};
+use std::fmt::{Display, Formatter, Debug};
 
 /// Takes an implementor of `Object` and logs its description and retain count.
 ///

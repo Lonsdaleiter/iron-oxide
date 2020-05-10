@@ -1,5 +1,5 @@
 use crate::import_objc_macros::*;
-use crate::{handle, MTLBuffer, MTLCommandQueue, MTLCompileOptions, MTLComputePipelineState, MTLDepthStencilDescriptor, MTLDepthStencilState, MTLFunction, MTLLibrary, MTLRenderPipelineDescriptor, MTLRenderPipelineState, MTLResourceOptions, MTLSamplePosition, MTLSamplerDescriptor, MTLSamplerState, MTLSize, MTLTexture, MTLTextureDescriptor, MetalError, NSUInteger, Object, ObjectPointer, NSError};
+use crate::{handle, MTLBuffer, MTLCommandQueue, MTLCompileOptions, MTLComputePipelineState, MTLDepthStencilDescriptor, MTLDepthStencilState, MTLFunction, MTLLibrary, MTLRenderPipelineDescriptor, MTLRenderPipelineState, MTLResourceOptions, MTLSamplePosition, MTLSamplerDescriptor, MTLSamplerState, MTLSize, MTLTexture, MTLTextureDescriptor, NSUInteger, Object, ObjectPointer, NSError};
 use std::os::raw::c_void;
 
 mod externs {
@@ -209,27 +209,17 @@ impl MTLDevice {
     pub unsafe fn new_compute_pipeline_state_with_function(
         &self,
         function: MTLFunction,
-    ) -> MetalError<MTLComputePipelineState> {
-        let mut err: *mut objc::runtime::Object = std::ptr::null_mut();
+    ) -> Result<MTLComputePipelineState, NSError> {
+        let mut err = ObjectPointer(std::ptr::null_mut());
         let b = ObjectPointer(msg_send![
             self.get_ptr(),
             newComputePipelineStateWithFunction:function.get_ptr()
             error:&mut err
         ]);
-        if err.is_null() {
-            MetalError::None(MTLComputePipelineState::from_ptr(b))
+        if err.0.is_null() {
+            Ok(MTLComputePipelineState::from_ptr(b))
         } else {
-            let info = ObjectPointer(msg_send![err, localizedDescription]);
-            let bytes: *const u8 = msg_send![info, UTF8String];
-            let len: NSUInteger = msg_send![info, length];
-            let bytes = std::slice::from_raw_parts(bytes, len as usize);
-            let st = std::str::from_utf8(bytes).unwrap();
-
-            if b.0.is_null() {
-                MetalError::Error(st)
-            } else {
-                MetalError::Warn(MTLComputePipelineState::from_ptr(b), st)
-            }
+            Err(NSError::from_ptr(err))
         }
     }
     pub unsafe fn get_max_buffer_length(&self) -> NSUInteger {

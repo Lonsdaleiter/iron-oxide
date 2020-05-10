@@ -21,7 +21,6 @@
 //!
 //! Licensed under the MIT license.
 
-use log::Level;
 use objc::Message;
 use std::ops::Deref;
 
@@ -57,27 +56,6 @@ pub use sampler::*;
 /// - `sel_impl`
 pub mod import_objc_macros {
     pub use objc::{class, msg_send, sel, sel_impl};
-}
-
-// TODO turn this into an NSError and give it behavior
-#[deprecated]
-pub enum MetalError<'a, T> {
-    None(T),
-    Warn(T, &'a str),
-    Error(&'a str),
-}
-
-impl<'a, T> MetalError<'a, T> {
-    pub fn unwrap(self) -> T {
-        match self {
-            MetalError::None(obj) => obj,
-            MetalError::Warn(obj, msg) => {
-                log::log!(Level::Warn, "{}", msg);
-                obj
-            }
-            MetalError::Error(msg) => panic!("{}", msg),
-        }
-    }
 }
 
 #[repr(C)]

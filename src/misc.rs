@@ -1,5 +1,5 @@
-use crate::{CGFloat, NSUInteger, Object, ObjectPointer, NSInteger, handle};
 use crate::import_objc_macros::*;
+use crate::{handle, CGFloat, NSInteger, NSUInteger, Object, ObjectPointer};
 use std::fmt::{Display, Formatter};
 
 /// Takes an implementor of `Object` and logs its description and retain count.
@@ -206,8 +206,10 @@ impl NSError {
 }
 
 impl Object for NSError {
-    unsafe fn from_ptr(ptr: ObjectPointer) -> Self where
-        Self: Sized {
+    unsafe fn from_ptr(ptr: ObjectPointer) -> Self
+    where
+        Self: Sized,
+    {
         NSError(ptr)
     }
 

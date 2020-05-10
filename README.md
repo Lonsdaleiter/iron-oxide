@@ -6,9 +6,9 @@ Unsafe Rusty [Metal](https://developer.apple.com/documentation/metal?language=ob
 Backfill List
 -
 **HIGH PRIORITY**:
-- [ ] Reform errors to have Objective-C behavior and not be automatically unwrapped
+- [ ] Use NSError and not MetalError
+- [ ] MTLRenderPassDescriptor
 - [ ] Remainder of command buffer instance methods
-- [ ] CAMetalLayer behavior
 - [ ] Redo all the docs
 
 **LOW PRIORITY**:

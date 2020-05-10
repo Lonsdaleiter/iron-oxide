@@ -1,5 +1,8 @@
 use crate::import_objc_macros::*;
-use crate::{handle, DeviceCreated, MTLDrawable, Object, ObjectPointer, NSError};
+use crate::{
+    handle, DeviceCreated, MTLDrawable, MTLRenderCommandEncoder, MTLRenderPassDescriptor, NSError,
+    Object, ObjectPointer,
+};
 
 #[repr(u64)]
 pub enum MTLCommandBufferStatus {
@@ -56,6 +59,15 @@ impl MTLCommandBuffer {
     }
     pub unsafe fn get_kernel_end_time(&self) -> f64 {
         msg_send![self.get_ptr(), kernelEndTime]
+    }
+    pub unsafe fn render_command_encoder_with_descriptor(
+        &self,
+        desc: &MTLRenderPassDescriptor,
+    ) -> MTLRenderCommandEncoder {
+        MTLRenderCommandEncoder::from_ptr(msg_send![
+            self.get_ptr(),
+            renderCommandEncoderWithDescriptor: desc
+        ])
     }
 }
 

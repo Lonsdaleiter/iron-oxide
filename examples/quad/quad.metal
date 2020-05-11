@@ -2,26 +2,26 @@
 
 using namespace metal;
 
-struct ToVertex {
-	float4 position;
-	float4 colour;
+struct ToQuadVertex {
+    packed_float3 position;
+	packed_float4 colour;
 };
 
-struct ToFragment {
+struct ToQuadFragment {
     float4 position [[position]];
     float4 colour;
 };
 
-vertex ToFragment quad_v(device ToVertex* vertexArray [[ buffer(0) ]],
+vertex ToQuadFragment quad_v(device ToQuadVertex* vertexArray [[ buffer(0) ]],
                          unsigned int vid [[ vertex_id ]])
 {
-    ToFragment out;
-    out.position = vertexArray[vid].position;
+    ToQuadFragment out;
+    out.position = float4(vertexArray[vid].position, 0.0, 1.0);
     out.colour = vertexArray[vid].colour;
     return out;
 }
 
-fragment float4 quad_f(ToFragment in [[stage_in]])
+fragment float4 quad_f(ToQuadFragment in [[stage_in]])
 {
     return in.colour;
 }

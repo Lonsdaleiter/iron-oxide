@@ -8,7 +8,10 @@ pub struct MTLVertexDescriptor(ObjectPointer);
 handle!(MTLVertexDescriptor);
 
 impl MTLVertexDescriptor {
-    //
+    pub unsafe fn new() -> MTLVertexDescriptor {
+        MTLVertexDescriptor::from_ptr(msg_send![class!(MTLVertexDescriptor), new])
+    }
+    // TODO add my behavior
 }
 
 impl Object for MTLVertexDescriptor {

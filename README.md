@@ -6,12 +6,12 @@ Unsafe Rusty [Metal](https://developer.apple.com/documentation/metal?language=ob
 Backfill List
 -
 **HIGH PRIORITY**:
-- [ ] Use NSError and not MetalError
 - [ ] MTLRenderPassDescriptor
 - [ ] Remainder of command buffer instance methods
 - [ ] Redo all the docs
 
 **LOW PRIORITY**:
+- [ ] repr(C) all the high level wrappers (eg. MTLDevice)
 - [ ] MTLDevice Mojave / Catalina behavior
 - [ ] objectAtIndexedSubscript
 - [ ] Fence + event stuff

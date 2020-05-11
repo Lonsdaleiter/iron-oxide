@@ -1,6 +1,6 @@
 use crate::import_objc_macros::*;
 use crate::{handle, CGFloat, NSInteger, NSUInteger, Object, ObjectPointer};
-use std::fmt::{Display, Formatter, Debug};
+use std::fmt::{Debug, Display, Formatter};
 
 /// Takes an implementor of `Object` and logs its description and retain count.
 ///
@@ -213,7 +213,11 @@ impl Debug for NSError {
             let domain = self.get_domain();
             let code = self.get_code();
 
-            format!("NSError: {}\n{}\nDomain: {}\nCode: {}", desc, reason, domain, code).as_str()
+            format!(
+                "NSError: {}\n{}\nDomain: {}\nCode: {}",
+                desc, reason, domain, code
+            )
+            .as_str()
         })
     }
 }

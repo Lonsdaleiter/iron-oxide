@@ -1,5 +1,11 @@
 use crate::import_objc_macros::*;
-use crate::{handle, MTLBuffer, MTLCommandQueue, MTLCompileOptions, MTLComputePipelineState, MTLDepthStencilDescriptor, MTLDepthStencilState, MTLFunction, MTLLibrary, MTLRenderPipelineDescriptor, MTLRenderPipelineState, MTLResourceOptions, MTLSamplePosition, MTLSamplerDescriptor, MTLSamplerState, MTLSize, MTLTexture, MTLTextureDescriptor, NSUInteger, Object, ObjectPointer, NSError};
+use crate::{
+    handle, MTLBuffer, MTLCommandQueue, MTLCompileOptions, MTLComputePipelineState,
+    MTLDepthStencilDescriptor, MTLDepthStencilState, MTLFunction, MTLLibrary,
+    MTLRenderPipelineDescriptor, MTLRenderPipelineState, MTLResourceOptions, MTLSamplePosition,
+    MTLSamplerDescriptor, MTLSamplerState, MTLSize, MTLTexture, MTLTextureDescriptor, NSError,
+    NSUInteger, Object, ObjectPointer,
+};
 use std::os::raw::c_void;
 
 mod externs {

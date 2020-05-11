@@ -128,10 +128,10 @@ handle!(MTLRenderPassDepthAttachmentDescriptor);
 
 impl MTLRenderPassDepthAttachmentDescriptor {
     pub unsafe fn set_clear_depth(&self, depth: f64) {
-        msg_send![self.get_ptr(), setClearDepth:depth]
+        msg_send![self.get_ptr(), setClearDepth: depth]
     }
     pub unsafe fn set_depth_resolve_filter(&self, filter: MTLMultisampleDepthResolveFilter) {
-        msg_send![self.get_ptr(), setDepthResolveFilter:filter]
+        msg_send![self.get_ptr(), setDepthResolveFilter: filter]
     }
 }
 
@@ -161,18 +161,20 @@ handle!(MTLRenderPassStencilAttachmentDescriptor);
 
 impl MTLRenderPassStencilAttachmentDescriptor {
     pub unsafe fn set_clear_stencil(&self, clear: u32) {
-        msg_send![self.get_ptr(), setClearStencil:clear]
+        msg_send![self.get_ptr(), setClearStencil: clear]
     }
     pub unsafe fn set_stencil_resolve_filter(&self, filter: MTLMultisampleStencilResolveFilter) {
-        msg_send![self.get_ptr(), setStencilResolveFilter:filter]
+        msg_send![self.get_ptr(), setStencilResolveFilter: filter]
     }
 }
 
 impl MTLRenderPassAttachmentDescriptor for MTLRenderPassStencilAttachmentDescriptor {}
 
 impl Object for MTLRenderPassStencilAttachmentDescriptor {
-    unsafe fn from_ptr(ptr: ObjectPointer) -> Self where
-        Self: Sized {
+    unsafe fn from_ptr(ptr: ObjectPointer) -> Self
+    where
+        Self: Sized,
+    {
         MTLRenderPassStencilAttachmentDescriptor(ptr)
     }
 

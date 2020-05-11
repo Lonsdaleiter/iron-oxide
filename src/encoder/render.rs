@@ -1,8 +1,5 @@
 use crate::import_objc_macros::*;
-use crate::{
-    handle, MTLBuffer, MTLCommandEncoder, MTLDepthStencilState, MTLRenderPipelineState,
-    MTLSamplerState, NSRange, NSUInteger, NSUIntegerRange, Object, ObjectPointer,
-};
+use crate::{handle, MTLBuffer, MTLCommandEncoder, MTLDepthStencilState, MTLRenderPipelineState, MTLSamplerState, NSRange, NSUInteger, NSUIntegerRange, Object, ObjectPointer, MTLTexture};
 use std::os::raw::c_void;
 
 #[repr(u64)]
@@ -126,7 +123,7 @@ impl MTLRenderCommandEncoder {
         msg_send![self.get_ptr(), setVertexBytes:bytes length:length atIndex:index]
     }
     pub unsafe fn set_vertex_sampler_state(&self, sampler: &MTLSamplerState, index: NSUInteger) {
-        msg_send![self.get_ptr(), setVertexSamplerState:sampler.get_ptr(), atIndex:index]
+        msg_send![self.get_ptr(), setVertexSamplerState:sampler.get_ptr() atIndex:index]
     }
     pub unsafe fn set_vertex_sampler_state_clamp(
         &self,
@@ -137,7 +134,7 @@ impl MTLRenderCommandEncoder {
     ) {
         msg_send![
             self.get_ptr(),
-            setVertexSamplerState:sampler.get_ptr(),
+            setVertexSamplerState:sampler.get_ptr()
             lodMinClamp:lod_min_clamp
             lodMaxClamp:lod_max_clamp
             atIndex:index
@@ -158,6 +155,18 @@ impl MTLRenderCommandEncoder {
             length: range.end - range.start,
         };
         msg_send![self.get_ptr(), setVertexSamplerStates:pointers withRange:range]
+    }
+    pub unsafe fn set_vertex_texture(&self, texture: &MTLTexture, index: NSUInteger) {
+        msg_send![self.get_ptr(), setVertexTexture:texture.get_ptr() atIndex:index]
+    }
+    pub unsafe fn set_vertex_textures(&self, textures: &[MTLTexture], range: NSUIntegerRange) {
+        let pointers = textures.iter().map(|texture|texture.get_ptr()).collect::<Vec<_>>();
+        let pointers = pointers.as_slice().as_ptr();
+        let range = NSRange {
+            location: range.start,
+            length: range.end - range.start,
+        };
+        msg_send![self.get_ptr(), setVertexTextures:pointers withRange:range]
     }
 }
 

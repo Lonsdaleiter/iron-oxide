@@ -11,6 +11,7 @@ Backfill List
 - [ ] Redo all the docs
 
 **LOW PRIORITY**:
+- [ ] setVertexSamplerStates:lodMinClamps:lodMaxClamps:withRange
 - [ ] repr(C) all the high level wrappers (eg. MTLDevice)
 - [ ] MTLDevice Mojave / Catalina behavior
 - [ ] objectAtIndexedSubscript

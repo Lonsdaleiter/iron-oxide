@@ -183,9 +183,6 @@ unsafe fn execute() {
     });
     debug(&depth_stencil);
 
-    let command_buffer = queue.new_command_buffer(true);
-    command_buffer.commit();
-
     let layer = CAMetalLayer::new();
     layer.set_device(&device);
     layer.set_vsync(true);
@@ -208,6 +205,13 @@ unsafe fn execute() {
         });
     rp_desc.get_depth_attachment().set_clear_depth(1.0);
     rp_desc.get_stencil_attachment().set_clear_stencil(0);
+
+    let command_buffer = queue.new_command_buffer(true);
+
+    let render_encoder = command_buffer.render_command_encoder_with_descriptor(&rp_desc);
+    render_encoder.end_encoding();
+
+    command_buffer.commit();
 }
 
 fn main() {

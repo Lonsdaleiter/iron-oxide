@@ -7,6 +7,19 @@ pub enum MTLTriangleFillMode {
     Lines = 1,
 }
 
+#[repr(u64)]
+pub enum MTLWinding {
+    Clockwise = 0,
+    CounterClockwise = 1,
+}
+
+#[repr(u64)]
+pub enum MTLCullMode {
+    None = 0,
+    Front = 1,
+    Back = 2,
+}
+
 pub struct MTLRenderCommandEncoder(ObjectPointer);
 handle!(MTLRenderCommandEncoder);
 
@@ -16,6 +29,12 @@ impl MTLRenderCommandEncoder {
     }
     pub unsafe fn set_triangle_fill_mode(&self, mode: MTLTriangleFillMode) {
         msg_send![self.get_ptr(), setTriangleFillMode: mode]
+    }
+    pub unsafe fn set_front_face_winding(&self, winding: MTLWinding) {
+        msg_send![self.get_ptr(), setFrontFaceWinding:winding]
+    }
+    pub unsafe fn set_cull_mode(&self, mode: MTLCullMode) {
+        msg_send![self.get_ptr(), setCullMode:mode]
     }
 }
 

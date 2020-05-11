@@ -66,7 +66,7 @@ impl MTLCommandBuffer {
     ) -> MTLRenderCommandEncoder {
         MTLRenderCommandEncoder::from_ptr(msg_send![
             self.get_ptr(),
-            renderCommandEncoderWithDescriptor: desc
+            renderCommandEncoderWithDescriptor: desc.get_ptr()
         ])
     }
 }

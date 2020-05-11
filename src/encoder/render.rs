@@ -168,6 +168,90 @@ impl MTLRenderCommandEncoder {
         };
         msg_send![self.get_ptr(), setVertexTextures:pointers withRange:range]
     }
+
+    pub unsafe fn set_fragment_buffer(
+        &self,
+        buffer: &MTLBuffer,
+        offset: NSUInteger,
+        index: NSUInteger,
+    ) {
+        msg_send![self.get_ptr(), setFragmentBuffer:buffer.get_ptr() offset:offset atIndex:index]
+    }
+    pub unsafe fn set_fragment_buffers(
+        &self,
+        buffers: &[MTLBuffer],
+        offsets: &[NSUInteger],
+        range: NSUIntegerRange,
+    ) {
+        let range = NSRange {
+            location: range.start,
+            length: range.end - range.start,
+        };
+        let pointers = buffers
+            .iter()
+            .map(|buffer| buffer.get_ptr())
+            .collect::<Vec<ObjectPointer>>();
+        let pointers = pointers.as_slice().as_ptr();
+
+        msg_send![self.get_ptr(), setFragmentBuffers:pointers offsets:offsets.as_ptr() withRange:range]
+    }
+    pub unsafe fn set_fragment_buffer_offset(&self, offset: NSUInteger, index: NSUInteger) {
+        msg_send![self.get_ptr(), setFragmentBufferOffset:offset atIndex:index]
+    }
+    pub unsafe fn set_fragment_bytes(
+        &self,
+        bytes: *const c_void,
+        length: NSUInteger,
+        index: NSUInteger,
+    ) {
+        msg_send![self.get_ptr(), setFragmentBytes:bytes length:length atIndex:index]
+    }
+    pub unsafe fn set_fragment_sampler_state(&self, sampler: &MTLSamplerState, index: NSUInteger) {
+        msg_send![self.get_ptr(), setFragmentSamplerState:sampler.get_ptr() atIndex:index]
+    }
+    pub unsafe fn set_fragment_sampler_state_clamp(
+        &self,
+        sampler: &MTLSamplerState,
+        lod_min_clamp: f32,
+        lod_max_clamp: f32,
+        index: NSUInteger,
+    ) {
+        msg_send![
+            self.get_ptr(),
+            setFragmentSamplerState:sampler.get_ptr()
+            lodMinClamp:lod_min_clamp
+            lodMaxClamp:lod_max_clamp
+            atIndex:index
+        ]
+    }
+    pub unsafe fn set_fragment_sampler_states(
+        &self,
+        samplers: &[MTLSamplerState],
+        range: NSUIntegerRange,
+    ) {
+        let pointers = samplers
+            .iter()
+            .map(|sampler| sampler.get_ptr())
+            .collect::<Vec<_>>();
+        let pointers = pointers.as_slice().as_ptr();
+        let range = NSRange {
+            location: range.start,
+            length: range.end - range.start,
+        };
+        msg_send![self.get_ptr(), setFragmentSamplerStates:pointers withRange:range]
+    }
+    pub unsafe fn set_fragment_texture(&self, texture: &MTLTexture, index: NSUInteger) {
+        msg_send![self.get_ptr(), setFragmentTexture:texture.get_ptr() atIndex:index]
+    }
+    pub unsafe fn set_fragment_textures(&self, textures: &[MTLTexture], range: NSUIntegerRange) {
+        let pointers = textures.iter().map(|texture|texture.get_ptr()).collect::<Vec<_>>();
+        let pointers = pointers.as_slice().as_ptr();
+        let range = NSRange {
+            location: range.start,
+            length: range.end - range.start,
+        };
+        msg_send![self.get_ptr(), setFragmentTextures:pointers withRange:range]
+    }
 }
 
 impl MTLCommandEncoder for MTLRenderCommandEncoder {}

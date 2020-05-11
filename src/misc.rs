@@ -214,7 +214,7 @@ impl Debug for NSError {
             let code = self.get_code();
 
             format!(
-                "NSError: {}\n{}\nDomain: {}\nCode: {}",
+                "\n{}Reason:\n{}\nDomain: {}\nCode: {}",
                 desc, reason, domain, code
             )
             .as_str()

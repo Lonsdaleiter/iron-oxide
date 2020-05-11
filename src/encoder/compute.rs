@@ -1,4 +1,4 @@
-use crate::{ObjectPointer, handle, Object, MTLCommandEncoder};
+use crate::{handle, MTLCommandEncoder, Object, ObjectPointer};
 
 pub struct MTLComputeCommandEncoder(ObjectPointer);
 handle!(MTLComputeCommandEncoder);
@@ -10,8 +10,10 @@ impl MTLComputeCommandEncoder {
 impl MTLCommandEncoder for MTLComputeCommandEncoder {}
 
 impl Object for MTLComputeCommandEncoder {
-    unsafe fn from_ptr(ptr: ObjectPointer) -> Self where
-        Self: Sized {
+    unsafe fn from_ptr(ptr: ObjectPointer) -> Self
+    where
+        Self: Sized,
+    {
         MTLComputeCommandEncoder(ptr)
     }
 

@@ -1,5 +1,9 @@
 use crate::import_objc_macros::*;
-use crate::{handle, MTLBuffer, MTLCommandEncoder, MTLDepthStencilState, MTLRenderPipelineState, MTLSamplerState, NSRange, NSUInteger, NSUIntegerRange, Object, ObjectPointer, MTLTexture};
+use crate::{
+    handle, MTLBuffer, MTLCommandEncoder, MTLDepthStencilState, MTLRenderPipelineState,
+    MTLSamplerState, MTLTexture, NSInteger, NSRange, NSUInteger, NSUIntegerRange, Object,
+    ObjectPointer,
+};
 use std::os::raw::c_void;
 
 #[repr(u64)]
@@ -43,6 +47,21 @@ pub struct MTLScissorRect {
     pub height: NSUInteger,
     pub x: NSUInteger,
     pub y: NSUInteger,
+}
+
+#[repr(u64)]
+pub enum MTLPrimitiveType {
+    Point = 0,
+    Line = 1,
+    LineStrip = 2,
+    Triangle = 3,
+    TriangleStrip = 4,
+}
+
+#[repr(u64)]
+pub enum MTLIndexType {
+    UInt16 = 0,
+    UInt32 = 1,
 }
 
 pub struct MTLRenderCommandEncoder(ObjectPointer);
@@ -160,7 +179,10 @@ impl MTLRenderCommandEncoder {
         msg_send![self.get_ptr(), setVertexTexture:texture.get_ptr() atIndex:index]
     }
     pub unsafe fn set_vertex_textures(&self, textures: &[MTLTexture], range: NSUIntegerRange) {
-        let pointers = textures.iter().map(|texture|texture.get_ptr()).collect::<Vec<_>>();
+        let pointers = textures
+            .iter()
+            .map(|texture| texture.get_ptr())
+            .collect::<Vec<_>>();
         let pointers = pointers.as_slice().as_ptr();
         let range = NSRange {
             location: range.start,
@@ -244,13 +266,56 @@ impl MTLRenderCommandEncoder {
         msg_send![self.get_ptr(), setFragmentTexture:texture.get_ptr() atIndex:index]
     }
     pub unsafe fn set_fragment_textures(&self, textures: &[MTLTexture], range: NSUIntegerRange) {
-        let pointers = textures.iter().map(|texture|texture.get_ptr()).collect::<Vec<_>>();
+        let pointers = textures
+            .iter()
+            .map(|texture| texture.get_ptr())
+            .collect::<Vec<_>>();
         let pointers = pointers.as_slice().as_ptr();
         let range = NSRange {
             location: range.start,
             length: range.end - range.start,
         };
         msg_send![self.get_ptr(), setFragmentTextures:pointers withRange:range]
+    }
+    pub unsafe fn draw_primitives(
+        &self,
+        primitive: MTLPrimitiveType,
+        start: NSUInteger,
+        vertices: NSUInteger,
+        instances: NSUInteger,
+        base_instance: NSUInteger,
+    ) {
+        msg_send![
+            self.get_ptr(),
+            drawPrimitives:primitive
+            vertexStart:start
+            vertexCount:vertices
+            instanceCount:instances
+            baseInstance:base_instance
+        ]
+    }
+    pub unsafe fn draw_indexed_primitives(
+        &self,
+        primitive: MTLPrimitiveType,
+        indices: NSUInteger,
+        index_type: MTLIndexType,
+        index_buffer: &MTLBuffer,
+        index_buffer_offset: NSUInteger,
+        instance_count: NSUInteger,
+        base_vertex: NSInteger,
+        base_instance: NSUInteger,
+    ) {
+        msg_send![
+            self.get_ptr(),
+            drawIndexedPrimitives:primitive
+            indexCount:indices
+            indexType:index_type
+            indexBuffer:index_buffer.get_ptr()
+            indexBufferOffset:index_buffer_offset
+            instanceCount:instance_count
+            baseVertex:base_vertex
+            baseInstance:base_instance
+        ]
     }
 }
 

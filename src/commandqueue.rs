@@ -11,7 +11,8 @@ impl MTLCommandQueue {
                 true => msg_send![self.get_ptr(), commandBuffer],
                 false => msg_send![self.get_ptr(), commandBufferWithUnretainedReferences],
             });
-            msg_send![pointer, retain]
+            // msg_send![pointer, retain]
+            pointer
         })
     }
 }

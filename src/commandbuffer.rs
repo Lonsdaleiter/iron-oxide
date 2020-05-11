@@ -1,7 +1,7 @@
 use crate::import_objc_macros::*;
 use crate::{
-    handle, DeviceCreated, MTLDrawable, MTLParallelRenderCommandEncoder,
-    MTLRenderCommandEncoder, MTLRenderPassDescriptor, NSError, Object, ObjectPointer,
+    handle, DeviceCreated, MTLDrawable, MTLParallelRenderCommandEncoder, MTLRenderCommandEncoder,
+    MTLRenderPassDescriptor, NSError, Object, ObjectPointer,
 };
 
 #[repr(u64)]

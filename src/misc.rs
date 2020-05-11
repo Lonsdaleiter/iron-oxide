@@ -4,6 +4,8 @@ use std::fmt::{Debug, Display, Formatter};
 
 /// Takes an implementor of `Object` and logs its description and retain count.
 ///
+/// Requires an active logger.
+///
 /// Assumes that the implementation of `get_ptr` given by `T` unconditionally
 /// returns a pointer to a valid Objective-C object inheriting from `NSObject`.
 ///

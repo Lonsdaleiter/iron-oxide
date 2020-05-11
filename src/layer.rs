@@ -54,7 +54,7 @@ impl CAMetalLayer {
         if dw.0.is_null() {
             None
         } else {
-            Some(CAMetalDrawable::from_ptr(dw))
+            Some(CAMetalDrawable::from_ptr(msg_send![dw, retain]))
         }
     }
 }

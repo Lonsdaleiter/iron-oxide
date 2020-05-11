@@ -6,9 +6,12 @@ handle!(MTLCommandQueue);
 
 impl MTLCommandQueue {
     pub unsafe fn new_command_buffer(&self, retain_references: bool) -> MTLCommandBuffer {
-        MTLCommandBuffer::from_ptr(match retain_references {
-            true => msg_send![self.get_ptr(), commandBuffer],
-            false => msg_send![self.get_ptr(), commandBufferWithUnretainedReferences],
+        MTLCommandBuffer::from_ptr({
+            let pointer = ObjectPointer(match retain_references {
+                true => msg_send![self.get_ptr(), commandBuffer],
+                false => msg_send![self.get_ptr(), commandBufferWithUnretainedReferences],
+            });
+            msg_send![pointer, retain]
         })
     }
 }

@@ -1,6 +1,6 @@
 use crate::import_objc_macros::*;
 use crate::{
-    handle, DeviceCreated, MTLComputeCommandEncoder, MTLDrawable, MTLParallelRenderCommandEncoder,
+    handle, DeviceCreated, MTLDrawable, MTLParallelRenderCommandEncoder,
     MTLRenderCommandEncoder, MTLRenderPassDescriptor, NSError, Object, ObjectPointer,
 };
 
@@ -30,7 +30,7 @@ impl MTLCommandBuffer {
     pub unsafe fn wait_until_completed(&self) {
         msg_send![self.get_ptr(), waitUntilCompleted]
     }
-    pub unsafe fn present_drawable<T: MTLDrawable>(&self, drawable: T) {
+    pub unsafe fn present_drawable<T: MTLDrawable>(&self, drawable: &T) {
         msg_send![self.get_ptr(), presentDrawable:drawable.get_ptr()]
     }
     pub unsafe fn present_drawable_after_min_duration<T: MTLDrawable>(
@@ -64,22 +64,25 @@ impl MTLCommandBuffer {
         &self,
         desc: &MTLRenderPassDescriptor,
     ) -> MTLRenderCommandEncoder {
-        MTLRenderCommandEncoder::from_ptr(msg_send![
-            self.get_ptr(),
-            renderCommandEncoderWithDescriptor: desc.get_ptr()
-        ])
+        MTLRenderCommandEncoder::from_ptr({
+            let k = ObjectPointer(msg_send![
+                self.get_ptr(),
+                renderCommandEncoderWithDescriptor: desc.get_ptr()
+            ]);
+            msg_send![k, retain]
+        })
     }
     pub unsafe fn new_parallel_render_command_encoder_with_descriptor(
         &self,
         desc: &MTLRenderPassDescriptor,
     ) -> MTLParallelRenderCommandEncoder {
-        MTLParallelRenderCommandEncoder::from_ptr(msg_send![
-            self.get_ptr(),
-            parallelRenderCommandEncoderWithDescriptor:desc.get_ptr()
-        ])
-    }
-    pub unsafe fn new_compute_command_encoder(&self) -> MTLComputeCommandEncoder {
-        MTLComputeCommandEncoder::from_ptr(msg_send![self.get_ptr(), computeCommandEncoder])
+        MTLParallelRenderCommandEncoder::from_ptr({
+            let k = ObjectPointer(msg_send![
+                self.get_ptr(),
+                parallelRenderCommandEncoderWithDescriptor: desc.get_ptr()
+            ]);
+            msg_send![k, retain]
+        })
     }
 }
 

@@ -22,7 +22,7 @@ Backfill List
 - [ ] Preprocesser macros for library files
 - [ ] Asynchronous methods callously ditched for synchronous ones
 - [ ] Similarly, methods which involve Objective C blocks
-- [ ] Tile shaders / tile render pipeline
+- [ ] Tile shaders + pipeline
 - [ ] MTLVertexDescriptor
 - [ ] Buffer mutability checks
 - [ ] Render pipeline tessellation stage configuration

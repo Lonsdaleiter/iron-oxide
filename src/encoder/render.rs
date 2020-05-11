@@ -1,8 +1,8 @@
 use crate::import_objc_macros::*;
 use crate::{
     handle, MTLBuffer, MTLCommandEncoder, MTLDepthStencilState, MTLRenderPipelineState,
-    MTLSamplerState, MTLTexture, NSInteger, NSRange, NSUInteger, NSUIntegerRange, Object,
-    ObjectPointer,
+    MTLSamplerState, MTLStoreAction, MTLStoreActionOptions, MTLTexture, NSInteger, NSRange,
+    NSUInteger, NSUIntegerRange, Object, ObjectPointer,
 };
 use std::os::raw::c_void;
 
@@ -327,6 +327,60 @@ impl Object for MTLRenderCommandEncoder {
         Self: Sized,
     {
         MTLRenderCommandEncoder(ptr)
+    }
+
+    fn get_ptr(&self) -> ObjectPointer {
+        self.0
+    }
+}
+
+pub struct MTLParallelRenderCommandEncoder(ObjectPointer);
+handle!(MTLParallelRenderCommandEncoder);
+
+impl MTLParallelRenderCommandEncoder {
+    pub unsafe fn new_render_command_encoder(&self) -> MTLRenderCommandEncoder {
+        MTLRenderCommandEncoder::from_ptr(msg_send![self.get_ptr(), renderCommandEncoder])
+    }
+    pub unsafe fn set_color_store_action(&self, action: MTLStoreAction, index: NSUInteger) {
+        msg_send![self.get_ptr(), setColorStoreAction:action atIndex:index]
+    }
+    pub unsafe fn set_color_store_action_options(
+        &self,
+        options: MTLStoreActionOptions,
+        index: NSUInteger,
+    ) {
+        msg_send![self.get_ptr(), setColorStoreActionOptions:options atIndex:index]
+    }
+    pub unsafe fn set_depth_store_action(&self, action: MTLStoreAction, index: NSUInteger) {
+        msg_send![self.get_ptr(), setDepthStoreAction:action atIndex:index]
+    }
+    pub unsafe fn set_depth_store_action_options(
+        &self,
+        options: MTLStoreActionOptions,
+        index: NSUInteger,
+    ) {
+        msg_send![self.get_ptr(), setDepthStoreActionOptions:options atIndex:index]
+    }
+    pub unsafe fn set_stencil_store_action(&self, action: MTLStoreAction, index: NSUInteger) {
+        msg_send![self.get_ptr(), setStencilStoreAction:action atIndex:index]
+    }
+    pub unsafe fn set_stencil_store_action_options(
+        &self,
+        options: MTLStoreActionOptions,
+        index: NSUInteger,
+    ) {
+        msg_send![self.get_ptr(), setStencilStoreActionOptions:options atIndex:index]
+    }
+}
+
+impl MTLCommandEncoder for MTLParallelRenderCommandEncoder {}
+
+impl Object for MTLParallelRenderCommandEncoder {
+    unsafe fn from_ptr(ptr: ObjectPointer) -> Self
+    where
+        Self: Sized,
+    {
+        MTLParallelRenderCommandEncoder(ptr)
     }
 
     fn get_ptr(&self) -> ObjectPointer {

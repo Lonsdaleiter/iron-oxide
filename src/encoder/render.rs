@@ -1,5 +1,5 @@
 use crate::import_objc_macros::*;
-use crate::{handle, MTLCommandEncoder, MTLRenderPipelineState, Object, ObjectPointer, MTLDepthStencilState};
+use crate::{handle, MTLCommandEncoder, MTLRenderPipelineState, Object, ObjectPointer, MTLDepthStencilState, NSUInteger};
 
 #[repr(u64)]
 pub enum MTLTriangleFillMode {
@@ -26,6 +26,24 @@ pub enum MTLDepthClipMode {
     Clamp = 1,
 }
 
+#[repr(C)]
+pub struct MTLViewport {
+    pub origin_x: f64,
+    pub origin_y: f64,
+    pub width: f64,
+    pub height: f64,
+    pub znear: f64,
+    pub zfar: f64,
+}
+
+#[repr(C)]
+pub struct MTLScissorRect {
+    pub width: NSUInteger,
+    pub height: NSUInteger,
+    pub x: NSUInteger,
+    pub y: NSUInteger,
+}
+
 pub struct MTLRenderCommandEncoder(ObjectPointer);
 handle!(MTLRenderCommandEncoder);
 
@@ -50,6 +68,21 @@ impl MTLRenderCommandEncoder {
     }
     pub unsafe fn set_stencil_reference_values(&self, front: u32, back: u32) {
         msg_send![self.get_ptr(), setStencilFrontReferenceValue:front backReferenceValue:back]
+    }
+    pub unsafe fn set_viewport(&self, viewport: MTLViewport) {
+        msg_send![self.get_ptr(), setViewport:viewport]
+    }
+    pub unsafe fn set_viewports(&self, viewports: &[MTLViewport]) {
+        msg_send![self.get_ptr(), setViewports:viewports.as_ptr() count:viewports.len()]
+    }
+    pub unsafe fn set_scissor_rect(&self, rect: MTLScissorRect) {
+        msg_send![self.get_ptr(), setScissorRect:rect]
+    }
+    pub unsafe fn set_scissor_rects(&self, rects: &[MTLScissorRect]) {
+        msg_send![self.get_ptr(), setScissorRects:rects.as_ptr() count:rects.len()]
+    }
+    pub unsafe fn set_blend_color(&self, red: f32, green: f32, blue: f32, alpha: f32) {
+        msg_send![self.get_ptr(), setBlendColorRed:red green:green blue:blue alpha:alpha]
     }
 }
 

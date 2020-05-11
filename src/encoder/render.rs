@@ -1,8 +1,9 @@
 use crate::import_objc_macros::*;
 use crate::{
-    handle, MTLBuffer, MTLCommandEncoder, MTLDepthStencilState, MTLRenderPipelineState, NSRange,
-    NSUInteger, NSUIntegerRange, Object, ObjectPointer,
+    handle, MTLBuffer, MTLCommandEncoder, MTLDepthStencilState, MTLRenderPipelineState,
+    MTLSamplerState, NSRange, NSUInteger, NSUIntegerRange, Object, ObjectPointer,
 };
+use std::os::raw::c_void;
 
 #[repr(u64)]
 pub enum MTLTriangleFillMode {
@@ -110,8 +111,53 @@ impl MTLRenderCommandEncoder {
             .map(|buffer| buffer.get_ptr())
             .collect::<Vec<ObjectPointer>>();
         let pointers = pointers.as_slice().as_ptr();
-        
+
         msg_send![self.get_ptr(), setVertexBuffers:pointers offsets:offsets.as_ptr() withRange:range]
+    }
+    pub unsafe fn set_vertex_buffer_offset(&self, offset: NSUInteger, index: NSUInteger) {
+        msg_send![self.get_ptr(), setVertexBufferOffset:offset atIndex:index]
+    }
+    pub unsafe fn set_vertex_bytes(
+        &self,
+        bytes: *const c_void,
+        length: NSUInteger,
+        index: NSUInteger,
+    ) {
+        msg_send![self.get_ptr(), setVertexBytes:bytes length:length atIndex:index]
+    }
+    pub unsafe fn set_vertex_sampler_state(&self, sampler: &MTLSamplerState, index: NSUInteger) {
+        msg_send![self.get_ptr(), setVertexSamplerState:sampler.get_ptr(), atIndex:index]
+    }
+    pub unsafe fn set_vertex_sampler_state_clamp(
+        &self,
+        sampler: &MTLSamplerState,
+        lod_min_clamp: f32,
+        lod_max_clamp: f32,
+        index: NSUInteger,
+    ) {
+        msg_send![
+            self.get_ptr(),
+            setVertexSamplerState:sampler.get_ptr(),
+            lodMinClamp:lod_min_clamp
+            lodMaxClamp:lod_max_clamp
+            atIndex:index
+        ]
+    }
+    pub unsafe fn set_vertex_sampler_states(
+        &self,
+        samplers: &[MTLSamplerState],
+        range: NSUIntegerRange,
+    ) {
+        let pointers = samplers
+            .iter()
+            .map(|sampler| sampler.get_ptr())
+            .collect::<Vec<_>>();
+        let pointers = pointers.as_slice().as_ptr();
+        let range = NSRange {
+            location: range.start,
+            length: range.end - range.start,
+        };
+        msg_send![self.get_ptr(), setVertexSamplerStates:pointers withRange:range]
     }
 }
 

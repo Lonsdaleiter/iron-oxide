@@ -1,8 +1,5 @@
 use crate::import_objc_macros::*;
-use crate::{
-    handle, DeviceCreated, MTLDrawable, MTLParallelRenderCommandEncoder, MTLRenderCommandEncoder,
-    MTLRenderPassDescriptor, NSError, Object, ObjectPointer,
-};
+use crate::{handle, DeviceCreated, MTLDrawable, MTLParallelRenderCommandEncoder, MTLRenderCommandEncoder, MTLRenderPassDescriptor, NSError, Object, ObjectPointer, MTLComputeCommandEncoder};
 
 #[repr(u64)]
 pub enum MTLCommandBufferStatus {
@@ -77,6 +74,9 @@ impl MTLCommandBuffer {
             self.get_ptr(),
             parallelRenderCommandEncoderWithDescriptor:desc.get_ptr()
         ])
+    }
+    pub unsafe fn new_compute_command_encoder(&self) -> MTLComputeCommandEncoder {
+        MTLComputeCommandEncoder::from_ptr(msg_send![self.get_ptr(), computeCommandEncoder])
     }
 }
 

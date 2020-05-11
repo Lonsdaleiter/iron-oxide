@@ -1,5 +1,7 @@
+mod compute;
 mod pass;
 mod render;
+pub use compute::*;
 pub use pass::*;
 pub use render::*;
 

@@ -7,7 +7,7 @@ Backfill List
 -
 **HIGH PRIORITY**:
 - [ ] Tessellation drawing
-- [ ] Remainder of command buffer instance methods
+- [ ] Compute + blit + resource state encoder
 - [ ] Redo all the docs
 
 **LOW PRIORITY**:

@@ -109,27 +109,26 @@ fn main() {
                 if let Some(drawable) = boilerplate.layer.next_drawable() {
                     let command_buffer = boilerplate.queue.new_command_buffer(true);
 
-                    // let encoder = command_buffer.new_render_command_encoder_with_descriptor(&{
-                    //     let desc = MTLRenderPassDescriptor::new();
-                    //     desc.get_color_attachments()
-                    //         .set_object_at_indexed_subscript(0, &{
-                    //             let desc = MTLRenderPassColorAttachmentDescriptor::new();
-                    //             desc.set_texture(&drawable.get_texture());
-                    //             desc.set_load_action(MTLLoadAction::Clear);
-                    //             desc.set_store_action(MTLStoreAction::Store);
-                    //             desc
-                    //         });
-                    //     desc
-                    // });
-                    // // encoder.set_vertex_buffer(&boilerplate.quad_buffer, 0, 0);
-                    // // encoder.set_render_pipeline_state(&boilerplate.quad_pipeline);
-                    // // encoder.draw_primitives(MTLPrimitiveType::Triangle, 0, 3, 1, 0);
-                    // encoder.end_encoding();
+                    let encoder = command_buffer.new_render_command_encoder_with_descriptor(&{
+                        let desc = MTLRenderPassDescriptor::new();
+                        desc.get_color_attachments()
+                            .set_object_at_indexed_subscript(0, &{
+                                let desc = MTLRenderPassColorAttachmentDescriptor::new();
+                                desc.set_texture(&drawable.get_texture());
+                                desc.set_load_action(MTLLoadAction::Clear);
+                                desc.set_store_action(MTLStoreAction::Store);
+                                desc
+                            });
+                        desc
+                    });
+                    // encoder.set_vertex_buffer(&boilerplate.quad_buffer, 0, 0);
+                    // encoder.set_render_pipeline_state(&boilerplate.quad_pipeline);
+                    // encoder.draw_primitives(MTLPrimitiveType::Triangle, 0, 3, 1, 0);
+                    encoder.end_encoding();
 
-                    // command_buffer.present_drawable(&drawable);
+                    command_buffer.present_drawable(&drawable);
                     command_buffer.commit();
                     command_buffer.wait_until_completed();
-                    debug(&command_buffer);
                 }
             },
             Event::WindowEvent {

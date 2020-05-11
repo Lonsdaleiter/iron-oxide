@@ -60,7 +60,7 @@ impl MTLCommandBuffer {
     pub unsafe fn get_kernel_end_time(&self) -> f64 {
         msg_send![self.get_ptr(), kernelEndTime]
     }
-    pub unsafe fn render_command_encoder_with_descriptor(
+    pub unsafe fn new_render_command_encoder_with_descriptor(
         &self,
         desc: &MTLRenderPassDescriptor,
     ) -> MTLRenderCommandEncoder {

@@ -208,7 +208,7 @@ unsafe fn execute() {
 
     let command_buffer = queue.new_command_buffer(true);
 
-    let render_encoder = command_buffer.render_command_encoder_with_descriptor(&rp_desc);
+    let render_encoder = command_buffer.new_render_command_encoder_with_descriptor(&rp_desc);
     render_encoder.end_encoding();
 
     command_buffer.commit();

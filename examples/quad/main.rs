@@ -1,8 +1,7 @@
 use iron_oxide::*;
 use std::os::raw::c_void;
-use std::time::{Duration, Instant};
 use winit::dpi::PhysicalSize;
-use winit::event::{Event, StartCause, WindowEvent};
+use winit::event::{Event, WindowEvent};
 use winit::event_loop::{ControlFlow, EventLoop};
 use winit::window::{Window, WindowBuilder};
 
@@ -16,16 +15,16 @@ struct MetalBoilerplate {
 }
 
 const QUAD_LEN: NSUInteger = 6;
-const QUAD_VERTS: NSUInteger = 28;
+const QUAD_VERTS: NSUInteger = 24;
 const QUAD_BYTES: [f32; QUAD_VERTS as usize] = [
     // TODO add the other triangle
-    -1.0f32, -1.0, 0.0, // v1
+    -1.0f32, -1.0, // v1
     0.0, 0.0, 0.0, 1.0, // black
-    1.0, -1.0, 0.0, // v2
+    1.0, -1.0, // v2
     1.0, 0.0, 0.0, 1.0, // red
-    1.0, 1.0, 0.0, // v3
+    1.0, 1.0, // v3
     0.0, 1.0, 0.0, 1.0, // green
-    -1.0, 1.0, 0.0, // v4
+    -1.0, 1.0, // v4
     0.0, 0.0, 1.0, 1.0, // blue
 ];
 const QUAD_INDICES: [u16; QUAD_LEN as usize] = [
@@ -108,22 +107,10 @@ fn main() {
 
     let boilerplate = unsafe { MetalBoilerplate::new(&window) };
 
-    let duration = Duration::from_millis(17);
-    let mut now = Instant::now();
     event_loop.run(move |event, _, control_flow| {
-        *control_flow = ControlFlow::WaitUntil(now + duration);
+        *control_flow = ControlFlow::Wait;
 
         match event {
-            Event::NewEvents(cause) => match cause {
-                StartCause::ResumeTimeReached {
-                    start: _,
-                    requested_resume: _,
-                } => {
-                    now = Instant::now();
-                    window.request_redraw();
-                }
-                _ => {}
-            },
             Event::RedrawRequested(_) => unsafe {
                 if let Some(drawable) = boilerplate.layer.next_drawable() {
                     let command_buffer = boilerplate.queue.new_command_buffer(true);

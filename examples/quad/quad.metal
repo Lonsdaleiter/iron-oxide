@@ -3,7 +3,7 @@
 using namespace metal;
 
 struct ToQuadVertex {
-    packed_float3 position;
+    float2 position;
 	packed_float4 colour;
 };
 
@@ -16,7 +16,7 @@ vertex ToQuadFragment quad_v(device ToQuadVertex* vertexArray [[ buffer(0) ]],
                          unsigned int vid [[ vertex_id ]])
 {
     ToQuadFragment out;
-    out.position = float4(vertexArray[vid].position, 1.0);
+    out.position = float4(vertexArray[vid].position, 0.0, 1.0);
     out.colour = vertexArray[vid].colour;
     return out;
 }

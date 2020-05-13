@@ -27,10 +27,7 @@ const QUAD_BYTES: [f32; QUAD_VERTS as usize] = [
     -1.0, 1.0, // v4
     0.0, 0.0, 1.0, 1.0, // blue
 ];
-const QUAD_INDICES: [u16; QUAD_LEN as usize] = [
-    0, 1, 2,
-    2, 3, 0,
-];
+const QUAD_INDICES: [u16; QUAD_LEN as usize] = [0, 1, 2, 2, 3, 0];
 
 impl MetalBoilerplate {
     unsafe fn new(window: &Window) -> MetalBoilerplate {
@@ -137,9 +134,13 @@ fn main() {
                     encoder.set_render_pipeline_state(&boilerplate.quad_pipeline);
                     encoder.draw_indexed_primitives(
                         MTLPrimitiveType::Triangle,
-                        QUAD_LEN, MTLIndexType::UInt16,
+                        QUAD_LEN,
+                        MTLIndexType::UInt16,
                         &boilerplate.quad_indices,
-                        0, 1, 0, 0,
+                        0,
+                        1,
+                        0,
+                        0,
                     );
                     encoder.end_encoding();
 

@@ -1,14 +1,14 @@
 use crate::import_objc_macros::*;
-use crate::{
-    handle, MTLBuffer, MTLCommandEncoder, MTLSamplerState, MTLSize, MTLTexture, NSRange,
-    NSUInteger, NSUIntegerRange, Object, ObjectPointer,
-};
+use crate::{handle, MTLBuffer, MTLCommandEncoder, MTLSamplerState, MTLSize, MTLTexture, NSRange, NSUInteger, NSUIntegerRange, Object, ObjectPointer, MTLComputePipelineState};
 use std::os::raw::c_void;
 
 pub struct MTLComputeCommandEncoder(ObjectPointer);
 handle!(MTLComputeCommandEncoder);
 
 impl MTLComputeCommandEncoder {
+    pub unsafe fn set_compute_pipeline_state(&self, state: &MTLComputePipelineState) {
+        msg_send![self.get_ptr(), setComputePipelineState:state.get_ptr()]
+    }
     pub unsafe fn set_buffer(&self, buffer: &MTLBuffer, offset: NSUInteger, index: NSUInteger) {
         msg_send![self.get_ptr(), setBuffer:buffer.get_ptr() offset:offset atIndex:index]
     }

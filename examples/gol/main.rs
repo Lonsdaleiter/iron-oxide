@@ -1,9 +1,10 @@
 use iron_oxide::*;
-use winit::window::{WindowBuilder, Window};
+use std::os::raw::c_void;
 use winit::dpi::PhysicalSize;
 use winit::event::{Event, WindowEvent};
 use winit::event_loop::{ControlFlow, EventLoop};
-use std::os::raw::c_void;
+use winit::window::{Window, WindowBuilder};
+use std::fs::File;
 
 struct MetalBoilerplate {
     device: MTLDevice,
@@ -38,17 +39,17 @@ impl MetalBoilerplate {
 }
 
 const QUAD_LEN: NSUInteger = 6;
-const QUAD_VERTS: NSUInteger = 24;
+const QUAD_VERTS: NSUInteger = 16;
 const QUAD_BYTES: [f32; QUAD_VERTS as usize] = [
     // TODO add the other triangle
     -1.0f32, -1.0, // v1
-    0.0, 0.0, 0.0, 1.0, // black
+    0.0, 1.0, // tc1
     1.0, -1.0, // v2
-    1.0, 0.0, 0.0, 1.0, // red
+    1.0, 1.0, // tc2
     1.0, 1.0, // v3
-    0.0, 1.0, 0.0, 1.0, // green
+    1.0, 0.0, // tc3
     -1.0, 1.0, // v4
-    0.0, 0.0, 1.0, 1.0, // blue
+    0.0, 0.0, // tc4
 ];
 const QUAD_INDICES: [u16; QUAD_LEN as usize] = [0, 1, 2, 2, 3, 0];
 
@@ -60,10 +61,11 @@ struct RenderState {
 
 impl RenderState {
     unsafe fn new(boilerplate: &MetalBoilerplate) -> RenderState {
-        let quad_vertex = library.new_function_with_name("quad_v").unwrap();
-        let quad_fragment = library.new_function_with_name("quad_f").unwrap();
+        let quad_vertex = boilerplate.library.new_function_with_name("quad_v").unwrap();
+        let quad_fragment = boilerplate.library.new_function_with_name("quad_f").unwrap();
 
-        let quad_pipeline = boilerplate.device
+        let quad_pipeline = boilerplate
+            .device
             .new_render_pipeline_state_with_descriptor(&{
                 let desc = MTLRenderPipelineDescriptor::new();
                 desc.set_vertex_descriptor(&MTLVertexDescriptor::new());
@@ -105,8 +107,38 @@ impl RenderState {
     }
 }
 
-struct ComputeState {
-    //
+struct GameState {
+    compute_pipeline: MTLComputePipelineState,
+    cell_state: MTLTexture,
+}
+
+impl GameState {
+    unsafe fn new(boilerplate: &MetalBoilerplate) -> GameState {
+        let decoder = png::Decoder::new(File::open("examples/gol/gol_init_state.png").unwrap());
+        let (info, mut reader) = decoder.read_info().unwrap();
+        let mut img = vec![0; info.buffer_size()];
+        reader.next_frame(&mut img).unwrap();
+
+        let cell_state = boilerplate.device.new_texture_with_descriptor(&{
+            let desc = MTLTextureDescriptor::new();
+            desc.set_width(info.width as NSUInteger);
+            desc.set_height(info.height as NSUInteger);
+            desc.set_pixel_format(MTLPixelFormat::RGBA8Unorm);
+            desc.set_texture_type(MTLTextureType::D2);
+            desc.set_usage(MTLTextureUsage::ShaderRead | MTLTextureUsage::ShaderWrite);
+            desc
+        });
+
+        let compute_fn = boilerplate
+            .library
+            .new_function_with_name("update_game")
+            .unwrap();
+        let compute_pipeline = boilerplate
+            .device
+            .new_compute_pipeline_state_with_function(&compute_fn)
+            .unwrap();
+        GameState { compute_pipeline, cell_state }
+    }
 }
 
 fn main() {
@@ -115,18 +147,61 @@ fn main() {
     let event_loop = EventLoop::new();
     let window = WindowBuilder::new()
         .with_inner_size(PhysicalSize::new(1280, 720))
-        .with_title("Quad")
+        .with_title("Conway's Game of Life")
         .build(&event_loop)
         .unwrap();
 
     let boilerplate = unsafe { MetalBoilerplate::new(&window) };
+    let render_state = unsafe { RenderState::new(&boilerplate) };
+    let compute_state = unsafe { GameState::new(&boilerplate) };
 
     event_loop.run(move |event, _, control_flow| {
         *control_flow = ControlFlow::Wait;
 
         match event {
             Event::RedrawRequested(_) => unsafe {
-                //
+                if let Some(drawable) = boilerplate.layer.next_drawable() {
+                    let command_buffer = boilerplate.queue.new_command_buffer(true);
+
+                    let encoder = command_buffer.new_render_command_encoder_with_descriptor(&{
+                        let desc = MTLRenderPassDescriptor::new();
+                        desc.get_color_attachments()
+                            .set_object_at_indexed_subscript(0, &{
+                                let desc = MTLRenderPassColorAttachmentDescriptor::new();
+                                desc.set_texture(&drawable.get_texture());
+                                desc.set_load_action(MTLLoadAction::Clear);
+                                desc.set_store_action(MTLStoreAction::Store);
+                                desc.set_clear_color(MTLClearColor {
+                                    r: 0.0,
+                                    g: 0.0,
+                                    b: 0.0,
+                                    a: 0.0,
+                                });
+                                desc
+                            });
+                        desc
+                    });
+                    encoder.set_vertex_buffer(&render_state.quad_buffer, 0, 0);
+                    encoder.set_render_pipeline_state(&render_state.quad_pipeline);
+                    encoder.draw_indexed_primitives(
+                        MTLPrimitiveType::Triangle,
+                        QUAD_LEN,
+                        MTLIndexType::UInt16,
+                        &render_state.quad_indices,
+                        0,
+                        1,
+                        0,
+                        0,
+                    );
+                    encoder.end_encoding();
+
+                    // let encoder = command_buffer.new_compute_encoder();
+                    // encoder.end_encoding();
+
+                    command_buffer.present_drawable(&drawable);
+                    command_buffer.commit();
+                    command_buffer.wait_until_completed();
+                }
             },
             Event::WindowEvent {
                 window_id: _,

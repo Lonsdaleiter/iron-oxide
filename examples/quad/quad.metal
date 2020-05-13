@@ -13,7 +13,7 @@ struct ToQuadFragment {
 };
 
 vertex ToQuadFragment quad_v(device ToQuadVertex* vertexArray [[ buffer(0) ]],
-                         unsigned int vid [[ vertex_id ]])
+                             unsigned int vid [[ vertex_id ]])
 {
     ToQuadFragment out;
     out.position = float4(vertexArray[vid].position, 0.0, 1.0);

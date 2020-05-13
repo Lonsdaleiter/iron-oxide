@@ -37,15 +37,18 @@ fn main() {
             0,
         );
         encoder.set_buffer(&out_buffer, 0, 1);
-        encoder.dispatch_threads(MTLSize {
-            width: IN_DATA.len() as NSUInteger,
-            height: 1,
-            depth: 1,
-        }, MTLSize {
-            width: IN_DATA.len() as NSUInteger,
-            height: 1,
-            depth: 1,
-        });
+        encoder.dispatch_threads(
+            MTLSize {
+                width: IN_DATA.len() as NSUInteger,
+                height: 1,
+                depth: 1,
+            },
+            MTLSize {
+                width: IN_DATA.len() as NSUInteger,
+                height: 1,
+                depth: 1,
+            },
+        );
         encoder.end_encoding();
 
         command_buffer.commit();

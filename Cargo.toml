@@ -17,3 +17,4 @@ raw-window-handle = "0.3.3"
 [dev-dependencies]
 winit = "0.22.1"
 colog = "1.0.0"
+png = "0.16.3"

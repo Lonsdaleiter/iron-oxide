@@ -4,30 +4,31 @@ using namespace metal;
 
 struct ToQuadVertex {
     float2 position;
-	packed_float4 colour;
+	float2 textureCoords;
 };
 
 struct ToQuadFragment {
     float4 position [[position]];
-    float4 colour;
+    float2 textureCoords;
 };
 
 vertex ToQuadFragment quad_v(device ToQuadVertex* vertexArray [[ buffer(0) ]],
-                         unsigned int vid [[ vertex_id ]])
+                             unsigned int vid [[ vertex_id ]])
 {
     ToQuadFragment out;
     out.position = float4(vertexArray[vid].position, 0.0, 1.0);
-    out.colour = vertexArray[vid].colour;
+    out.textureCoords = vertexArray[vid].textureCoords;
     return out;
 }
 
-fragment float4 quad_f(ToQuadFragment in [[stage_in]])
+fragment float4 quad_f(ToQuadFragment in [[stage_in]],
+                       texture2d<float, access::read> state [[ texture(0) ]])
 {
-    return in.colour;
+    return float4(in.textureCoords, 0.0, 1.0);
 }
 
-kernel void update_game(texture2d<float, access::read> inTexture [[texture(0)]],
-                        texture2d<float, access::write> outTexture [[texture(1)]],
+kernel void update_game(texture2d<float, access::read> inTexture [[ texture(0) ]],
+                        texture2d<float, access::write> outTexture [[ texture(1) ]],
                         uint2 gid [[thread_position_in_grid]])
 {
     float4 colourAtTexel = inTexture.read(gid);

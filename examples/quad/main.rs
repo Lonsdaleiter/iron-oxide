@@ -117,6 +117,12 @@ fn main() {
                                 desc.set_texture(&drawable.get_texture());
                                 desc.set_load_action(MTLLoadAction::Clear);
                                 desc.set_store_action(MTLStoreAction::Store);
+                                desc.set_clear_color(MTLClearColor {
+                                    r: 0.0,
+                                    g: 1.0,
+                                    b: 1.0,
+                                    a: 1.0,
+                                });
                                 desc
                             });
                         desc

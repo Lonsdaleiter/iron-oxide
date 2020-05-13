@@ -188,10 +188,13 @@ handle!(MTLRenderPassDescriptor);
 
 impl MTLRenderPassDescriptor {
     pub unsafe fn new() -> MTLRenderPassDescriptor {
-        MTLRenderPassDescriptor::from_ptr(msg_send![
-            class!(MTLRenderPassDescriptor),
-            renderPassDescriptor
-        ])
+        MTLRenderPassDescriptor::from_ptr({
+            let k = ObjectPointer(msg_send![
+                class!(MTLRenderPassDescriptor),
+                renderPassDescriptor
+            ]);
+            msg_send![k, retain]
+        })
     }
     pub unsafe fn get_color_attachments(&self) -> MTLRenderPassColorAttachmentDescriptorArray {
         MTLRenderPassColorAttachmentDescriptorArray::from_ptr({

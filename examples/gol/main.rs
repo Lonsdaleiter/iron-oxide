@@ -125,7 +125,6 @@ struct GameState {
     compute_pipeline: MTLComputePipelineState,
     cell_state: MTLTexture,
     sampler: MTLSamplerState,
-    size: (NSUInteger, NSUInteger),
 }
 
 impl GameState {
@@ -184,7 +183,6 @@ impl GameState {
             compute_pipeline,
             cell_state,
             sampler,
-            size: (info.width as NSUInteger, info.height as NSUInteger)
         }
     }
 }
@@ -261,8 +259,8 @@ fn main() {
                     encoder.set_texture(&compute_state.cell_state, 0);
                     encoder.set_texture(&compute_state.cell_state, 1);
                     encoder.dispatch_threadgroups(MTLSize {
-                        width: compute_state.size.0 / 10,
-                        height: compute_state.size.1 / 10,
+                        width: 5,
+                        height: 5,
                         depth: 1,
                     }, MTLSize {
                         width: 10,

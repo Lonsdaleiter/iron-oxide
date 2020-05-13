@@ -6,16 +6,13 @@ Unsafe Rusty [Metal](https://developer.apple.com/documentation/metal?language=ob
 Backfill List
 -
 **HIGH PRIORITY**:
-- [ ] Gol + sum examples
+- [ ] Redo all the docs
+- [ ] Blit + resource state encoder
 - [ ] Tessellation drawing
 - [ ] Indirect buffers
-- [ ] Blit + resource state encoder
-- [ ] Redo all the docs
 
 **LOW PRIORITY**:
 - [ ] Vertex amplification + tessellation in render encoder
-- [ ] set(Vertex/Fragment)SamplerStates:lodMinClamps:lodMaxClamps:withRange
-- [ ] repr(C) all the high level wrappers (eg. MTLDevice)
 - [ ] MTLDevice Mojave / Catalina behavior
 - [ ] objectAtIndexedSubscript
 - [ ] Fence + event stuff
@@ -23,7 +20,7 @@ Backfill List
 - [ ] MTLFunction input behavior
 - [ ] Preprocesser macros for library files
 - [ ] Asynchronous methods callously ditched for synchronous ones
-- [ ] Similarly, methods which involve Objective C blocks
+- [ ] Similarly, methods / functions which involve Objective C blocks
 - [ ] Tile shaders + pipeline
 - [ ] MTLVertexDescriptor
 - [ ] Buffer mutability checks
@@ -31,10 +28,8 @@ Backfill List
 - [ ] Render pipeline indirect command buffer + vertex amplification
 - [ ] Render pipeline state behavior
 - [ ] Compute pipeline state behavior
-- [ ] Compute pipeline descriptor
 - [ ] Hazard tracking mode
 - [ ] Making a texture from a buffer
-- [ ] Debug markers for buffers
 - [ ] Remote storage buffers for synchronizing over multiple GPUs
 - [ ] Querying texture support from an MTLDevice
 - [ ] Texture swizzle patterns

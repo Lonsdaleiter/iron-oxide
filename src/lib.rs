@@ -58,13 +58,7 @@ pub mod import_objc_macros {
     pub use objc::{class, msg_send, sel, sel_impl};
 }
 
-#[repr(C)]
-#[doc(hidden)]
-pub struct ObjectPointerMarker {
-    // ignore me
-    _member: u8,
-}
-unsafe impl Message for ObjectPointerMarker {}
+type ObjectPointerMarker = objc::runtime::Object;
 
 #[derive(Copy, Clone)]
 #[repr(C)]
@@ -80,6 +74,7 @@ impl Deref for ObjectPointer {
 unsafe impl Message for ObjectPointer {}
 
 pub trait Array<T: Object>: Object {
+    /// Puts in the array at the specified index the specified object.
     unsafe fn set_object_at_indexed_subscript(&self, index: NSUInteger, obj: &T) {
         use crate::import_objc_macros::*;
         msg_send![self.get_ptr(), setObject:obj.get_ptr() atIndexedSubscript:index]

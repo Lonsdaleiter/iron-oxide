@@ -1,5 +1,8 @@
 use crate::import_objc_macros::*;
-use crate::{handle, MTLBuffer, MTLCommandEncoder, NSUInteger, NSUIntegerRange, Object, ObjectPointer, NSRange, MTLSamplerState, MTLTexture};
+use crate::{
+    handle, MTLBuffer, MTLCommandEncoder, MTLSamplerState, MTLSize, MTLTexture, NSRange,
+    NSUInteger, NSUIntegerRange, Object, ObjectPointer,
+};
 use std::os::raw::c_void;
 
 pub struct MTLComputeCommandEncoder(ObjectPointer);
@@ -51,11 +54,7 @@ impl MTLComputeCommandEncoder {
             atIndex:index
         ]
     }
-    pub unsafe fn set_sampler_states(
-        &self,
-        samplers: &[MTLSamplerState],
-        range: NSUIntegerRange,
-    ) {
+    pub unsafe fn set_sampler_states(&self, samplers: &[MTLSamplerState], range: NSUIntegerRange) {
         let pointers = samplers
             .iter()
             .map(|sampler| sampler.get_ptr())
@@ -84,6 +83,28 @@ impl MTLComputeCommandEncoder {
     }
     pub unsafe fn set_threadgroup_memory_length(&self, length: NSUInteger, index: NSUInteger) {
         msg_send![self.get_ptr(), setThreadgroupMemoryLength:length atIndex:index]
+    }
+    pub unsafe fn dispatch_threadgroups(
+        &self,
+        threadgroups_per_grid: MTLSize,
+        threads_per_threadgroup: MTLSize,
+    ) {
+        msg_send![
+            self.get_ptr(),
+            dispatchThreadgroups:threadgroups_per_grid
+            threadsPerThreadgroup:threads_per_threadgroup
+        ]
+    }
+    pub unsafe fn dispatch_threads(
+        &self,
+        threads_per_grid: MTLSize,
+        threads_per_threadgroup: MTLSize,
+    ) {
+        msg_send![
+            self.get_ptr(),
+            dispatchThreads:threads_per_grid
+            threadsPerThreadgroup:threads_per_threadgroup
+        ]
     }
 }
 

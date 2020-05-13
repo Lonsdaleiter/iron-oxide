@@ -7,7 +7,8 @@ Backfill List
 -
 **HIGH PRIORITY**:
 - [ ] Tessellation drawing
-- [ ] Compute + blit + resource state encoder
+- [ ] Indirect buffers
+- [ ] Blit + resource state encoder
 - [ ] Redo all the docs
 
 **LOW PRIORITY**:

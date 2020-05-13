@@ -2,9 +2,10 @@ use iron_oxide::*;
 use std::fs::File;
 use std::os::raw::c_void;
 use winit::dpi::PhysicalSize;
-use winit::event::{Event, WindowEvent};
+use winit::event::{Event, WindowEvent, StartCause};
 use winit::event_loop::{ControlFlow, EventLoop};
 use winit::window::{Window, WindowBuilder};
+use std::time::{Duration, Instant};
 
 struct MetalBoilerplate {
     device: MTLDevice,
@@ -124,6 +125,7 @@ struct GameState {
     compute_pipeline: MTLComputePipelineState,
     cell_state: MTLTexture,
     sampler: MTLSamplerState,
+    size: (NSUInteger, NSUInteger),
 }
 
 impl GameState {
@@ -182,6 +184,7 @@ impl GameState {
             compute_pipeline,
             cell_state,
             sampler,
+            size: (info.width as NSUInteger, info.height as NSUInteger)
         }
     }
 }
@@ -200,10 +203,21 @@ fn main() {
     let render_state = unsafe { RenderState::new(&boilerplate) };
     let compute_state = unsafe { GameState::new(&boilerplate) };
 
+    let duration = Duration::from_millis(100);
+    let mut now = Instant::now();
     event_loop.run(move |event, _, control_flow| {
-        *control_flow = ControlFlow::Wait;
+        *control_flow = ControlFlow::WaitUntil(now + duration);
 
         match event {
+            Event::NewEvents(cause) => {
+                match cause {
+                    StartCause::ResumeTimeReached { start: _, requested_resume: _ } => {
+                        now = Instant::now();
+                        window.request_redraw();
+                    },
+                    _ => {},
+                }
+            },
             Event::RedrawRequested(_) => unsafe {
                 if let Some(drawable) = boilerplate.layer.next_drawable() {
                     let command_buffer = boilerplate.queue.new_command_buffer(true);
@@ -242,8 +256,20 @@ fn main() {
                     );
                     encoder.end_encoding();
 
-                    // let encoder = command_buffer.new_compute_encoder();
-                    // encoder.end_encoding();
+                    let encoder = command_buffer.new_compute_encoder();
+                    encoder.set_compute_pipeline_state(&compute_state.compute_pipeline);
+                    encoder.set_texture(&compute_state.cell_state, 0);
+                    encoder.set_texture(&compute_state.cell_state, 1);
+                    encoder.dispatch_threadgroups(MTLSize {
+                        width: compute_state.size.0 / 10,
+                        height: compute_state.size.1 / 10,
+                        depth: 1,
+                    }, MTLSize {
+                        width: 10,
+                        height: 10,
+                        depth: 1
+                    });
+                    encoder.end_encoding();
 
                     command_buffer.present_drawable(&drawable);
                     command_buffer.commit();

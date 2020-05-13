@@ -17,7 +17,7 @@ impl MTLComputeCommandEncoder {
     }
     pub unsafe fn set_buffers(
         &self,
-        buffers: &[MTLBuffer],
+        buffers: &[&MTLBuffer],
         offsets: &[NSUInteger],
         range: NSUIntegerRange,
     ) {
@@ -72,7 +72,7 @@ impl MTLComputeCommandEncoder {
     pub unsafe fn set_texture(&self, texture: &MTLTexture, index: NSUInteger) {
         msg_send![self.get_ptr(), setTexture:texture.get_ptr() atIndex:index]
     }
-    pub unsafe fn set_textures(&self, textures: &[MTLTexture], range: NSUIntegerRange) {
+    pub unsafe fn set_textures(&self, textures: &[&MTLTexture], range: NSUIntegerRange) {
         let pointers = textures
             .iter()
             .map(|texture| texture.get_ptr())

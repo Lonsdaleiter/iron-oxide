@@ -214,7 +214,7 @@ impl MTLDevice {
     }
     pub unsafe fn new_compute_pipeline_state_with_function(
         &self,
-        function: MTLFunction,
+        function: &MTLFunction,
     ) -> Result<MTLComputePipelineState, NSError> {
         let mut err = ObjectPointer(std::ptr::null_mut());
         let b = ObjectPointer(msg_send![

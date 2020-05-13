@@ -6,6 +6,7 @@ Unsafe Rusty [Metal](https://developer.apple.com/documentation/metal?language=ob
 Backfill List
 -
 **HIGH PRIORITY**:
+- [ ] Gol + sum examples
 - [ ] Tessellation drawing
 - [ ] Indirect buffers
 - [ ] Blit + resource state encoder

@@ -7,12 +7,31 @@ use winit::event_loop::{ControlFlow, EventLoop};
 use winit::window::{Window, WindowBuilder};
 
 struct MetalBoilerplate {
-    device: MTLDevice,
+    _device: MTLDevice,
     layer: CAMetalLayer,
     queue: MTLCommandQueue,
     quad_pipeline: MTLRenderPipelineState,
     quad_buffer: MTLBuffer,
+    quad_indices: MTLBuffer,
 }
+
+const QUAD_LEN: NSUInteger = 6;
+const QUAD_VERTS: NSUInteger = 28;
+const QUAD_BYTES: [f32; QUAD_VERTS as usize] = [
+    // TODO add the other triangle
+    -1.0f32, -1.0, 0.0, // v1
+    0.0, 0.0, 0.0, 1.0, // black
+    1.0, -1.0, 0.0, // v2
+    1.0, 0.0, 0.0, 1.0, // red
+    1.0, 1.0, 0.0, // v3
+    0.0, 1.0, 0.0, 1.0, // green
+    -1.0, 1.0, 0.0, // v4
+    0.0, 0.0, 1.0, 1.0, // blue
+];
+const QUAD_INDICES: [u16; QUAD_LEN as usize] = [
+    0, 1, 2,
+    2, 3, 0,
+];
 
 impl MetalBoilerplate {
     unsafe fn new(window: &Window) -> MetalBoilerplate {
@@ -48,31 +67,31 @@ impl MetalBoilerplate {
             })
             .unwrap();
 
-        const QUAD_BYTES: [f32; 21] = [
-            // TODO add the other triangle
-            -1.0f32, -1.0, 0.0, // v1
-            0.0, 0.0, 0.0, 1.0, // black
-            1.0, -1.0, 0.0, // v2
-            1.0, 0.0, 0.0, 1.0, // red
-            1.0, 1.0, 0.0, // v3
-            0.0, 1.0, 0.0, 1.0, // green
-        ];
-        const SIZE: NSUInteger = QUAD_BYTES.len() as NSUInteger * 4;
         let quad_buffer = device.new_buffer_with_bytes(
             QUAD_BYTES.as_ptr() as *const c_void,
-            SIZE,
+            QUAD_VERTS * 4,
             MTLResourceOptions::new()
                 .set_cpu_cache_mode(MTLCPUCacheMode::WriteCombined)
                 .set_storage_mode(MTLStorageMode::Managed),
         );
-        quad_buffer.did_modify_range(0..SIZE);
+        quad_buffer.did_modify_range(0..QUAD_VERTS * 4);
+
+        let quad_indices = device.new_buffer_with_bytes(
+            QUAD_INDICES.as_ptr() as *const c_void,
+            QUAD_LEN * 4,
+            MTLResourceOptions::new()
+                .set_cpu_cache_mode(MTLCPUCacheMode::WriteCombined)
+                .set_storage_mode(MTLStorageMode::Managed),
+        );
+        quad_indices.did_modify_range(0..QUAD_LEN * 4);
 
         MetalBoilerplate {
-            device,
+            _device: device,
             layer,
             queue,
             quad_pipeline,
             quad_buffer,
+            quad_indices,
         }
     }
 }
@@ -127,9 +146,14 @@ fn main() {
                             });
                         desc
                     });
-                    // encoder.set_vertex_buffer(&boilerplate.quad_buffer, 0, 0);
-                    // encoder.set_render_pipeline_state(&boilerplate.quad_pipeline);
-                    // encoder.draw_primitives(MTLPrimitiveType::Triangle, 0, 3, 1, 0);
+                    encoder.set_vertex_buffer(&boilerplate.quad_buffer, 0, 0);
+                    encoder.set_render_pipeline_state(&boilerplate.quad_pipeline);
+                    encoder.draw_indexed_primitives(
+                        MTLPrimitiveType::Triangle,
+                        QUAD_LEN, MTLIndexType::UInt16,
+                        &boilerplate.quad_indices,
+                        0, 1, 0, 0,
+                    );
                     encoder.end_encoding();
 
                     command_buffer.present_drawable(&drawable);

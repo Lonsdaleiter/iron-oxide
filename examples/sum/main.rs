@@ -4,6 +4,8 @@ use std::os::raw::c_void;
 const IN_DATA: [u32; 9] = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 
 fn main() {
+    colog::init();
+
     unsafe {
         let devices = MTLCopyAllDevices();
         let device = devices.into_iter().find_map(|d| Some(d)).unwrap();

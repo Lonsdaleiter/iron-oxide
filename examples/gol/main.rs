@@ -259,12 +259,12 @@ fn main() {
                     encoder.set_texture(&compute_state.cell_state, 0);
                     encoder.set_texture(&compute_state.cell_state, 1);
                     encoder.dispatch_threadgroups(MTLSize {
-                        width: 5,
-                        height: 5,
-                        depth: 1,
-                    }, MTLSize {
                         width: 10,
                         height: 10,
+                        depth: 1,
+                    }, MTLSize {
+                        width: 5,
+                        height: 5,
                         depth: 1
                     });
                     encoder.end_encoding();

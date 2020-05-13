@@ -3,6 +3,12 @@ name = "iron-oxide"
 version = "0.1.0"
 authors = ["Lonsdaleiter <lonsdaleiteproductions@gmail.com>"]
 edition = "2018"
+description = "Unsafe Rusty Metal."
+repository = "https://github.com/Lonsdaleiter/iron-oxide"
+keywords = ["metal", "graphics", "bindings", "objective c", "gamedev", "macos", "ios"]
+categories = ["graphics", "os::macos-apis", "game-development", "rendering::graphics-api"]
+include = ["src/*", "Cargo.toml", "README.md"]
+readme = "README.md"
 license = "MIT"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
@@ -18,3 +24,4 @@ raw-window-handle = "0.3.3"
 winit = "0.22.1"
 colog = "1.0.0"
 png = "0.16.3"
+cgmath = "0.17.0"

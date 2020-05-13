@@ -1,10 +1,10 @@
 use iron_oxide::*;
+use std::fs::File;
 use std::os::raw::c_void;
 use winit::dpi::PhysicalSize;
 use winit::event::{Event, WindowEvent};
 use winit::event_loop::{ControlFlow, EventLoop};
 use winit::window::{Window, WindowBuilder};
-use std::fs::File;
 
 struct MetalBoilerplate {
     device: MTLDevice,
@@ -61,8 +61,14 @@ struct RenderState {
 
 impl RenderState {
     unsafe fn new(boilerplate: &MetalBoilerplate) -> RenderState {
-        let quad_vertex = boilerplate.library.new_function_with_name("quad_v").unwrap();
-        let quad_fragment = boilerplate.library.new_function_with_name("quad_f").unwrap();
+        let quad_vertex = boilerplate
+            .library
+            .new_function_with_name("quad_v")
+            .unwrap();
+        let quad_fragment = boilerplate
+            .library
+            .new_function_with_name("quad_f")
+            .unwrap();
 
         let quad_pipeline = boilerplate
             .device
@@ -75,6 +81,13 @@ impl RenderState {
                     .set_object_at_indexed_subscript(0, &{
                         let desc = MTLRenderPipelineColorAttachmentDescriptor::new();
                         desc.set_pixel_format(MTLPixelFormat::BGRA8Unorm);
+                        desc.set_blending_enabled(true);
+                        desc.set_source_rgb_blend_factor(MTLBlendFactor::SourceAlpha);
+                        desc.set_destination_rgb_blend_factor(MTLBlendFactor::OneMinusSourceAlpha);
+                        desc.set_source_alpha_blend_factor(MTLBlendFactor::One);
+                        desc.set_destination_alpha_blend_factor(
+                            MTLBlendFactor::OneMinusSourceAlpha,
+                        );
                         desc
                     });
                 desc
@@ -110,6 +123,7 @@ impl RenderState {
 struct GameState {
     compute_pipeline: MTLComputePipelineState,
     cell_state: MTLTexture,
+    sampler: MTLSamplerState,
 }
 
 impl GameState {
@@ -128,6 +142,25 @@ impl GameState {
             desc.set_usage(MTLTextureUsage::ShaderRead | MTLTextureUsage::ShaderWrite);
             desc
         });
+        cell_state.replace_region(
+            MTLRegion {
+                origin: MTLSize {
+                    width: 0,
+                    height: 0,
+                    depth: 0,
+                },
+                size: MTLSize {
+                    width: info.width as NSUInteger,
+                    height: info.height as NSUInteger,
+                    depth: 1,
+                },
+            },
+            0,
+            0,
+            img.as_ptr() as *const c_void,
+            info.width as NSUInteger * 4,
+            0,
+        );
 
         let compute_fn = boilerplate
             .library
@@ -137,7 +170,19 @@ impl GameState {
             .device
             .new_compute_pipeline_state_with_function(&compute_fn)
             .unwrap();
-        GameState { compute_pipeline, cell_state }
+
+        let sampler = boilerplate.device.new_sampler_state_with_descriptor(&{
+            let desc = MTLSamplerDescriptor::new();
+            desc.set_min_filter(MTLSamplerMinMagFilter::Nearest);
+            desc.set_mag_filter(MTLSamplerMinMagFilter::Nearest);
+            desc
+        });
+
+        GameState {
+            compute_pipeline,
+            cell_state,
+            sampler,
+        }
     }
 }
 
@@ -146,7 +191,7 @@ fn main() {
 
     let event_loop = EventLoop::new();
     let window = WindowBuilder::new()
-        .with_inner_size(PhysicalSize::new(1280, 720))
+        .with_inner_size(PhysicalSize::new(500, 500))
         .with_title("Conway's Game of Life")
         .build(&event_loop)
         .unwrap();
@@ -183,6 +228,8 @@ fn main() {
                     });
                     encoder.set_vertex_buffer(&render_state.quad_buffer, 0, 0);
                     encoder.set_render_pipeline_state(&render_state.quad_pipeline);
+                    encoder.set_fragment_texture(&compute_state.cell_state, 0);
+                    encoder.set_fragment_sampler_state(&compute_state.sampler, 0);
                     encoder.draw_indexed_primitives(
                         MTLPrimitiveType::Triangle,
                         QUAD_LEN,

@@ -22,9 +22,10 @@ vertex ToQuadFragment quad_v(device ToQuadVertex* vertexArray [[ buffer(0) ]],
 }
 
 fragment float4 quad_f(ToQuadFragment in [[stage_in]],
-                       texture2d<float, access::read> state [[ texture(0) ]])
+                       texture2d<float, access::sample> state [[ texture(0) ]],
+                       sampler normalSampler [[ sampler(0) ]])
 {
-    return float4(in.textureCoords, 0.0, 1.0);
+    return state.sample(normalSampler, in.textureCoords);
 }
 
 kernel void update_game(texture2d<float, access::read> inTexture [[ texture(0) ]],

@@ -53,6 +53,9 @@ pub unsafe fn MTLCreateSystemDefaultDevice() -> MTLDevice {
 }
 
 #[allow(non_snake_case)]
+/// Does not function exactly as the `MTLCopyAllDevices` Metal function. Will, if the device
+/// running this function is iOS, instead create the system default device and put it
+/// into a vector.
 pub unsafe fn MTLCopyAllDevices() -> Vec<MTLDevice> {
     #[cfg(target_os = "macos")]
     {
@@ -72,6 +75,8 @@ pub unsafe fn MTLCopyAllDevices() -> Vec<MTLDevice> {
 }
 
 #[allow(non_snake_case)]
+/// If the provided display id is not the valid id of a monitor on this device,
+/// the program will stall.
 pub unsafe fn CGDirectDisplayCopyCurrentMetalDevice(display_id: u32) -> MTLDevice {
     MTLDevice::from_ptr({
         let obj = externs::CGDirectDisplayCopyCurrentMetalDevice(display_id);

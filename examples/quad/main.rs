@@ -17,7 +17,6 @@ struct MetalBoilerplate {
 const QUAD_LEN: NSUInteger = 6;
 const QUAD_VERTS: NSUInteger = 24;
 const QUAD_BYTES: [f32; QUAD_VERTS as usize] = [
-    // TODO add the other triangle
     -1.0f32, -1.0, // v1
     0.0, 0.0, 0.0, 1.0, // black
     1.0, -1.0, // v2

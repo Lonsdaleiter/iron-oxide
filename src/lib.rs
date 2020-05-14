@@ -1,25 +1,19 @@
 //! `iron-oxide` provides unsafe [Metal](https://developer.apple.com/documentation/metal?language=objc)
 //! bindings for Rust.
 //!
-//! # Metal Functionality
+//! The Metal documentation for most structs, traits, methods, and functions can be found by
+//! googling their names (adjusted from snake_case to camelCase).
 //!
 //! Not all of Metal's functionality is added. The pointer underlying a MTL(something) can
 //! be accessed with `get_ptr`, and messages can be sent to it with `objc`'s `msg_send!`, if
 //! necessary functionality isn't yet implemented. This is very unsafe.
 //!
-//! # Metal Docs
-//!
 //! It is the responsibility of the user to not use methods or functions which do not exist in
-//! OS versions below what they support. macOS, iOS, tvOS, and watchOS only! They can be checked
-//! in the Metal docs corresponding with a given method or function.
-//!
-//! # Examples
+//! OS versions below what they support.
 //!
 //! See the examples directory for examples.
 //!
-//! # License
-//!
-//! Licensed under the MIT license.
+//! This crate is licensed under the MIT license.
 
 use objc::Message;
 use std::ops::Deref;

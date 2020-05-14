@@ -11,8 +11,6 @@ include = ["src/*", "Cargo.toml", "README.md"]
 readme = "README.md"
 license = "MIT"
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
-
 [dependencies]
 enumflags2 = "0.6.4"
 objc = "0.2.7"

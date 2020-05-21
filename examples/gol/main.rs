@@ -42,7 +42,6 @@ impl MetalBoilerplate {
 const QUAD_LEN: NSUInteger = 6;
 const QUAD_VERTS: NSUInteger = 16;
 const QUAD_BYTES: [f32; QUAD_VERTS as usize] = [
-    // TODO add the other triangle
     -1.0f32, -1.0, // v1
     0.0, 1.0, // tc1
     1.0, -1.0, // v2

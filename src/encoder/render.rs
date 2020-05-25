@@ -339,7 +339,10 @@ handle!(MTLParallelRenderCommandEncoder);
 
 impl MTLParallelRenderCommandEncoder {
     pub unsafe fn new_render_command_encoder(&self) -> MTLRenderCommandEncoder {
-        MTLRenderCommandEncoder::from_ptr(msg_send![self.get_ptr(), renderCommandEncoder])
+        MTLRenderCommandEncoder::from_ptr({
+            let k = ObjectPointer(msg_send![self.get_ptr(), renderCommandEncoder]);
+            msg_send![k, retain]
+        })
     }
     pub unsafe fn set_color_store_action(&self, action: MTLStoreAction, index: NSUInteger) {
         msg_send![self.get_ptr(), setColorStoreAction:action atIndex:index]

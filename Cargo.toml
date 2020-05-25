@@ -1,12 +1,12 @@
 [package]
 name = "iron-oxide"
-version = "0.1.0"
+version = "0.1.1"
 authors = ["Lonsdaleiter <lonsdaleiteproductions@gmail.com>"]
 edition = "2018"
 description = "Unsafe Rusty Metal."
 repository = "https://github.com/Lonsdaleiter/iron-oxide"
 keywords = ["metal", "graphics", "objective-c", "macos", "ios"]
-categories = ["graphics", "os::macos-apis", "os::ios-apis", "game-development", "rendering::graphics-api"]
+categories = ["graphics", "os::macos-apis", "game-development", "rendering::graphics-api"]
 include = ["src/*", "Cargo.toml", "README.md"]
 readme = "README.md"
 license = "MIT"
